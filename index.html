@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Web Development — A Bird's Eye View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#0c0c16;}
+
+/* ═══ DECK / SLIDE ══════════════════════════════════ */
+#deck{position:fixed;inset:0;overflow:hidden;}
+.slide{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:clamp(16px,3vh,52px) clamp(24px,6vw,96px) clamp(60px,8vh,88px);
+  opacity:0;pointer-events:none;visibility:hidden;
+  transform:translateX(48px) scale(.978);
+  transition:opacity .48s cubic-bezier(.4,0,.2,1),transform .48s cubic-bezier(.4,0,.2,1),visibility 0s linear .48s;
+  overflow:hidden;
+  box-sizing:border-box;
+  z-index:0;
+}
+.slide.active{opacity:1;pointer-events:all;transform:none;visibility:visible;z-index:2;transition:opacity .48s cubic-bezier(.4,0,.2,1),transform .48s cubic-bezier(.4,0,.2,1),visibility 0s linear 0s;}
+.slide.exit-left{opacity:0;transform:translateX(-48px) scale(.978);visibility:hidden;z-index:1;transition:opacity .38s cubic-bezier(.4,0,.2,1),transform .38s cubic-bezier(.4,0,.2,1),visibility 0s linear .38s;}
+/* slides with padding:0 need the bottom breathing room via inner layout */
+.slide[style*="padding:0"]{padding:0 !important;}
+.slide-panel{position:relative;z-index:2;width:100%;flex:1;min-height:0;display:flex;flex-direction:column;}
+
+/* ═══ FULL-HEIGHT PANEL SLIDES (6 · 7 · 8 · 9) ═══════════ */
+#s6,#s8,#s3,#s13{
+  justify-content:flex-start !important;
+  align-items:stretch !important;
+  padding:clamp(52px,7vh,68px) clamp(20px,4vw,48px) clamp(64px,8vh,80px) !important;
+  box-sizing:border-box;
+}
+#s3 #s3-scroll,#s6 #th-scroll,#s8 #pj-scroll{flex:1;min-height:0;overflow-y:auto;scroll-behavior:smooth;padding:clamp(8px,1.2vh,14px) 0;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;}
+#s3 #s3-steps,#s6 #th-steps,#s8 #pj-steps{display:flex;flex-direction:column;gap:clamp(8px,1.2vh,14px);width:100%;flex:0 0 auto;}
+#s3 #s3-steps>.s3-row,#s6 #th-steps>.th-row,#s8 #pj-steps>.pj-row{
+  flex:0 0 auto;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(10px,1.6vw,22px);
+  align-items:stretch;
+}
+#s3 #s3-steps .s3-card,#s6 #th-steps .th-card,#s8 #pj-steps .pj-card{height:auto;align-items:center;}
+#s13 #jdetail-wrap{flex:1;min-height:0;overflow:hidden;padding:0;}
+#s13 #jdetail{height:100%;min-height:0;overflow:hidden;}
+#s13 #jd-visual{aspect-ratio:auto;height:100%;max-height:100%;width:auto;max-width:100%;margin:0 auto;}
+#s13 #jd-visual svg{max-height:100%;width:auto;max-width:100%;}
+
+/* ═══ BLOBS ══════════════════════════════════════════ */
+.blob{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;animation:drift 15s ease-in-out infinite alternate;}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(30px,20px) scale(1.06)}}
+
+/* ═══ NAV BAR ════════════════════════════════════════ */
+#nav{
+  position:fixed;bottom:20px;left:28px;
+  display:flex;align-items:center;gap:10px;z-index:1000;
+  background:rgba(15,15,30,.85);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.12);border-radius:999px;
+  padding:7px 14px;box-shadow:0 8px 40px rgba(0,0,0,.5);
+}
+.nbtn{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;color:#fff;background:rgba(255,255,255,.12);transition:all .2s;}
+.nbtn:hover{background:rgba(255,255,255,.24);transform:scale(1.1)}
+.nbtn:active{transform:scale(.94)}
+.nbtn:disabled{opacity:.25;cursor:default;transform:none}
+#ctr{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.14em;min-width:46px;text-align:center;}
+
+/* ═══ RING ════════════════════════════════════════════ */
+#ring{position:fixed;bottom:20px;right:24px;width:42px;height:42px;z-index:1000;}
+#ring circle{fill:none;stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .4s cubic-bezier(.4,0,.2,1);}
+#rbg{stroke:rgba(255,255,255,.08);}
+#rfg{stroke:url(#rg);stroke-dasharray:125.6;}
+
+/* ═══ DOTS ════════════════════════════════════════════ */
+#dots{position:fixed;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;z-index:1000;}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.18);border:none;cursor:pointer;transition:all .22s;padding:0;}
+.dot.on{background:#fff;transform:scale(2);}
+.dot:hover{background:rgba(255,255,255,.55);}
+#hint{position:fixed;top:16px;left:24px;font-size:.6rem;color:rgba(255,255,255,.2);letter-spacing:.1em;z-index:999;}
+#upgrad-logo{
+  position:fixed;top:clamp(12px,2vh,20px);right:clamp(16px,3vw,28px);
+  z-index:9999;pointer-events:none;
+  background:#fff;padding:0.33rem;line-height:0;
+  border-radius:6px;
+}
+#upgrad-logo img{display:block;height:clamp(37px,6vh,59px);width:auto;object-fit:contain;}
+
+/* ═══ TYPOGRAPHY ══════════════════════════════════════ */
+.h1{font-size:clamp(2.2rem,5.5vw,4.8rem);font-weight:900;line-height:1.04;letter-spacing:-.03em;color:#fff;}
+.h2{font-size:clamp(1.7rem,3.6vw,3.2rem);font-weight:800;line-height:1.07;letter-spacing:-.025em;color:#fff;}
+.body{font-size:clamp(.82rem,1.2vw,1rem);line-height:1.8;color:rgba(255,255,255,.58);}
+.body-lg{font-size:clamp(.92rem,1.45vw,1.12rem);line-height:1.8;color:rgba(255,255,255,.62);}
+.muted{color:rgba(255,255,255,.3);}
+.white{color:#fff;}
+
+/* gradients */
+.gv{background:linear-gradient(110deg,#c084fc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.gb{background:linear-gradient(110deg,#818cf8,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.gg{background:linear-gradient(110deg,#34d399,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ga{background:linear-gradient(110deg,#fbbf24,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.gr{background:linear-gradient(110deg,#fb7185,#f43f5e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.gm{background:linear-gradient(110deg,#c084fc,#818cf8,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* ═══ LAYOUT ══════════════════════════════════════════ */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,4.5vw,70px);align-items:center;width:100%;max-width:1240px;}
+.ctr{display:flex;flex-direction:column;align-items:center;text-align:center;}
+.col{display:flex;flex-direction:column;gap:clamp(8px,1.3vh,15px);}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(11px,1.6vw,20px);width:100%;max-width:1060px;}
+
+/* ═══ CARD ════════════════════════════════════════════ */
+.card{border-radius:clamp(12px,1.4vw,20px);padding:clamp(14px,2.2vh,26px) clamp(14px,1.8vw,22px);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:8px;box-shadow:0 2px 14px rgba(0,0,0,.25);transition:transform .2s,box-shadow .2s,background .2s;}
+.card:hover{transform:translateY(-5px);box-shadow:0 12px 36px rgba(0,0,0,.35);background:rgba(255,255,255,.1);}
+.ct{font-size:clamp(.78rem,1.1vw,.97rem);font-weight:700;color:#fff;}
+.cb{font-size:clamp(.67rem,.9vw,.82rem);color:rgba(255,255,255,.42);line-height:1.65;}
+
+/* ═══ CMP ROW ═════════════════════════════════════════ */
+.cmp{display:flex;align-items:center;gap:11px;padding:clamp(10px,1.5vh,16px) clamp(12px,1.7vw,20px);border-radius:clamp(10px,1.2vw,15px);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:clamp(.75rem,1.05vw,.92rem);font-weight:700;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);}
+
+/* ═══ TIMELINE ════════════════════════════════════════ */
+.tl{display:flex;align-items:center;width:100%;max-width:1000px;justify-content:center;}
+.tln{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;text-align:center;}
+.tld{width:clamp(40px,5.5vw,62px);height:clamp(40px,5.5vw,62px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(1.1rem,2vw,1.8rem);box-shadow:0 4px 16px rgba(0,0,0,.3);}
+.tll{font-size:clamp(.6rem,.84vw,.79rem);font-weight:700;color:rgba(255,255,255,.5);}
+.tlc{flex:1;height:2px;background:rgba(255,255,255,.1);max-width:46px;}
+
+/* ═══ ANIMATIONS ══════════════════════════════════════ */
+.slide.active .stagger>*{animation:fadeUp .46s cubic-bezier(.4,0,.2,1) both;}
+.slide.active .stagger>*:nth-child(1){animation-delay:.04s}
+.slide.active .stagger>*:nth-child(2){animation-delay:.1s}
+.slide.active .stagger>*:nth-child(3){animation-delay:.16s}
+.slide.active .stagger>*:nth-child(4){animation-delay:.22s}
+.slide.active .stagger>*:nth-child(5){animation-delay:.28s}
+.slide.active .stagger>*:nth-child(6){animation-delay:.34s}
+.slide.active .stagger>*:nth-child(7){animation-delay:.4s}
+.slide.active .stagger>*:nth-child(8){animation-delay:.46s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .fi{animation:fadeIn .58s ease .06s both;}
+@keyframes fadeIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.float{animation:float 4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+/* ═══ SLIDE BACKGROUNDS ═══════════════════════════════ */
+#s1 {background:#060612;}
+.s1-bg{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;}
+#s1-globe{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block;}
+#s2 {background:radial-gradient(ellipse at 72% 32%,#0b2040 0%,#0c0c16 62%);}
+#s3 {background:radial-gradient(ellipse at 32% 58%,#1c0c3a 0%,#0c0c16 62%);}
+#s4 {background:radial-gradient(ellipse at 68% 42%,#0a280e 0%,#0c0c16 62%);}
+#s4 .h2{font-size:clamp(2rem,4.4vw,3.8rem);}
+#s4 .body-lg{font-size:clamp(1rem,1.55vw,1.22rem);line-height:1.85;}
+#s4 .muted{font-size:clamp(.78rem,1.05vw,.94rem);}
+#s5 {background:radial-gradient(ellipse at 28% 50%,#211000 0%,#0c0c16 62%);}
+#s6 {background:radial-gradient(ellipse at 62% 38%,#1a1060 0%,#0c0c16 62%);}
+#s7 {background:radial-gradient(ellipse at 25% 42%,#0a2a10 0%,#0c0c16 62%);}
+#s8 {background:radial-gradient(ellipse at 66% 36%,#280e00 0%,#0c0c16 62%);}
+#s12{background:radial-gradient(ellipse at 22% 50%,#06100a 0%,#0c0c16 62%);}
+#s13{background:radial-gradient(ellipse at 30% 54%,#1c0c3a 0%,#0c0c16 62%);}
+#s14{background:radial-gradient(ellipse at 42% 48%,#1a1060 0%,#0c0c16 62%);}
+
+/* ═══ GAMIFY ══════════════════════════════════════════ */
+.logo-card{
+  border-radius:clamp(12px,1.4vw,18px);
+  padding:clamp(14px,2vh,22px) clamp(12px,1.6vw,18px);
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  text-align:center;
+  box-shadow:0 2px 14px rgba(0,0,0,.25);
+  transition:transform .22s,box-shadow .22s,background .22s;
+  cursor:default;
+}
+.logo-card:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 16px 40px rgba(0,0,0,.4);}
+.logo-name{font-size:clamp(.78rem,1.1vw,.96rem);font-weight:800;color:#fff;}
+.logo-prob{font-size:clamp(.62rem,.85vw,.78rem);color:rgba(255,255,255,.42);margin-top:1px;line-height:1.5;}
+/* idea card */
+.idea-card{
+  border-radius:clamp(12px,1.4vw,18px);
+  padding:clamp(14px,2.2vh,24px) clamp(13px,1.8vw,20px);
+  display:flex;flex-direction:column;align-items:center;gap:9px;
+  text-align:center;
+  border:1.5px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);
+  box-shadow:0 2px 14px rgba(0,0,0,.25);
+  transition:transform .22s,box-shadow .22s,background .22s,border-color .22s;
+  cursor:pointer;
+  position:relative;overflow:hidden;
+}
+.idea-card::before{content:'';position:absolute;inset:0;background:var(--c,rgba(99,102,241,.12));opacity:0;transition:opacity .22s;}
+.idea-card:hover::before{opacity:1;}
+.idea-card:hover{transform:translateY(-6px) scale(1.04);box-shadow:0 16px 40px rgba(0,0,0,.4);border-color:var(--cb,rgba(99,102,241,.5));}
+.idea-emoji{font-size:clamp(2.4rem,4.5vw,4rem);line-height:1;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4));}
+.idea-title{font-size:clamp(.82rem,1.2vw,1rem);font-weight:800;color:#fff;}
+.idea-desc{font-size:clamp(.63rem,.86vw,.78rem);color:rgba(255,255,255,.45);line-height:1.6;}
+
+/* ═══ RESPONSIVE ══════════════════════════════════════ */
+@media(max-width:780px){
+  .split{grid-template-columns:1fr;}
+  .g3{grid-template-columns:repeat(2,1fr);}
+  .tl{flex-wrap:wrap;gap:10px;}
+  .tlc{display:none;}
+  #dots{display:none;}
+  #s6,#s8,#s3,#s13{padding:clamp(44px,6vh,56px) clamp(14px,3vw,24px) clamp(58px,7vh,72px) !important;}
+  #s3 #s3-steps>.s3-row,#s6 #th-steps>.th-row,#s8 #pj-steps>.pj-row{grid-template-columns:1fr;}
+  #s13 #jdetail{grid-template-columns:1fr !important;gap:12px;}
+}
+@media(max-width:480px){#hint{display:none;}#upgrad-logo img{height:clamp(29px,4.7vh,43px);}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div id="hint">← → SPACE</div>
+<div id="upgrad-logo" aria-hidden="true"><img src="assets/upgrad-logo.png?v=3" alt="upGrad"/></div>
+<div id="dots"></div>
+<svg id="ring" viewBox="0 0 44 44"><circle id="rbg" cx="22" cy="22" r="20"/><circle id="rfg" cx="22" cy="22" r="20" transform="rotate(-90 22 22)" stroke-dashoffset="125.6"/></svg>
+
+<div id="deck">
+
+<!-- ══════════════════════════════════════════════
+     01 · TITLE — interactive globe
+══════════════════════════════════════════════ -->
+<section class="slide" id="s1" style="padding:0;overflow:hidden;">
+
+  <!-- ── FULL-VIEWPORT WEB GLOBE BACKGROUND ─────── -->
+  <div class="s1-bg" aria-hidden="true">
+  <svg id="s1-globe" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" overflow="hidden" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="s1Sky" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#0a0828"/>
+        <stop offset="35%" stop-color="#120a3a"/>
+        <stop offset="70%" stop-color="#081018"/>
+        <stop offset="100%" stop-color="#060612"/>
+      </linearGradient>
+      <radialGradient id="s1NebulaL" cx="18%" cy="38%" r="42%">
+        <stop offset="0%" stop-color="#4f46e5" stop-opacity=".28"/>
+        <stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="s1NebulaR" cx="88%" cy="52%" r="48%">
+        <stop offset="0%" stop-color="#0ea5e9" stop-opacity=".22"/>
+        <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="s1Atmo" cx="42%" cy="38%" r="58%">
+        <stop offset="0%" stop-color="#6366f1" stop-opacity=".35"/>
+        <stop offset="55%" stop-color="#0284c7" stop-opacity=".12"/>
+        <stop offset="100%" stop-color="#060612" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="s1Sphere" cx="36%" cy="32%" r="64%">
+        <stop offset="0%" stop-color="#312e81" stop-opacity=".55"/>
+        <stop offset="45%" stop-color="#0c4a6e" stop-opacity=".35"/>
+        <stop offset="100%" stop-color="#020617" stop-opacity=".92"/>
+      </radialGradient>
+      <linearGradient id="s1Vignette" x1="0%" y1="0%" x2="55%" y2="0%">
+        <stop offset="0%" stop-color="#060612" stop-opacity=".94"/>
+        <stop offset="45%" stop-color="#060612" stop-opacity=".72"/>
+        <stop offset="100%" stop-color="#060612" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="s1GridFade" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#818cf8" stop-opacity="0"/>
+        <stop offset="55%" stop-color="#818cf8" stop-opacity=".08"/>
+        <stop offset="100%" stop-color="#38bdf8" stop-opacity=".18"/>
+      </linearGradient>
+      <linearGradient id="s1IgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f09433"/>
+        <stop offset="50%" stop-color="#dc2743"/>
+        <stop offset="100%" stop-color="#bc1888"/>
+      </linearGradient>
+      <pattern id="s1Dots" width="28" height="28" patternUnits="userSpaceOnUse">
+        <circle cx="14" cy="14" r=".7" fill="rgba(129,140,248,.22)"/>
+      </pattern>
+      <pattern id="s1Hex" width="64" height="55" patternUnits="userSpaceOnUse" patternTransform="scale(1.2)">
+        <path d="M32 0 L64 16 L64 48 L32 64 L0 48 L0 16 Z" fill="none" stroke="rgba(99,102,241,.07)" stroke-width=".6"/>
+        <path d="M32 8 L56 20 L56 44 L32 56 L8 44 L8 20 Z" fill="none" stroke="rgba(56,189,248,.04)" stroke-width=".5"/>
+      </pattern>
+      <clipPath id="s1SphereClip"><circle cx="0" cy="0" r="398"/></clipPath>
+      <clipPath id="s1OrbitClip"><rect x="900" y="0" width="1020" height="1080"/></clipPath>
+      <filter id="glow3"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="glow6"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="glow12"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="glow24"><feGaussianBlur stdDeviation="24" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+
+    <!-- base sky -->
+    <rect width="1920" height="1080" fill="url(#s1Sky)"/>
+    <rect width="1920" height="1080" fill="url(#s1NebulaL)"/>
+    <rect width="1920" height="1080" fill="url(#s1NebulaR)"/>
+    <rect width="1920" height="1080" fill="url(#s1Dots)" opacity=".55"/>
+    <rect width="1920" height="1080" fill="url(#s1Hex)" opacity=".65"/>
+
+    <!-- star field -->
+    <g opacity=".85">
+      <circle cx="120" cy="88" r="1.2" fill="#fff" opacity=".9"><animate attributeName="opacity" values=".9;.35;.9" dur="3.2s" repeatCount="indefinite"/></circle>
+      <circle cx="280" cy="142" r=".8" fill="#c7d2fe" opacity=".7"><animate attributeName="opacity" values=".7;.2;.7" dur="2.4s" repeatCount="indefinite"/></circle>
+      <circle cx="440" cy="64" r="1" fill="#fff" opacity=".8"><animate attributeName="opacity" values=".8;.3;.8" dur="4.1s" repeatCount="indefinite"/></circle>
+      <circle cx="680" cy="118" r=".7" fill="#bae6fd" opacity=".65"/>
+      <circle cx="860" cy="52" r="1.1" fill="#fff" opacity=".75"><animate attributeName="opacity" values=".75;.25;.75" dur="3.6s" repeatCount="indefinite"/></circle>
+      <circle cx="1040" cy="96" r=".9" fill="#e0e7ff" opacity=".7"/>
+      <circle cx="1280" cy="74" r="1.3" fill="#fff" opacity=".85"><animate attributeName="opacity" values=".85;.4;.85" dur="2.8s" repeatCount="indefinite"/></circle>
+      <circle cx="1520" cy="130" r=".8" fill="#7dd3fc" opacity=".6"/>
+      <circle cx="1760" cy="58" r="1" fill="#fff" opacity=".8"><animate attributeName="opacity" values=".8;.35;.8" dur="3.9s" repeatCount="indefinite"/></circle>
+      <circle cx="1840" cy="180" r=".7" fill="#ddd6fe" opacity=".55"/>
+      <circle cx="90" cy="260" r=".9" fill="#fff" opacity=".65"/>
+      <circle cx="340" cy="320" r="1.2" fill="#93c5fd" opacity=".7"><animate attributeName="opacity" values=".7;.25;.7" dur="4.4s" repeatCount="indefinite"/></circle>
+      <circle cx="560" cy="240" r=".6" fill="#fff" opacity=".5"/>
+      <circle cx="780" cy="290" r="1" fill="#e0e7ff" opacity=".72"/>
+      <circle cx="980" cy="220" r=".8" fill="#fff" opacity=".6"><animate attributeName="opacity" values=".6;.2;.6" dur="3.1s" repeatCount="indefinite"/></circle>
+      <circle cx="1180" cy="310" r="1.1" fill="#bae6fd" opacity=".68"/>
+      <circle cx="1420" cy="250" r=".7" fill="#fff" opacity=".55"/>
+      <circle cx="1680" cy="290" r="1.2" fill="#c4b5fd" opacity=".75"><animate attributeName="opacity" values=".75;.3;.75" dur="2.6s" repeatCount="indefinite"/></circle>
+      <circle cx="1880" cy="340" r=".8" fill="#fff" opacity=".6"/>
+      <circle cx="160" cy="480" r=".7" fill="#fff" opacity=".45"/>
+      <circle cx="420" cy="520" r="1" fill="#7dd3fc" opacity=".5"/>
+      <circle cx="720" cy="460" r=".9" fill="#fff" opacity=".42"/>
+      <circle cx="960" cy="540" r=".6" fill="#e0e7ff" opacity=".38"/>
+      <circle cx="1240" cy="490" r="1.1" fill="#fff" opacity=".48"><animate attributeName="opacity" values=".48;.18;.48" dur="3.7s" repeatCount="indefinite"/></circle>
+      <circle cx="1500" cy="560" r=".8" fill="#93c5fd" opacity=".44"/>
+      <circle cx="1780" cy="510" r="1" fill="#fff" opacity=".5"/>
+      <circle cx="200" cy="720" r="1.2" fill="#fff" opacity=".55"><animate attributeName="opacity" values=".55;.2;.55" dur="4.2s" repeatCount="indefinite"/></circle>
+      <circle cx="480" cy="780" r=".7" fill="#c7d2fe" opacity=".42"/>
+      <circle cx="760" cy="840" r=".9" fill="#fff" opacity=".38"/>
+      <circle cx="1020" cy="760" r=".8" fill="#bae6fd" opacity=".4"/>
+      <circle cx="1320" cy="820" r="1.1" fill="#fff" opacity=".46"/>
+      <circle cx="1580" cy="740" r=".7" fill="#ddd6fe" opacity=".36"/>
+      <circle cx="1820" cy="860" r="1" fill="#fff" opacity=".42"><animate attributeName="opacity" values=".42;.15;.42" dur="3.3s" repeatCount="indefinite"/></circle>
+      <circle cx="60" cy="920" r=".8" fill="#fff" opacity=".35"/>
+      <circle cx="380" cy="980" r="1" fill="#7dd3fc" opacity=".32"/>
+      <circle cx="640" cy="940" r=".6" fill="#fff" opacity=".3"/>
+      <circle cx="920" cy="1000" r=".9" fill="#e0e7ff" opacity=".34"/>
+      <circle cx="1200" cy="960" r=".7" fill="#fff" opacity=".3"/>
+      <circle cx="1460" cy="1010" r="1.2" fill="#93c5fd" opacity=".36"/>
+      <circle cx="1700" cy="950" r=".8" fill="#fff" opacity=".32"/>
+    </g>
+
+    <!-- perspective web grid (floor) -->
+    <g opacity=".55" stroke="url(#s1GridFade)" stroke-width=".8" fill="none">
+      <line x1="0" y1="1080" x2="960" y2="620"/>
+      <line x1="240" y1="1080" x2="960" y2="620"/>
+      <line x1="480" y1="1080" x2="960" y2="620"/>
+      <line x1="720" y1="1080" x2="960" y2="620"/>
+      <line x1="960" y1="1080" x2="960" y2="620"/>
+      <line x1="1200" y1="1080" x2="960" y2="620"/>
+      <line x1="1440" y1="1080" x2="960" y2="620"/>
+      <line x1="1680" y1="1080" x2="960" y2="620"/>
+      <line x1="1920" y1="1080" x2="960" y2="620"/>
+      <path d="M0 900 Q960 780 1920 900"/>
+      <path d="M0 980 Q960 860 1920 980"/>
+      <path d="M0 1040 Q960 920 1920 1040"/>
+    </g>
+
+    <!-- floating browser wireframes (web motif) -->
+    <g opacity=".12" stroke="rgba(129,140,248,.6)" stroke-width="1" fill="rgba(99,102,241,.04)">
+      <rect x="148" y="168" width="148" height="96" rx="8"/>
+      <line x1="148" y1="192" x2="296" y2="192"/>
+      <circle cx="164" cy="180" r="3" fill="rgba(248,113,113,.5)" stroke="none"/>
+      <circle cx="176" cy="180" r="3" fill="rgba(251,191,36,.5)" stroke="none"/>
+      <circle cx="188" cy="180" r="3" fill="rgba(52,211,153,.5)" stroke="none"/>
+      <rect x="1680" y="120" width="132" height="88" rx="8"/>
+      <line x1="1680" y1="142" x2="1812" y2="142"/>
+      <rect x="1720" y="820" width="120" height="78" rx="7" opacity=".7"/>
+      <line x1="1720" y1="840" x2="1840" y2="840"/>
+    </g>
+
+    <!-- global network arcs (behind globe) -->
+    <g opacity=".35" fill="none" stroke-width="1.2">
+      <path d="M320 420 Q960 180 1580 380" stroke="rgba(52,211,153,.45)" stroke-dasharray="6 5">
+        <animate attributeName="stroke-dashoffset" from="0" to="-22" dur="2.4s" repeatCount="indefinite"/>
+      </path>
+      <path d="M180 620 Q960 320 1720 560" stroke="rgba(56,189,248,.4)" stroke-dasharray="6 5">
+        <animate attributeName="stroke-dashoffset" from="0" to="-22" dur="3.1s" repeatCount="indefinite"/>
+      </path>
+      <path d="M400 820 Q960 520 1520 720" stroke="rgba(167,139,250,.35)" stroke-dasharray="6 5">
+        <animate attributeName="stroke-dashoffset" from="0" to="-22" dur="2.8s" repeatCount="indefinite"/>
+      </path>
+    </g>
+
+    <!-- ═══ DETAILED GLOBE — full-height, right-weighted ═══ -->
+    <g transform="translate(1320,540)">
+      <!-- atmospheric halo -->
+      <circle cx="0" cy="0" r="520" fill="url(#s1Atmo)" filter="url(#glow24)"/>
+      <circle cx="0" cy="0" r="460" fill="none" stroke="rgba(99,102,241,.08)" stroke-width="40" filter="url(#glow12)"/>
+      <circle cx="0" cy="0" r="430" fill="none" stroke="rgba(56,189,248,.06)" stroke-width="24"/>
+
+      <!-- sphere body -->
+      <circle cx="0" cy="0" r="398" fill="url(#s1Sphere)" stroke="rgba(129,140,248,.35)" stroke-width="1.8"/>
+      <ellipse cx="-90" cy="-120" rx="180" ry="120" fill="rgba(99,102,241,.09)"/>
+      <ellipse cx="70" cy="30" rx="398" ry="398" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="36"/>
+
+      <!-- wireframe grid (slow rotate) -->
+      <g clip-path="url(#s1SphereClip)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="180s" repeatCount="indefinite"/>
+          <!-- latitude rings -->
+          <ellipse cx="0" cy="-320" rx="398" ry="62" fill="none" stroke="rgba(99,102,241,.14)" stroke-width=".8"/>
+          <ellipse cx="0" cy="-240" rx="398" ry="95" fill="none" stroke="rgba(99,102,241,.12)" stroke-width=".7"/>
+          <ellipse cx="0" cy="-160" rx="398" ry="125" fill="none" stroke="rgba(99,102,241,.11)" stroke-width=".7"/>
+          <ellipse cx="0" cy="-80"  rx="398" ry="148" fill="none" stroke="rgba(99,102,241,.1)" stroke-width=".7"/>
+          <ellipse cx="0" cy="0"    rx="398" ry="158" fill="none" stroke="rgba(129,140,248,.28)" stroke-width="1.2"/>
+          <ellipse cx="0" cy="80"   rx="398" ry="148" fill="none" stroke="rgba(99,102,241,.1)" stroke-width=".7"/>
+          <ellipse cx="0" cy="160"  rx="398" ry="125" fill="none" stroke="rgba(99,102,241,.11)" stroke-width=".7"/>
+          <ellipse cx="0" cy="240"  rx="398" ry="95" fill="none" stroke="rgba(99,102,241,.12)" stroke-width=".7"/>
+          <ellipse cx="0" cy="320"  rx="398" ry="62" fill="none" stroke="rgba(99,102,241,.14)" stroke-width=".8"/>
+          <!-- longitude meridians -->
+          <ellipse cx="0" cy="0" rx="50"  ry="398" fill="none" stroke="rgba(56,189,248,.09)" stroke-width=".65"/>
+          <ellipse cx="0" cy="0" rx="100" ry="398" fill="none" stroke="rgba(56,189,248,.08)" stroke-width=".65"/>
+          <ellipse cx="0" cy="0" rx="150" ry="398" fill="none" stroke="rgba(56,189,248,.08)" stroke-width=".65"/>
+          <ellipse cx="0" cy="0" rx="200" ry="398" fill="none" stroke="rgba(56,189,248,.09)" stroke-width=".7"/>
+          <ellipse cx="0" cy="0" rx="250" ry="398" fill="none" stroke="rgba(56,189,248,.08)" stroke-width=".65"/>
+          <ellipse cx="0" cy="0" rx="300" ry="398" fill="none" stroke="rgba(56,189,248,.08)" stroke-width=".65"/>
+          <ellipse cx="0" cy="0" rx="350" ry="398" fill="none" stroke="rgba(56,189,248,.09)" stroke-width=".65"/>
+          <line x1="0" y1="-398" x2="0" y2="398" stroke="rgba(56,189,248,.22)" stroke-width="1"/>
+        </g>
+
+        <!-- continent landmasses (detailed silhouettes) -->
+        <g fill="rgba(52,211,153,.14)" stroke="rgba(52,211,153,.28)" stroke-width="1" stroke-linejoin="round">
+          <!-- North America -->
+          <path d="M-220,-180 Q-280,-140 -270,-80 Q-260,-20 -240,20 Q-220,60 -200,90 Q-170,120 -150,100 Q-120,80 -130,40 Q-140,0 -120,-40 Q-100,-80 -120,-120 Q-150,-160 -220,-180Z"/>
+          <!-- South America -->
+          <path d="M-170,80 Q-190,120 -180,180 Q-160,240 -140,280 Q-120,310 -100,290 Q-80,250 -90,200 Q-100,150 -120,110 Q-140,80 -170,80Z"/>
+          <!-- Europe -->
+          <path d="M20,-200 Q60,-190 90,-160 Q110,-130 80,-110 Q50,-95 30,-120 Q10,-145 20,-200Z"/>
+          <!-- Africa -->
+          <path d="M30,-90 Q70,-70 90,-20 Q100,40 80,100 Q60,180 40,240 Q20,280 0,250 Q-10,180 0,100 Q10,20 30,-90Z"/>
+          <!-- Asia -->
+          <path d="M100,-220 Q200,-210 280,-160 Q320,-100 300,-40 Q260,20 200,40 Q140,30 120,-20 Q100,-80 90,-140 Q95,-190 100,-220Z"/>
+          <!-- Southeast Asia / islands -->
+          <path d="M220,20 Q260,40 280,80 Q270,110 240,100 Q210,80 220,20Z"/>
+          <!-- Australia -->
+          <path d="M240,160 Q290,150 320,180 Q330,210 300,230 Q260,240 240,210 Q230,185 240,160Z"/>
+          <!-- Greenland -->
+          <path d="M-80,-220 Q-40,-240 0,-220 Q20,-190 -10,-170 Q-50,-160 -80,-220Z"/>
+        </g>
+
+        <!-- city nodes -->
+        <g filter="url(#glow6)">
+          <circle cx="-180" cy="-60" r="5" fill="#34d399"><animate attributeName="r" values="5;7;5" dur="2.2s" repeatCount="indefinite"/></circle>
+          <circle cx="-120" cy="180" r="4" fill="#38bdf8"><animate attributeName="opacity" values="1;.4;1" dur="1.9s" repeatCount="indefinite"/></circle>
+          <circle cx="70" cy="-150" r="4.5" fill="#818cf8"><animate attributeName="r" values="4.5;6.5;4.5" dur="2.6s" repeatCount="indefinite"/></circle>
+          <circle cx="180" cy="-80" r="5" fill="#22d3ee"><animate attributeName="opacity" values="1;.35;1" dur="2.1s" repeatCount="indefinite"/></circle>
+          <circle cx="260" cy="40" r="4" fill="#a78bfa"><animate attributeName="r" values="4;6;4" dur="2.4s" repeatCount="indefinite"/></circle>
+          <circle cx="280" cy="190" r="4.5" fill="#fbbf24"><animate attributeName="opacity" values="1;.4;1" dur="1.7s" repeatCount="indefinite"/></circle>
+          <circle cx="40" cy="120" r="4" fill="#fb7185"><animate attributeName="r" values="4;6;4" dur="2.8s" repeatCount="indefinite"/></circle>
+        </g>
+
+        <!-- intra-globe network arcs -->
+        <g fill="none" stroke-width="1.1" opacity=".75">
+          <path d="M-180,-60 Q-40,-140 70,-150" stroke="rgba(52,211,153,.45)" stroke-dasharray="5 4" filter="url(#glow3)">
+            <animate attributeName="stroke-dashoffset" from="0" to="-18" dur="2s" repeatCount="indefinite"/>
+          </path>
+          <path d="M70,-150 Q160,-60 260,40" stroke="rgba(56,189,248,.45)" stroke-dasharray="5 4" filter="url(#glow3)">
+            <animate attributeName="stroke-dashoffset" from="0" to="-18" dur="2.3s" repeatCount="indefinite"/>
+          </path>
+          <path d="M-180,-60 Q-150,80 -120,180" stroke="rgba(167,139,250,.4)" stroke-dasharray="5 4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-18" dur="2.7s" repeatCount="indefinite"/>
+          </path>
+          <path d="M180,-80 Q120,20 40,120" stroke="rgba(251,191,36,.35)" stroke-dasharray="5 4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-18" dur="3s" repeatCount="indefinite"/>
+          </path>
+          <path d="M260,40 Q280,120 280,190" stroke="rgba(34,211,238,.4)" stroke-dasharray="5 4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-18" dur="2.5s" repeatCount="indefinite"/>
+          </path>
+          <path d="M-120,180 Q80,160 280,190" stroke="rgba(129,140,248,.35)" stroke-dasharray="5 4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-18" dur="3.4s" repeatCount="indefinite"/>
+          </path>
+        </g>
+
+        <!-- data packets along arcs -->
+        <circle r="3" fill="#34d399" filter="url(#glow3)">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M-180,-60 Q-40,-140 70,-150"/>
+        </circle>
+        <circle r="2.5" fill="#38bdf8" filter="url(#glow3)">
+          <animateMotion dur="3.5s" repeatCount="indefinite" path="M70,-150 Q160,-60 260,40"/>
+        </circle>
+        <circle r="2.5" fill="#a78bfa" filter="url(#glow3)">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M-120,180 Q80,160 280,190"/>
+        </circle>
+      </g>
+
+      <!-- specular & rim light -->
+      <ellipse cx="-110" cy="-150" rx="70" ry="42" fill="rgba(255,255,255,.06)" transform="rotate(-18,-110,-150)"/>
+      <circle cx="0" cy="0" r="398" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="2"/>
+    </g>
+
+    <!-- orbit ring (web satellite path) -->
+    <g transform="translate(1320,540)" fill="none" opacity=".45">
+      <ellipse cx="0" cy="0" rx="520" ry="140" stroke="rgba(129,140,248,.2)" stroke-width="1" transform="rotate(-18)"/>
+      <ellipse cx="0" cy="0" rx="560" ry="160" stroke="rgba(56,189,248,.12)" stroke-width=".8" transform="rotate(12)"/>
+      <circle r="4" fill="#818cf8" filter="url(#glow6)">
+        <animateMotion dur="28s" repeatCount="indefinite" path="M 520 0 A 520 140 0 1 1 -520 0 A 520 140 0 1 1 520 0" rotate="auto"/>
+      </circle>
+    </g>
+
+    <!-- orbiting brand app icons (right side only) -->
+    <g clip-path="url(#s1OrbitClip)">
+      <g transform="translate(1320,540)" filter="url(#glow6)">
+
+        <!-- YouTube -->
+        <g>
+          <animateMotion dur="16s" repeatCount="indefinite" path="M 500 0 A 500 500 0 1 1 -500 0 A 500 500 0 1 1 500 0"/>
+          <rect x="-22" y="-22" width="44" height="44" rx="11" fill="#FF0000" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+          <svg x="-13" y="-13" width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1C4.5 20.5 12 20.5 12 20.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.8 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+        </g>
+
+        <!-- Instagram -->
+        <g>
+          <animateMotion dur="18s" repeatCount="indefinite" begin="-4s" path="M 500 0 A 500 500 0 1 1 -500 0 A 500 500 0 1 1 500 0"/>
+          <rect x="-22" y="-22" width="44" height="44" rx="11" fill="url(#s1IgGrad)" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+          <svg x="-13" y="-13" width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.9s0 3.6-.1 4.9c-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-3.3-.2-4.8-1.7-5-5C2 16.6 2 16.3 2 13s0-3.6.1-4.9c.2-3.3 1.7-4.8 5-5C8.4 2.2 8.7 2.2 12 2.2zm0-2.2C8.7 0 8.3 0 7 .1 2.7.3.3 2.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 5c.2 4.3 2.6 6.7 7 6.9 1.3.1 1.7.1 5 .1s3.7 0 5-.1c4.3-.2 6.7-2.6 6.9-7 .1-1.3.1-1.7.1-5s0-3.7-.1-5C23.7 2.7 21.3.3 17 .1 15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 12 5.8zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/></svg>
+        </g>
+
+        <!-- Amazon -->
+        <g>
+          <animateMotion dur="20s" repeatCount="indefinite" begin="-8s" path="M 500 0 A 500 500 0 1 1 -500 0 A 500 500 0 1 1 500 0"/>
+          <rect x="-22" y="-22" width="44" height="44" rx="11" fill="#fff" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+          <image x="-20" y="-20" width="40" height="40" href="https://static.vecteezy.com/system/resources/thumbnails/019/766/240/small/amazon-logo-amazon-icon-transparent-free-png.png" preserveAspectRatio="xMidYMid meet"/>
+        </g>
+
+        <!-- Netflix -->
+        <g>
+          <animateMotion dur="14s" repeatCount="indefinite" begin="-2s" path="M 420 0 A 420 420 0 1 1 -420 0 A 420 420 0 1 1 420 0"/>
+          <rect x="-22" y="-22" width="44" height="44" rx="11" fill="#000" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+          <image x="-22" y="-22" width="44" height="44" href="https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Netflix_icon.svg/500px-Netflix_icon.svg.png" preserveAspectRatio="xMidYMid slice"/>
+        </g>
+
+        <!-- Swiggy -->
+        <g>
+          <animateMotion dur="17s" repeatCount="indefinite" begin="-6s" path="M 420 0 A 420 420 0 1 1 -420 0 A 420 420 0 1 1 420 0"/>
+          <rect x="-22" y="-22" width="44" height="44" rx="11" fill="#FC8019" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+          <image x="-22" y="-22" width="44" height="44" href="https://upload.wikimedia.org/wikipedia/commons/1/13/Swiggy_logo.png" preserveAspectRatio="xMidYMid slice"/>
+        </g>
+
+        <!-- Google Maps -->
+        <g>
+          <animateMotion dur="19s" repeatCount="indefinite" begin="-10s" path="M 420 0 A 420 420 0 1 1 -420 0 A 420 420 0 1 1 420 0"/>
+          <rect x="-22" y="-22" width="44" height="44" rx="11" fill="#fff" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+          <image x="-22" y="-22" width="44" height="44" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH0hFhTBp1KufazBm2qIRBYEOH4xBuFq9XA83bny7WIA&amp;s=10" preserveAspectRatio="xMidYMid slice"/>
+        </g>
+
+        <!-- Google -->
+        <g>
+          <animateMotion dur="22s" repeatCount="indefinite" begin="-12s" path="M 560 0 A 560 160 0 1 1 -560 0 A 560 160 0 1 1 560 0" rotate="auto"/>
+          <rect x="-22" y="-22" width="44" height="44" rx="11" fill="#fff" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+          <svg x="-13" y="-13" width="26" height="26" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        </g>
+
+      </g>
+    </g>
+
+    <!-- left vignette for headline readability -->
+    <rect width="1920" height="1080" fill="url(#s1Vignette)"/>
+  </svg>
+  </div>
+
+  <!-- ── FOREGROUND CONTENT ──────────────────────── -->
+  <div style="position:relative;z-index:10;width:100%;height:100%;display:flex;align-items:center;padding:clamp(28px,5vh,72px) clamp(36px,7vw,110px);">
+
+    <!-- LEFT: text content -->
+    <div class="col stagger" style="max-width:520px;gap:clamp(12px,2vh,22px);">
+
+      <!-- headline -->
+      <h1 class="h1" style="line-height:1.02;">Understanding<br><span class="gm">Web Development</span></h1>
+
+      <!-- subtitle -->
+      <p class="body-lg" style="max-width:420px;">A Bird's-Eye View — how the internet is built, one big idea at a time.</p>
+
+      <!-- stat row -->
+      <div style="display:flex;gap:clamp(16px,2.5vw,28px);margin-top:4px;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:900;color:#fff;line-height:1;">5.4B</div>
+          <div style="font-size:clamp(.58rem,.78vw,.72rem);color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;">Users online</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,.1);"></div>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:900;color:#fff;line-height:1;">1.9B</div>
+          <div style="font-size:clamp(.58rem,.78vw,.72rem);color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;">Websites</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,.1);"></div>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:900;color:#fff;line-height:1;">3</div>
+          <div style="font-size:clamp(.58rem,.78vw,.72rem);color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;">Core Parts</div>
+        </div>
+      </div>
+
+      <!-- tech stack visual row -->
+      <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;align-items:center;">
+        <div style="display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:12px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);">
+          <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M5 5h22l-2 22-9 3-9-3z" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 11h6l-.5 6H16v5.5l5.5-1.5.5-5" fill="none" stroke="#34d399" stroke-width="2" stroke-linejoin="round"/></svg>
+          <span style="font-size:clamp(.7rem,.98vw,.88rem);font-weight:700;color:#34d399;font-family:'Fira Code',monospace;">HTML</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:12px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);">
+          <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M5 5h22l-2 22-9 3-9-3z" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 11h-6l.5 5.5h5.5V22l-5.5-1.5" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linejoin="round"/></svg>
+          <span style="font-size:clamp(.7rem,.98vw,.88rem);font-weight:700;color:#38bdf8;font-family:'Fira Code',monospace;">CSS</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:12px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);">
+          <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="24" height="24" rx="3" fill="rgba(251,191,36,.2)" stroke="#fbbf24" stroke-width="2"/><text x="16" y="22" text-anchor="middle" font-size="13" font-weight="900" fill="#fbbf24" font-family="Arial">JS</text></svg>
+          <span style="font-size:clamp(.7rem,.98vw,.88rem);font-weight:700;color:#fbbf24;font-family:'Fira Code',monospace;">JavaScript</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:12px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);">
+          <span style="font-size:1rem;">⚙️</span>
+          <span style="font-size:clamp(.7rem,.98vw,.88rem);font-weight:700;color:#a78bfa;font-family:'Fira Code',monospace;">Backend</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     02 · THE HOOK — apps you use daily
+══════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <div class="blob" style="width:44vw;height:44vw;background:#0ea5e9;opacity:.18;top:-12%;right:-8%;"></div>
+  <div class="blob" style="width:32vw;height:32vw;background:#6366f1;opacity:.16;bottom:-12%;left:-6%;animation-delay:-5s;"></div>
+
+  <div class="ctr stagger" style="position:relative;z-index:2;gap:clamp(18px,3vh,36px);width:100%;max-width:1060px;">
+    <div>
+      <h2 class="h2">You use these <span class="gb">every single day.</span></h2>
+    </div>
+
+    <!-- Large icon grid — Instagram, YouTube, etc. -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2vw,24px);max-width:760px;width:100%;">
+
+      <!-- Instagram -->
+      <div class="card" style="align-items:center;text-align:center;border-color:rgba(225,29,72,.2);background:linear-gradient(145deg,rgba(225,29,72,.08),rgba(99,102,241,.06));">
+        <div style="width:clamp(56px,8vw,80px);height:clamp(56px,8vw,80px);border-radius:clamp(14px,2vw,20px);background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(225,29,72,.4);">
+          <svg viewBox="0 0 24 24" width="55%" fill="white"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.9s0 3.6-.1 4.9c-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-3.3-.2-4.8-1.7-5-5C2 16.6 2 16.3 2 13s0-3.6.1-4.9c.2-3.3 1.7-4.8 5-5C8.4 2.2 8.7 2.2 12 2.2zm0-2.2C8.7 0 8.3 0 7 .1 2.7.3.3 2.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 5c.2 4.3 2.6 6.7 7 6.9 1.3.1 1.7.1 5 .1s3.7 0 5-.1c4.3-.2 6.7-2.6 6.9-7 .1-1.3.1-1.7.1-5s0-3.7-.1-5C23.7 2.7 21.3.3 17 .1 15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 12 5.8zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/></svg>
+        </div>
+        <div class="ct" style="font-size:clamp(.85rem,1.3vw,1.05rem);">Instagram</div>
+        <div class="cb">Photos · Stories · Reels</div>
+      </div>
+
+      <!-- YouTube -->
+      <div class="card" style="align-items:center;text-align:center;border-color:rgba(239,68,68,.2);background:linear-gradient(145deg,rgba(239,68,68,.08),rgba(251,191,36,.06));">
+        <div style="width:clamp(56px,8vw,80px);height:clamp(56px,8vw,80px);border-radius:clamp(14px,2vw,20px);background:#FF0000;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(239,68,68,.4);">
+          <svg viewBox="0 0 24 24" width="55%" fill="white"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1C4.5 20.5 12 20.5 12 20.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.8 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+        </div>
+        <div class="ct" style="font-size:clamp(.85rem,1.3vw,1.05rem);">YouTube</div>
+        <div class="cb">Videos · Shorts · Live</div>
+      </div>
+
+      <!-- Swiggy -->
+      <div class="card" style="align-items:center;text-align:center;border-color:rgba(251,146,60,.2);background:linear-gradient(145deg,rgba(251,146,60,.08),rgba(251,191,36,.06));">
+        <div style="width:clamp(56px,8vw,80px);height:clamp(56px,8vw,80px);border-radius:clamp(14px,2vw,20px);background:#FC8019;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(251,146,60,.4);">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Swiggy_logo.png" alt="Swiggy" width="100%" height="100%" style="object-fit:cover;display:block;"/>
+        </div>
+        <div class="ct" style="font-size:clamp(.85rem,1.3vw,1.05rem);">Swiggy</div>
+        <div class="cb">Order · Track · Deliver</div>
+      </div>
+
+      <!-- Amazon -->
+      <div class="card" style="align-items:center;text-align:center;border-color:rgba(251,191,36,.2);background:linear-gradient(145deg,rgba(251,191,36,.08),rgba(251,146,60,.06));">
+        <div style="width:clamp(56px,8vw,80px);height:clamp(56px,8vw,80px);border-radius:clamp(14px,2vw,20px);background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(251,191,36,.4);padding:8px;">
+          <img src="https://static.vecteezy.com/system/resources/thumbnails/019/766/240/small/amazon-logo-amazon-icon-transparent-free-png.png" alt="Amazon" width="100%" height="100%" style="object-fit:contain;display:block;"/>
+        </div>
+        <div class="ct" style="font-size:clamp(.85rem,1.3vw,1.05rem);">Amazon</div>
+        <div class="cb">Browse · Buy · Track</div>
+      </div>
+
+      <!-- Netflix -->
+      <div class="card" style="align-items:center;text-align:center;border-color:rgba(239,68,68,.2);background:linear-gradient(145deg,rgba(239,68,68,.08),rgba(225,29,72,.06));">
+        <div style="width:clamp(56px,8vw,80px);height:clamp(56px,8vw,80px);border-radius:clamp(14px,2vw,20px);background:#000;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(239,68,68,.4);">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Netflix_icon.svg/500px-Netflix_icon.svg.png" alt="Netflix" width="100%" height="100%" style="object-fit:cover;display:block;"/>
+        </div>
+        <div class="ct" style="font-size:clamp(.85rem,1.3vw,1.05rem);">Netflix</div>
+        <div class="cb">Stream · Watch · Binge</div>
+      </div>
+
+      <!-- Google Maps -->
+      <div class="card" style="align-items:center;text-align:center;border-color:rgba(52,211,153,.2);background:linear-gradient(145deg,rgba(52,211,153,.08),rgba(14,165,233,.06));">
+        <div style="width:clamp(56px,8vw,80px);height:clamp(56px,8vw,80px);border-radius:clamp(14px,2vw,20px);background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(52,211,153,.35);">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH0hFhTBp1KufazBm2qIRBYEOH4xBuFq9XA83bny7WIA&s=10" alt="Google Maps" width="100%" height="100%" style="object-fit:cover;display:block;"/>
+        </div>
+        <div class="ct" style="font-size:clamp(.85rem,1.3vw,1.05rem);">Google Maps</div>
+        <div class="cb">Navigate · Explore · Find</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     04 · LET'S BUILD A TREEHOUSE — with image
+══════════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <div class="blob" style="width:42vw;height:42vw;background:#059669;opacity:.2;top:-14%;right:-8%;"></div>
+  <div class="blob" style="width:32vw;height:32vw;background:#0284c7;opacity:.16;bottom:-12%;left:-6%;animation-delay:-4s;"></div>
+
+  <div class="split" style="position:relative;z-index:2;">
+    <div class="col stagger">
+      <h2 class="h2">Let's build<br>something. <span class="gg">🌳</span></h2>
+      <p class="body-lg" style="margin-top:8px;max-width:420px;">Imagine you want to build a treehouse in the backyard. You have the idea — but where do you start?</p>
+    </div>
+
+    <!-- TREEHOUSE ILLUSTRATION (SVG) -->
+    <div class="ctr fi">
+      <svg viewBox="0 0 340 300" width="min(340px,42vw)" style="filter:drop-shadow(0 20px 50px rgba(5,150,105,.35));display:block;" xmlns="http://www.w3.org/2000/svg">
+        <!-- Sky / background circle -->
+        <circle cx="170" cy="150" r="145" fill="rgba(5,150,105,.06)" stroke="rgba(5,150,105,.12)" stroke-width="1"/>
+        <!-- Ground -->
+        <rect x="40" y="258" width="260" height="10" rx="5" fill="rgba(120,80,30,.6)"/>
+        <!-- Tree trunk -->
+        <rect x="152" y="180" width="36" height="80" rx="8" fill="#92400e"/>
+        <rect x="158" y="200" width="8" height="60" rx="4" fill="rgba(0,0,0,.15)"/>
+        <!-- Tree branches left -->
+        <line x1="152" y1="210" x2="100" y2="190" stroke="#78350f" stroke-width="8" stroke-linecap="round"/>
+        <!-- Tree branches right -->
+        <line x1="188" y1="200" x2="240" y2="182" stroke="#78350f" stroke-width="8" stroke-linecap="round"/>
+        <!-- Foliage circles -->
+        <circle cx="170" cy="120" r="70" fill="#15803d" opacity=".9"/>
+        <circle cx="130" cy="130" r="50" fill="#166534"/>
+        <circle cx="210" cy="128" r="48" fill="#15803d"/>
+        <circle cx="170" cy="90" r="46" fill="#14532d" opacity=".85"/>
+        <!-- Foliage highlights -->
+        <circle cx="155" cy="105" r="16" fill="rgba(134,239,172,.2)"/>
+        <circle cx="190" cy="118" r="12" fill="rgba(134,239,172,.15)"/>
+        <!-- Platform / floor -->
+        <rect x="110" y="170" width="120" height="14" rx="5" fill="#92400e"/>
+        <rect x="110" y="170" width="120" height="4" rx="2" fill="#b45309"/>
+        <!-- House walls -->
+        <rect x="118" y="130" width="104" height="44" rx="4" fill="#d97706"/>
+        <rect x="118" y="130" width="104" height="6" rx="2" fill="#fbbf24"/>
+        <!-- Roof -->
+        <polygon points="108,133 232,133 170,98" fill="#b45309"/>
+        <polygon points="108,133 232,133 170,98" fill="url(#roofGrad)" opacity=".5"/>
+        <line x1="170" y1="98" x2="170" y2="133" stroke="#92400e" stroke-width="2"/>
+        <!-- Door -->
+        <rect x="156" y="148" width="28" height="26" rx="3" fill="#7c2d12"/>
+        <circle cx="180" cy="162" r="2.5" fill="#fbbf24"/>
+        <!-- Windows -->
+        <rect x="125" y="138" width="20" height="18" rx="3" fill="#bae6fd" opacity=".8"/>
+        <rect x="195" y="138" width="20" height="18" rx="3" fill="#bae6fd" opacity=".8"/>
+        <line x1="135" y1="138" x2="135" y2="156" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+        <line x1="125" y1="147" x2="145" y2="147" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+        <line x1="205" y1="138" x2="205" y2="156" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+        <line x1="195" y1="147" x2="215" y2="147" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+        <!-- Rope ladder -->
+        <line x1="148" y1="184" x2="142" y2="258" stroke="#92400e" stroke-width="3"/>
+        <line x1="162" y1="184" x2="156" y2="258" stroke="#92400e" stroke-width="3"/>
+        <line x1="142" y1="205" x2="156" y2="205" stroke="#92400e" stroke-width="3"/>
+        <line x1="141" y1="222" x2="155" y2="222" stroke="#92400e" stroke-width="3"/>
+        <line x1="140" y1="239" x2="154" y2="239" stroke="#92400e" stroke-width="3"/>
+        <!-- Flag -->
+        <line x1="170" y1="98" x2="170" y2="70" stroke="#92400e" stroke-width="2"/>
+        <polygon points="170,70 192,78 170,86" fill="#f43f5e" opacity=".9"/>
+        <!-- Gradient def -->
+        <defs>
+          <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fbbf24"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <p class="muted" style="margin-top:10px;font-size:clamp(.66rem,.9vw,.8rem);">A big idea needs a plan.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     05 · TREEHOUSE PARTS
+══════════════════════════════════════════════ -->
+<section class="slide" id="s5">
+  <div class="blob" style="width:40vw;height:40vw;background:#d97706;opacity:.2;top:-12%;right:-8%;"></div>
+  <div class="blob" style="width:30vw;height:30vw;background:#7c3aed;opacity:.16;bottom:-12%;left:-6%;animation-delay:-5s;"></div>
+
+  <div class="ctr stagger" style="position:relative;z-index:2;gap:clamp(16px,2.5vh,30px);width:100%;max-width:1060px;">
+    <h2 class="h2">Every big build needs <span class="ga">many parts.</span></h2>
+    <div class="g3">
+      <div class="card" style="border-color:rgba(251,191,36,.22);align-items:center;text-align:center;">
+        <div style="font-size:clamp(2.6rem,5vw,4rem);filter:drop-shadow(0 4px 10px rgba(251,191,36,.35));">🪵</div>
+        <div class="ct">Wood</div><div class="cb">The structure — holds everything up</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,.22);align-items:center;text-align:center;">
+        <div style="font-size:clamp(2.6rem,5vw,4rem);filter:drop-shadow(0 4px 10px rgba(251,191,36,.35));">🔨</div>
+        <div class="ct">Tools</div><div class="cb">Used to assemble every piece</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,.22);align-items:center;text-align:center;">
+        <div style="font-size:clamp(2.6rem,5vw,4rem);filter:drop-shadow(0 4px 10px rgba(251,191,36,.35));">🎨</div>
+        <div class="ct">Paint</div><div class="cb">Makes it look great and unique</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,.22);align-items:center;text-align:center;">
+        <div style="font-size:clamp(2.6rem,5vw,4rem);filter:drop-shadow(0 4px 10px rgba(251,191,36,.35));">🪟</div>
+        <div class="ct">Windows</div><div class="cb">Light, view, and ventilation</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,.22);align-items:center;text-align:center;">
+        <div style="font-size:clamp(2.6rem,5vw,4rem);filter:drop-shadow(0 4px 10px rgba(251,191,36,.35));">🚪</div>
+        <div class="ct">Door</div><div class="cb">Entry, security, and privacy</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,.22);align-items:center;text-align:center;">
+        <div style="font-size:clamp(2.6rem,5vw,4rem);filter:drop-shadow(0 4px 10px rgba(251,191,36,.35));">💡</div>
+        <div class="ct">Electricity</div><div class="cb">Makes everything actually work</div>
+      </div>
+    </div>
+    <p class="body" style="text-align:center;">Different parts. Different people. <strong class="white">One result.</strong></p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     06 · TREEHOUSE = WEBSITE (step by step)
+══════════════════════════════════════════════ -->
+<section class="slide" id="s6" style="padding:0;">
+  <div class="blob" style="width:44vw;height:44vw;background:#4f46e5;opacity:.2;top:-14%;left:-8%;"></div>
+  <div class="blob" style="width:32vw;height:32vw;background:#0ea5e9;opacity:.16;bottom:-12%;right:-6%;animation-delay:-6s;"></div>
+
+  <div class="slide-panel">
+
+    <div style="padding:0 0 clamp(8px,1.2vh,14px);text-align:center;flex-shrink:0;">
+      <h2 class="h2" style="font-size:clamp(1.5rem,3vw,2.8rem);">Treehouse = <span class="gb">Website</span></h2>
+      <p class="body" style="margin-top:6px;">Click <strong style="color:#818cf8;font-weight:800;">Next Part →</strong> to match each treehouse piece to its web equivalent.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.6vw,22px);flex-shrink:0;">
+      <div style="text-align:center;font-size:clamp(.62rem,.9vw,.76rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:6px 0;border-bottom:1.5px solid rgba(52,211,153,.35);">🌳 Treehouse Part</div>
+      <div style="text-align:center;font-size:clamp(.62rem,.9vw,.76rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:6px 0;border-bottom:1.5px solid rgba(99,102,241,.3);">🌐 Website Equivalent</div>
+    </div>
+
+    <div id="th-scroll">
+      <div id="th-steps"></div>
+    </div>
+
+    <div style="padding:clamp(8px,1.2vh,14px) 0 0;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;">
+      <button id="th-prev" style="padding:8px 20px;border-radius:999px;border:1.5px solid rgba(255,255,255,.14);background:rgba(15,15,30,.85);backdrop-filter:blur(20px);color:rgba(255,255,255,.6);font-weight:700;font-size:clamp(.68rem,.95vw,.86rem);cursor:pointer;font-family:inherit;transition:all .18s;" disabled>← Prev</button>
+      <div id="th-prog" style="padding:8px 16px;border-radius:999px;background:rgba(15,15,30,.85);backdrop-filter:blur(20px);border:1px solid rgba(99,102,241,.22);font-size:clamp(.68rem,.95vw,.86rem);font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.1em;white-space:nowrap;">Part 1 / 5</div>
+      <button id="th-next" style="padding:8px 24px;border-radius:999px;border:none;background:linear-gradient(110deg,#6366f1,#4f46e5);color:#fff;font-weight:800;font-size:clamp(.74rem,1.05vw,.9rem);cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(79,70,229,.4);transition:all .18s;">Next Part →</button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var S=[
+      {u:{i:'🪵',t:'Wooden Frame',d:'The skeleton that holds everything up.'},b:{i:'📄',t:'HTML — Structure',d:'Tags that define headings, text, images.',c:'#a78bfa'}},
+      {u:{i:'🎨',t:'Paint & Decoration',d:'Colours, patterns, how it looks.'},b:{i:'✨',t:'CSS — Styling',d:'Colours, fonts, layout, animations.',c:'#a78bfa'}},
+      {u:{i:'🚪',t:'Doors & Pulleys',d:'Things that open, move, and react.'},b:{i:'⚡',t:'JavaScript — Behaviour',d:'Clicks, animations, live updates.',c:'#a78bfa'}},
+      {u:{i:'📐',t:'Blueprint / Plan',d:'The design before building starts.'},b:{i:'🎨',t:'UI / UX Design',d:'Wireframes, mockups, design system.',c:'#a78bfa'}},
+      {u:{i:'👷',t:'The Builder',d:'The person who puts it all together.'},b:{i:'💻',t:'Web Developer',d:'The person who codes it all.',c:'#a78bfa'}},
+    ];
+    var cur=0;
+    var stepsEl=document.getElementById('th-steps'),scrollEl=document.getElementById('th-scroll');
+    var prevBtn=document.getElementById('th-prev'),nextBtn=document.getElementById('th-next'),progEl=document.getElementById('th-prog');
+    function card(d,side){
+      var el=document.createElement('div');
+      el.className='th-card';
+      el.style.cssText='display:flex;align-items:center;gap:12px;padding:clamp(14px,2vh,22px) clamp(14px,1.9vw,20px);border-radius:13px;background:rgba(255,255,255,.06);border:1.5px solid '+(side==='b'?'rgba(99,102,241,.28)':'rgba(52,211,153,.28)')+';box-shadow:0 2px 10px rgba(0,0,0,.25);opacity:0;transform:translateY(12px);transition:opacity .32s cubic-bezier(.4,0,.2,1),transform .32s cubic-bezier(.4,0,.2,1);box-sizing:border-box;';
+      var ic=document.createElement('div');ic.style.cssText='font-size:clamp(1.6rem,2.5vw,2.2rem);line-height:1;flex-shrink:0;margin-top:2px;';ic.textContent=d.i;
+      var tx=document.createElement('div');
+      var ti=document.createElement('div');ti.style.cssText='font-size:clamp(.76rem,1.05vw,.93rem);font-weight:800;color:'+(side==='b'?(d.c||'#a78bfa'):'#fff')+';margin-bottom:4px;';ti.textContent=d.t;
+      var de=document.createElement('div');de.style.cssText='font-size:clamp(.64rem,.88vw,.8rem);color:rgba(255,255,255,.48);line-height:1.65;';de.textContent=d.d;
+      tx.appendChild(ti);tx.appendChild(de);el.appendChild(ic);el.appendChild(tx);
+      requestAnimationFrame(function(){requestAnimationFrame(function(){el.style.opacity='1';el.style.transform='translateY(0)';});});
+      return el;
+    }
+    function updateControls(){
+      prevBtn.disabled=cur===0;
+      nextBtn.disabled=cur===S.length-1;
+      nextBtn.textContent=cur===S.length-1?'✅ All matched!':'Next Part →';
+      nextBtn.style.opacity=cur===S.length-1?'.5':'1';
+      progEl.textContent='Part '+(cur+1)+' / '+S.length;
+    }
+    function appendStep(i){
+      var row=document.createElement('div');
+      row.className='th-row';
+      row.appendChild(card(S[i].u,'u'));
+      row.appendChild(card(S[i].b,'b'));
+      stepsEl.appendChild(row);
+      setTimeout(function(){scrollEl.scrollTop=scrollEl.scrollHeight;},60);
+    }
+    function removeLastStep(){
+      if(stepsEl.lastChild)stepsEl.removeChild(stepsEl.lastChild);
+    }
+    function rebuild(){
+      stepsEl.innerHTML='';
+      for(var i=0;i<=cur;i++)appendStep(i);
+      scrollEl.scrollTop=0;
+      updateControls();
+    }
+    function resetStepper(){
+      cur=0;
+      rebuild();
+    }
+    prevBtn.onclick=function(){
+      if(cur>0){removeLastStep();cur--;updateControls();scrollEl.scrollTop=0;}
+    };
+    nextBtn.onclick=function(){
+      if(cur<S.length-1){cur++;appendStep(cur);updateControls();}
+    };
+    var s6Active=false;
+    new MutationObserver(function(m){
+      m.forEach(function(){
+        var el=document.getElementById('s6');
+        var active=el.classList.contains('active');
+        if(active&&!s6Active)resetStepper();
+        s6Active=active;
+      });
+    }).observe(document.getElementById('s6'),{attributes:true,attributeFilter:['class']});
+  })();
+  </script>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     07 · PIZZA — THE ORDER
+══════════════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <div class="blob" style="width:44vw;height:44vw;background:#d97706;opacity:.22;top:-14%;right:-8%;"></div>
+  <div class="blob" style="width:32vw;height:32vw;background:#be185d;opacity:.16;bottom:-12%;left:-6%;animation-delay:-5s;"></div>
+
+  <div class="split" style="position:relative;z-index:2;">
+    <div class="col stagger">
+      <h2 class="h2">You tap<br><span class="ga">ORDER NOW.</span> 🍕</h2>
+      <p class="body-lg" style="margin-top:8px;max-width:400px;">You've picked your pizza, entered your address, and hit the button. Simple, right?</p>
+    </div>
+    <div class="ctr fi">
+      <div class="float" style="font-size:clamp(8rem,14vw,12rem);filter:drop-shadow(0 20px 60px rgba(217,119,6,.45));">🍕</div>
+      <p class="muted" style="margin-top:10px;font-size:clamp(.67rem,.9vw,.82rem);">300 milliseconds. A lot happens.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     PIZZA JOURNEY — FULL HEIGHT STEP BY STEP
+══════════════════════════════════════════════ -->
+<section class="slide" id="s8" style="padding:0;">
+  <div class="blob" style="width:44vw;height:44vw;background:#be185d;opacity:.2;top:-14%;left:-8%;"></div>
+  <div class="blob" style="width:32vw;height:32vw;background:#7c3aed;opacity:.16;bottom:-12%;right:-6%;animation-delay:-4s;"></div>
+
+  <div class="slide-panel">
+
+    <!-- HEADING STRIP -->
+    <div style="padding:0 0 clamp(8px,1.2vh,14px);text-align:center;flex-shrink:0;">
+      <h2 class="h2" style="font-size:clamp(1.5rem,3vw,2.8rem);">You tap <span class="gr">Order Now.</span> What happens?</h2>
+      <p class="body" style="margin-top:6px;">Click <strong style="color:#f9a8d4;font-weight:800;">Next Step →</strong> to follow the journey — from your phone to your door.</p>
+    </div>
+
+    <!-- COLUMN HEADERS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.6vw,22px);flex-shrink:0;">
+      <div style="text-align:center;font-size:clamp(.62rem,.9vw,.76rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:6px 0;border-bottom:1.5px solid rgba(251,113,133,.3);">📱 What YOU see on the app</div>
+      <div style="text-align:center;font-size:clamp(.62rem,.9vw,.76rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:6px 0;border-bottom:1.5px solid rgba(99,102,241,.3);">⚙️ What happens behind the scenes</div>
+    </div>
+
+    <!-- STEP PANELS -->
+    <div id="pj-scroll">
+      <div id="pj-steps"></div>
+    </div>
+
+    <!-- CONTROLS — centered in footer bar -->
+    <div style="padding:clamp(8px,1.2vh,14px) 0 0;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;">
+      <button id="pj-prev" style="padding:8px 20px;border-radius:999px;border:1.5px solid rgba(255,255,255,.14);background:rgba(15,15,30,.85);backdrop-filter:blur(20px);color:rgba(255,255,255,.6);font-weight:700;font-size:clamp(.68rem,.95vw,.86rem);cursor:pointer;font-family:inherit;transition:all .18s;" disabled>← Prev</button>
+      <div id="pj-prog" style="padding:8px 16px;border-radius:999px;background:rgba(15,15,30,.85);backdrop-filter:blur(20px);border:1px solid rgba(251,113,133,.22);font-size:clamp(.68rem,.95vw,.86rem);font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.1em;white-space:nowrap;">Step 1 / 7</div>
+      <button id="pj-next" style="padding:8px 24px;border-radius:999px;border:none;background:linear-gradient(110deg,#f43f5e,#e11d48);color:#fff;font-weight:800;font-size:clamp(.74rem,1.05vw,.9rem);cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(225,29,72,.4);transition:all .18s;">Next Step →</button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var S=[
+      {u:{i:'📱',t:'You open the app',d:'Browse the menu, pick toppings, add to cart.'},b:{i:'🌐',t:'Website loads the menu',d:'Server fetches live menu — prices, photos, stock — to your screen instantly.',c:'#a78bfa'}},
+      {u:{i:'📍',t:'You enter your address',d:'Type your street or tap "Use my location".'},b:{i:'🗺️',t:'Maps API validates the pin',d:'Google Maps API checks your address and calculates delivery distance behind the scenes.',c:'#38bdf8'}},
+      {u:{i:'💳',t:'You tap Pay',d:'UPI or card — one confirmation screen.'},b:{i:'🔐',t:'Payment gateway fires',d:'Your bank, a payment processor, and the restaurant account communicate in under 2 seconds.',c:'#c084fc'}},
+      {u:{i:'✅',t:'"Order Confirmed!"',d:'Green checkmark. Estimated delivery time shown.'},b:{i:'🍕',t:'Restaurant gets the alert',d:'Kitchen screen beeps. Order ID, items, and your address appear on their dashboard instantly.',c:'#fbbf24'}},
+      {u:{i:'⏳',t:'You watch the timer',d:'Waiting… maybe you scroll Instagram.'},b:{i:'👨‍🍳',t:'Chef starts cooking',d:'Status flips to "Preparing". Rider auto-assigned by the dispatch algorithm.',c:'#34d399'}},
+      {u:{i:'🗺️',t:'Live map appears',d:'You see a moving dot — rider is close!'},b:{i:'📡',t:'GPS + WebSocket stream',d:"Rider's phone sends location every few seconds. Website pushes it live — no page refresh needed.",c:'#38bdf8'}},
+      {u:{i:'🏠',t:'Doorbell rings 🎉',d:'Pizza delivered. You rate the order. Done.'},b:{i:'📊',t:'Everything saved in the database',d:'Your address, order, payment, rating — all recorded. Used to personalise your next visit.',c:'#a78bfa'}},
+    ];
+    var cur=0;
+    var stepsEl=document.getElementById('pj-steps'),scrollEl=document.getElementById('pj-scroll');
+    var prevBtn=document.getElementById('pj-prev'),nextBtn=document.getElementById('pj-next'),progEl=document.getElementById('pj-prog');
+    function card(d,side){
+      var el=document.createElement('div');
+      el.className='pj-card';
+      el.style.cssText='display:flex;align-items:center;gap:12px;padding:clamp(14px,2vh,22px) clamp(14px,1.9vw,20px);border-radius:13px;background:rgba(255,255,255,.06);border:1.5px solid '+(side==='b'?'rgba(99,102,241,.28)':'rgba(251,113,133,.22)')+';box-shadow:0 2px 10px rgba(0,0,0,.25);opacity:0;transform:translateY(12px);transition:opacity .32s cubic-bezier(.4,0,.2,1),transform .32s cubic-bezier(.4,0,.2,1);box-sizing:border-box;';
+      var ic=document.createElement('div');ic.style.cssText='font-size:clamp(1.6rem,2.5vw,2.2rem);line-height:1;flex-shrink:0;margin-top:2px;';ic.textContent=d.i;
+      var tx=document.createElement('div');
+      var ti=document.createElement('div');ti.style.cssText='font-size:clamp(.76rem,1.05vw,.93rem);font-weight:800;color:'+(side==='b'?(d.c||'#a78bfa'):'#fff')+';margin-bottom:4px;';ti.textContent=d.t;
+      var de=document.createElement('div');de.style.cssText='font-size:clamp(.64rem,.88vw,.8rem);color:rgba(255,255,255,.48);line-height:1.65;';de.textContent=d.d;
+      tx.appendChild(ti);tx.appendChild(de);el.appendChild(ic);el.appendChild(tx);
+      requestAnimationFrame(function(){requestAnimationFrame(function(){el.style.opacity='1';el.style.transform='translateY(0)';});});
+      return el;
+    }
+    function updateControls(){
+      prevBtn.disabled=cur===0;
+      nextBtn.disabled=cur===S.length-1;
+      nextBtn.textContent=cur===S.length-1?'🎉 Delivered!':'Next Step →';
+      nextBtn.style.opacity=cur===S.length-1?'.5':'1';
+      progEl.textContent='Step '+(cur+1)+' / '+S.length;
+    }
+    function appendStep(i){
+      var row=document.createElement('div');
+      row.className='pj-row';
+      row.appendChild(card(S[i].u,'u'));
+      row.appendChild(card(S[i].b,'b'));
+      stepsEl.appendChild(row);
+      setTimeout(function(){
+        scrollEl.scrollTop=scrollEl.scrollHeight;
+      },60);
+    }
+    function removeLastStep(){
+      if(stepsEl.lastChild)stepsEl.removeChild(stepsEl.lastChild);
+    }
+    function rebuild(){
+      stepsEl.innerHTML='';
+      for(var i=0;i<=cur;i++)appendStep(i);
+      scrollEl.scrollTop=0;
+      updateControls();
+    }
+    function resetStepper(){
+      cur=0;
+      rebuild();
+    }
+    prevBtn.onclick=function(){
+      if(cur>0){removeLastStep();cur--;updateControls();scrollEl.scrollTop=0;}
+    };
+    nextBtn.onclick=function(){
+      if(cur<S.length-1){cur++;appendStep(cur);updateControls();}
+    };
+    var s8Active=false;
+    new MutationObserver(function(m){
+      m.forEach(function(){
+        var el=document.getElementById('s8');
+        var active=el.classList.contains('active');
+        if(active&&!s8Active)resetStepper();
+        s8Active=active;
+      });
+    }).observe(document.getElementById('s8'),{attributes:true,attributeFilter:['class']});
+  })();
+  </script>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     08 · OFFLINE vs SWIGGY
+══════════════════════════════════════════════ -->
+<section class="slide" id="s3" style="padding:0;">
+  <div class="blob" style="width:46vw;height:46vw;background:#be185d;opacity:.2;top:-14%;left:-8%;"></div>
+  <div class="blob" style="width:34vw;height:34vw;background:#d97706;opacity:.16;bottom:-12%;right:-6%;animation-delay:-5s;"></div>
+
+  <div class="slide-panel">
+
+    <div style="padding:0 0 clamp(8px,1.2vh,14px);text-align:center;flex-shrink:0;">
+      <h2 class="h2" style="font-size:clamp(1.5rem,3vw,2.8rem);">🍕 Ordering pizza — <span class="gr">offline</span> vs <span class="ga">on Swiggy</span></h2>
+      <p class="body" style="margin-top:6px;">Click <strong style="color:#fb923c;font-weight:800;">Next Step →</strong> to compare each moment — shop visit vs phone order.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.6vw,22px);flex-shrink:0;">
+      <div style="text-align:center;font-size:clamp(.62rem,.9vw,.76rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:6px 0;border-bottom:1.5px solid rgba(255,255,255,.14);">🏪 Walking into a Pizza Shop</div>
+      <div style="text-align:center;font-size:clamp(.62rem,.9vw,.76rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:6px 0;border-bottom:1.5px solid rgba(251,146,60,.35);">📱 Ordering on Swiggy</div>
+    </div>
+
+    <div id="s3-scroll">
+      <div id="s3-steps"></div>
+    </div>
+
+    <div style="padding:clamp(8px,1.2vh,14px) 0 0;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;">
+      <button id="s3-prev" style="padding:8px 20px;border-radius:999px;border:1.5px solid rgba(255,255,255,.14);background:rgba(15,15,30,.85);backdrop-filter:blur(20px);color:rgba(255,255,255,.6);font-weight:700;font-size:clamp(.68rem,.95vw,.86rem);cursor:pointer;font-family:inherit;transition:all .18s;" disabled>← Prev</button>
+      <div id="s3-prog" style="padding:8px 16px;border-radius:999px;background:rgba(15,15,30,.85);backdrop-filter:blur(20px);border:1px solid rgba(251,146,60,.22);font-size:clamp(.68rem,.95vw,.86rem);font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.1em;white-space:nowrap;">Step 1 / 6</div>
+      <button id="s3-next" style="padding:8px 24px;border-radius:999px;border:none;background:linear-gradient(110deg,#fb923c,#ea580c);color:#fff;font-weight:800;font-size:clamp(.74rem,1.05vw,.9rem);cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(234,88,12,.4);transition:all .18s;">Next Step →</button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var S=[
+      {u:{i:'🚶',t:'Walk to the shop',d:'Only open during working hours.'},b:{i:'🛋️',t:'Order from your sofa, 24/7',d:'Hundreds of restaurants, open right now.',c:'#fb923c'}},
+      {u:{i:'📋',t:'Read the paper menu',d:'Fixed items, no photos, no reviews.'},b:{i:'📸',t:'Browse with photos & ratings',d:'See the pizza before you buy it. Read reviews.',c:'#fb923c'}},
+      {u:{i:'🗣️',t:'Tell the cashier your order',d:'Repeat if they mishear. Hope they get it right.'},b:{i:'🛒',t:'Add to cart, customise toppings',d:'Extra cheese? No olives? One tap.',c:'#fb923c'}},
+      {u:{i:'⏳',t:'Wait at the counter',d:'No idea how long. Just… wait.'},b:{i:'🗺️',t:'Watch the rider live on a map',d:'See exactly where your pizza is right now.',c:'#fb923c'}},
+      {u:{i:'💵',t:'Pay cash at counter',d:'No receipt emailed. No record kept.'},b:{i:'📲',t:'Pay UPI / card / wallet',d:'Bill emailed, order saved in history forever.',c:'#fb923c'}},
+      {u:{i:'🏠',t:'Carry it home yourself',d:"Hope it doesn't get cold on the way."},b:{i:'🔔',t:'Doorbell notification + delivery',d:'Hot pizza at your door. Rate & reorder in one tap.',c:'#fb923c'}},
+    ];
+    var cur=0;
+    var stepsEl=document.getElementById('s3-steps'),scrollEl=document.getElementById('s3-scroll');
+    var prevBtn=document.getElementById('s3-prev'),nextBtn=document.getElementById('s3-next'),progEl=document.getElementById('s3-prog');
+    function card(d,side){
+      var el=document.createElement('div');
+      el.className='s3-card';
+      el.style.cssText='display:flex;align-items:center;gap:12px;padding:clamp(14px,2vh,22px) clamp(14px,1.9vw,20px);border-radius:13px;background:rgba(255,255,255,.06);border:1.5px solid '+(side==='b'?'rgba(251,146,60,.3)':'rgba(255,255,255,.14)')+';box-shadow:0 2px 10px rgba(0,0,0,.25);opacity:0;transform:translateY(12px);transition:opacity .32s cubic-bezier(.4,0,.2,1),transform .32s cubic-bezier(.4,0,.2,1);box-sizing:border-box;';
+      var ic=document.createElement('div');ic.style.cssText='font-size:clamp(1.6rem,2.5vw,2.2rem);line-height:1;flex-shrink:0;margin-top:2px;';ic.textContent=d.i;
+      var tx=document.createElement('div');
+      var ti=document.createElement('div');ti.style.cssText='font-size:clamp(.76rem,1.05vw,.93rem);font-weight:800;color:'+(side==='b'?(d.c||'#fb923c'):'#fff')+';margin-bottom:4px;';ti.textContent=d.t;
+      var de=document.createElement('div');de.style.cssText='font-size:clamp(.64rem,.88vw,.8rem);color:rgba(255,255,255,.48);line-height:1.65;';de.textContent=d.d;
+      tx.appendChild(ti);tx.appendChild(de);el.appendChild(ic);el.appendChild(tx);
+      requestAnimationFrame(function(){requestAnimationFrame(function(){el.style.opacity='1';el.style.transform='translateY(0)';});});
+      return el;
+    }
+    function updateControls(){
+      prevBtn.disabled=cur===0;
+      nextBtn.disabled=cur===S.length-1;
+      nextBtn.textContent=cur===S.length-1?'🍕 Swiggy wins!':'Next Step →';
+      nextBtn.style.opacity=cur===S.length-1?'.5':'1';
+      progEl.textContent='Step '+(cur+1)+' / '+S.length;
+    }
+    function appendStep(i){
+      var row=document.createElement('div');
+      row.className='s3-row';
+      row.appendChild(card(S[i].u,'u'));
+      row.appendChild(card(S[i].b,'b'));
+      stepsEl.appendChild(row);
+      setTimeout(function(){scrollEl.scrollTop=scrollEl.scrollHeight;},60);
+    }
+    function removeLastStep(){
+      if(stepsEl.lastChild)stepsEl.removeChild(stepsEl.lastChild);
+    }
+    function rebuild(){
+      stepsEl.innerHTML='';
+      for(var i=0;i<=cur;i++)appendStep(i);
+      scrollEl.scrollTop=0;
+      updateControls();
+    }
+    function resetStepper(){
+      cur=0;
+      rebuild();
+    }
+    prevBtn.onclick=function(){
+      if(cur>0){removeLastStep();cur--;updateControls();scrollEl.scrollTop=0;}
+    };
+    nextBtn.onclick=function(){
+      if(cur<S.length-1){cur++;appendStep(cur);updateControls();}
+    };
+    var s3Active=false;
+    new MutationObserver(function(m){
+      m.forEach(function(){
+        var el=document.getElementById('s3');
+        var active=el.classList.contains('active');
+        if(active&&!s3Active)resetStepper();
+        s3Active=active;
+      });
+    }).observe(document.getElementById('s3'),{attributes:true,attributeFilter:['class']});
+  })();
+  </script>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     09 · FULL JOURNEY OF WEB DEVELOPMENT
+══════════════════════════════════════════════ -->
+<section class="slide" id="s13" style="padding:0;">
+  <div class="blob" style="width:48vw;height:48vw;background:#059669;opacity:.18;top:-14%;left:-10%;"></div>
+  <div class="blob" style="width:36vw;height:36vw;background:#4f46e5;opacity:.16;bottom:-12%;right:-8%;animation-delay:-6s;"></div>
+
+  <div class="slide-panel">
+
+    <!-- HEADING -->
+    <div style="padding:0 0 clamp(6px,1vh,10px);text-align:center;flex-shrink:0;">
+      <h2 class="h2" style="font-size:clamp(1.4rem,2.8vw,2.6rem);">The <span class="gg">Full Journey</span> of Web Development</h2>
+      <p class="body" style="margin-top:4px;">Click <strong style="color:#34d399;">Next Stage →</strong> to walk through every layer.</p>
+    </div>
+
+    <!-- STAGE RAIL -->
+    <div style="flex-shrink:0;position:relative;margin-bottom:clamp(8px,1.4vh,14px);">
+      <div id="jrail" style="position:absolute;top:50%;left:0;right:0;height:3px;background:rgba(255,255,255,.07);border-radius:2px;transform:translateY(-50%);overflow:hidden;">
+        <div id="jrail-fill" style="height:100%;width:0%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);"></div>
+      </div>
+      <div id="jstages" style="display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;padding:4px 0;">
+        <!-- injected by JS -->
+      </div>
+    </div>
+
+    <!-- ICON-RICH DETAIL PANEL -->
+    <div id="jdetail-wrap">
+      <div id="jdetail" style="border-radius:18px;border:1.5px solid rgba(255,255,255,.1);padding:clamp(12px,1.8vh,22px) clamp(16px,2.4vw,30px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) auto;gap:clamp(18px,3vw,44px);align-items:center;box-shadow:0 8px 40px rgba(0,0,0,.35);transition:border-color .4s,background .4s;position:relative;">
+
+        <!-- LEFT: large SVG illustration — takes full column width -->
+        <div id="jd-visual" style="width:100%;height:100%;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;min-height:0;">
+          <!-- injected by JS -->
+        </div>
+
+        <!-- CENTRE: title + compact icon grid + tags -->
+        <div style="display:flex;flex-direction:column;gap:clamp(8px,1.4vh,16px);min-width:0;">
+          <div>
+            <div id="jd-stage" style="font-size:clamp(.58rem,.78vw,.72rem);font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px;transition:color .4s;"></div>
+            <div id="jd-title" style="font-size:clamp(1.5rem,2.9vw,2.6rem);font-weight:900;color:#fff;line-height:1.05;letter-spacing:-.025em;"></div>
+          </div>
+          <div id="jd-features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(6px,1vw,11px);"></div>
+          <div id="jd-tags" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"></div>
+        </div>
+
+        <!-- RIGHT: minimal step badge -->
+        <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div id="jd-num" style="width:clamp(40px,5.5vw,56px);height:clamp(40px,5.5vw,56px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(.9rem,1.6vw,1.4rem);font-weight:900;color:#fff;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.14);box-shadow:0 4px 16px rgba(0,0,0,.3);transition:all .4s;"></div>
+          <div id="jd-of" style="font-size:clamp(.5rem,.65vw,.62rem);color:rgba(255,255,255,.3);text-align:center;white-space:nowrap;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONTROLS — centered in footer bar -->
+    <div style="padding:clamp(7px,1.2vh,13px) 0 0;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;">
+      <button id="j-prev" style="padding:8px 20px;border-radius:999px;border:1.5px solid rgba(255,255,255,.14);background:rgba(15,15,30,.85);backdrop-filter:blur(20px);color:rgba(255,255,255,.6);font-weight:700;font-size:clamp(.68rem,.95vw,.86rem);cursor:pointer;font-family:inherit;transition:all .18s;" disabled>← Prev</button>
+      <div id="j-prog" style="padding:8px 16px;border-radius:999px;background:rgba(15,15,30,.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);font-size:clamp(.68rem,.95vw,.86rem);font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.1em;white-space:nowrap;">Stage 1 / 7</div>
+      <button id="j-next" style="padding:8px 24px;border-radius:999px;border:none;background:linear-gradient(110deg,#34d399,#0ea5e9);color:#000;font-weight:800;font-size:clamp(.74rem,1.05vw,.9rem);cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(52,211,153,.35);transition:all .18s;">Next Stage →</button>
+    </div>
+  </div>
+
+  <style>
+  /* feature icon pill */
+  .jfeat{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding:clamp(6px,.9vh,10px) clamp(6px,.9vw,10px);
+    border-radius:10px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+    text-align:center;
+    transition:transform .2s,background .2s;
+    animation:featPop .4s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  .jfeat:hover{transform:translateY(-2px) scale(1.05);background:rgba(255,255,255,.1);}
+  .jfeat-icon{font-size:clamp(1rem,1.8vw,1.5rem);line-height:1;}
+  .jfeat-label{font-size:clamp(.52rem,.68vw,.66rem);font-weight:700;color:rgba(255,255,255,.6);line-height:1.3;}
+  @keyframes featPop{from{opacity:0;transform:scale(.7) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  /* visual area spin */
+  @keyframes jPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  </style>
+
+  <script>
+  (function(){
+
+    /* ── STAGE DATA ── each stage has:
+       icon, label, title, color/bc/bg, tags, and
+       visual: SVG string for the big illustration
+       features: array of {icon, label} icon pills */
+    var S=[
+
+      /* 01 HTML */
+      {
+        icon:'📄', label:'LAYER 01 · STRUCTURE', title:'HTML',
+        color:'#34d399', bc:'rgba(52,211,153,.3)', bg:'rgba(52,211,153,.05)',
+        tags:[{t:'&lt;html&gt;',c:'#6ee7b7'},{t:'&lt;head&gt;',c:'#6ee7b7'},{t:'&lt;body&gt;',c:'#6ee7b7'},{t:'&lt;div&gt;',c:'#6ee7b7'},{t:'&lt;p&gt;',c:'#6ee7b7'},{t:'&lt;img&gt;',c:'#6ee7b7'}],
+        features:[
+          {icon:'🧱',label:'Structure'},
+          {icon:'📝',label:'Text & Headings'},
+          {icon:'🔗',label:'Links'},
+          {icon:'🖼️',label:'Images'},
+          {icon:'📋',label:'Lists'},
+          {icon:'🔘',label:'Buttons'},
+        ],
+        visual:`<svg viewBox="0 0 180 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- DOM tree visual -->
+          <rect x="60" y="8" width="60" height="28" rx="8" fill="rgba(52,211,153,.25)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="90" y="27" text-anchor="middle" fill="#34d399" font-size="11" font-weight="700" font-family="Fira Code">&lt;html&gt;</text>
+          <!-- line down -->
+          <line x1="90" y1="36" x2="90" y2="52" stroke="#34d399" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <!-- head + body row -->
+          <rect x="16" y="52" width="56" height="26" rx="7" fill="rgba(52,211,153,.15)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="44" y="69" text-anchor="middle" fill="#6ee7b7" font-size="10" font-family="Fira Code">&lt;head&gt;</text>
+          <rect x="108" y="52" width="56" height="26" rx="7" fill="rgba(52,211,153,.15)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="136" y="69" text-anchor="middle" fill="#6ee7b7" font-size="10" font-family="Fira Code">&lt;body&gt;</text>
+          <!-- lines to head/body -->
+          <line x1="90" y1="52" x2="44" y2="52" stroke="#34d399" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <line x1="90" y1="52" x2="136" y2="52" stroke="#34d399" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <!-- head children -->
+          <line x1="44" y1="78" x2="44" y2="92" stroke="#34d399" stroke-width="1" stroke-dasharray="2,2"/>
+          <rect x="14" y="92" width="60" height="22" rx="5" fill="rgba(52,211,153,.1)" stroke="rgba(52,211,153,.4)" stroke-width="1"/>
+          <text x="44" y="107" text-anchor="middle" fill="#6ee7b7" font-size="9" font-family="Fira Code">&lt;title&gt;</text>
+          <!-- body children -->
+          <line x1="136" y1="78" x2="100" y2="92" stroke="#34d399" stroke-width="1" stroke-dasharray="2,2"/>
+          <line x1="136" y1="78" x2="136" y2="92" stroke="#34d399" stroke-width="1" stroke-dasharray="2,2"/>
+          <line x1="136" y1="78" x2="166" y2="92" stroke="#34d399" stroke-width="1" stroke-dasharray="2,2"/>
+          <rect x="72" y="92" width="38" height="22" rx="5" fill="rgba(52,211,153,.1)" stroke="rgba(52,211,153,.4)" stroke-width="1"/>
+          <text x="91" y="107" text-anchor="middle" fill="#6ee7b7" font-size="9" font-family="Fira Code">&lt;h1&gt;</text>
+          <rect x="116" y="92" width="36" height="22" rx="5" fill="rgba(52,211,153,.1)" stroke="rgba(52,211,153,.4)" stroke-width="1"/>
+          <text x="134" y="107" text-anchor="middle" fill="#6ee7b7" font-size="9" font-family="Fira Code">&lt;p&gt;</text>
+          <rect x="154" y="92" width="24" height="22" rx="5" fill="rgba(52,211,153,.1)" stroke="rgba(52,211,153,.4)" stroke-width="1"/>
+          <text x="166" y="107" text-anchor="middle" fill="#6ee7b7" font-size="9" font-family="Fira Code">&lt;a&gt;</text>
+          <!-- label -->
+          <text x="90" y="148" text-anchor="middle" fill="rgba(52,211,153,.6)" font-size="11" font-weight="800" font-family="Plus Jakarta Sans">DOM Tree</text>
+          <text x="90" y="163" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="9" font-family="Plus Jakarta Sans">Document Object Model</text>
+        </svg>`
+      },
+
+      /* 02 CSS */
+      {
+        icon:'🎨', label:'LAYER 02 · STYLE', title:'CSS',
+        color:'#38bdf8', bc:'rgba(56,189,248,.3)', bg:'rgba(56,189,248,.05)',
+        tags:[{t:'color',c:'#7dd3fc'},{t:'font-size',c:'#7dd3fc'},{t:'display:flex',c:'#7dd3fc'},{t:'grid',c:'#7dd3fc'},{t:'border-radius',c:'#7dd3fc'},{t:'animation',c:'#7dd3fc'}],
+        features:[
+          {icon:'🎨',label:'Colors'},
+          {icon:'🔤',label:'Typography'},
+          {icon:'📐',label:'Layout'},
+          {icon:'📱',label:'Responsive'},
+          {icon:'✨',label:'Animations'},
+          {icon:'🌙',label:'Dark Mode'},
+        ],
+        visual:`<svg viewBox="0 0 180 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- CSS box model visual -->
+          <!-- margin -->
+          <rect x="8" y="8" width="164" height="164" rx="10" fill="rgba(56,189,248,.06)" stroke="rgba(56,189,248,.2)" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="20" y="22" fill="rgba(56,189,248,.4)" font-size="8" font-family="Fira Code">margin</text>
+          <!-- border -->
+          <rect x="22" y="26" width="136" height="132" rx="8" fill="rgba(56,189,248,.1)" stroke="#38bdf8" stroke-width="2"/>
+          <text x="34" y="40" fill="#38bdf8" font-size="8" font-family="Fira Code">border</text>
+          <!-- padding -->
+          <rect x="36" y="44" width="108" height="100" rx="6" fill="rgba(56,189,248,.08)" stroke="rgba(56,189,248,.3)" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text x="48" y="57" fill="rgba(56,189,248,.5)" font-size="8" font-family="Fira Code">padding</text>
+          <!-- content -->
+          <rect x="52" y="62" width="76" height="64" rx="6" fill="rgba(56,189,248,.18)" stroke="rgba(56,189,248,.5)" stroke-width="1.5"/>
+          <text x="90" y="91" text-anchor="middle" fill="#fff" font-size="11" font-weight="800" font-family="Fira Code">content</text>
+          <text x="90" y="104" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="8" font-family="Fira Code">width × height</text>
+          <!-- colour swatches row -->
+          <rect x="22" y="163" width="22" height="10" rx="3" fill="#38bdf8"/>
+          <rect x="48" y="163" width="22" height="10" rx="3" fill="#818cf8"/>
+          <rect x="74" y="163" width="22" height="10" rx="3" fill="#34d399"/>
+          <rect x="100" y="163" width="22" height="10" rx="3" fill="#fbbf24"/>
+          <rect x="126" y="163" width="22" height="10" rx="3" fill="#fb7185"/>
+          <rect x="152" y="163" width="8" height="10" rx="3" fill="rgba(255,255,255,.2)"/>
+        </svg>`
+      },
+
+      /* 03 JS */
+      {
+        icon:'⚡', label:'LAYER 03 · BEHAVIOUR', title:'JavaScript',
+        color:'#fbbf24', bc:'rgba(251,191,36,.3)', bg:'rgba(251,191,36,.05)',
+        tags:[{t:'onClick',c:'#fcd34d'},{t:'fetch()',c:'#fcd34d'},{t:'DOM',c:'#fcd34d'},{t:'async/await',c:'#fcd34d'},{t:'event',c:'#fcd34d'}],
+        features:[
+          {icon:'👆',label:'Click Events'},
+          {icon:'🔄',label:'Live Updates'},
+          {icon:'📡',label:'API Calls'},
+          {icon:'✅',label:'Validation'},
+          {icon:'🗺️',label:'Maps & Maps'},
+          {icon:'💬',label:'Real-time Chat'},
+        ],
+        visual:`<svg viewBox="0 0 180 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- JS powering HTML+CSS -->
+          <!-- HTML box (left, faded) -->
+          <rect x="8" y="66" width="44" height="48" rx="7" fill="rgba(52,211,153,.15)" stroke="rgba(52,211,153,.4)" stroke-width="1.5"/>
+          <text x="30" y="84" text-anchor="middle" fill="rgba(52,211,153,.8)" font-size="9" font-weight="700" font-family="Fira Code">HTML</text>
+          <text x="30" y="96" text-anchor="middle" fill="rgba(52,211,153,.5)" font-size="7" font-family="Fira Code">&lt;div&gt;</text>
+          <text x="30" y="107" text-anchor="middle" fill="rgba(52,211,153,.5)" font-size="7" font-family="Fira Code">&lt;btn&gt;</text>
+          <!-- CSS box (left, faded) -->
+          <rect x="8" y="122" width="44" height="30" rx="7" fill="rgba(56,189,248,.15)" stroke="rgba(56,189,248,.4)" stroke-width="1.5"/>
+          <text x="30" y="141" text-anchor="middle" fill="rgba(56,189,248,.8)" font-size="9" font-weight="700" font-family="Fira Code">CSS</text>
+          <!-- arrow right to JS -->
+          <path d="M54 90 Q72 90 80 90" stroke="rgba(251,191,36,.6)" stroke-width="2" fill="none" marker-end="url(#yarrow)"/>
+          <path d="M54 137 Q72 110 80 100" stroke="rgba(251,191,36,.4)" stroke-width="2" fill="none"/>
+          <!-- JS core box -->
+          <rect x="80" y="58" width="70" height="64" rx="10" fill="rgba(251,191,36,.15)" stroke="#fbbf24" stroke-width="2"/>
+          <text x="115" y="80" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="900" font-family="Plus Jakarta Sans">JS</text>
+          <text x="115" y="96" text-anchor="middle" fill="rgba(251,191,36,.7)" font-size="8" font-family="Fira Code">⚡ engine</text>
+          <text x="115" y="109" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="7" font-family="Fira Code">V8 / SpiderMonkey</text>
+          <!-- output arrows -->
+          <path d="M150 75 Q164 60 164 50" stroke="rgba(251,191,36,.5)" stroke-width="1.5" fill="none"/>
+          <circle cx="164" cy="44" r="12" fill="rgba(251,191,36,.12)" stroke="rgba(251,191,36,.4)" stroke-width="1.5"/>
+          <text x="164" y="48" text-anchor="middle" fill="#fbbf24" font-size="10">🖱️</text>
+          <path d="M150 90 Q170 90 170 90" stroke="rgba(251,191,36,.5)" stroke-width="1.5" fill="none"/>
+          <circle cx="166" cy="90" r="12" fill="rgba(251,191,36,.12)" stroke="rgba(251,191,36,.4)" stroke-width="1.5"/>
+          <text x="166" y="94" text-anchor="middle" fill="#fbbf24" font-size="10">📡</text>
+          <path d="M150 107 Q164 118 164 128" stroke="rgba(251,191,36,.5)" stroke-width="1.5" fill="none"/>
+          <circle cx="164" cy="134" r="12" fill="rgba(251,191,36,.12)" stroke="rgba(251,191,36,.4)" stroke-width="1.5"/>
+          <text x="164" y="138" text-anchor="middle" fill="#fbbf24" font-size="10">🔄</text>
+          <defs><marker id="yarrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="rgba(251,191,36,.6)"/></marker></defs>
+          <text x="90" y="160" text-anchor="middle" fill="rgba(251,191,36,.5)" font-size="10" font-weight="700" font-family="Plus Jakarta Sans">Behaviour Engine</text>
+        </svg>`
+      },
+
+      /* 04 BACKEND */
+      {
+        icon:'⚙️', label:'LAYER 04 · SERVER', title:'Backend',
+        color:'#fb7185', bc:'rgba(251,113,133,.3)', bg:'rgba(251,113,133,.05)',
+        tags:[{t:'Node.js',c:'#fda4af'},{t:'Python',c:'#fda4af'},{t:'REST API',c:'#fda4af'},{t:'Auth',c:'#fda4af'},{t:'Middleware',c:'#fda4af'}],
+        features:[
+          {icon:'🔐',label:'Login & Auth'},
+          {icon:'💰',label:'Payments'},
+          {icon:'📧',label:'Emails'},
+          {icon:'🔌',label:'APIs'},
+          {icon:'⚖️',label:'Business Logic'},
+          {icon:'🚦',label:'Rate Limiting'},
+        ],
+        visual:`<svg viewBox="0 0 180 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- Server rack visual -->
+          <!-- Server box -->
+          <rect x="30" y="20" width="120" height="140" rx="10" fill="rgba(251,113,133,.08)" stroke="rgba(251,113,133,.3)" stroke-width="1.5"/>
+          <!-- rack units -->
+          <rect x="38" y="30" width="104" height="18" rx="4" fill="rgba(251,113,133,.15)" stroke="rgba(251,113,133,.3)" stroke-width="1"/>
+          <circle cx="52" cy="39" r="4" fill="#34d399"/><text x="64" y="43" fill="rgba(255,255,255,.6)" font-size="8" font-family="Fira Code">Node.js · Auth</text>
+          <rect x="38" y="54" width="104" height="18" rx="4" fill="rgba(251,113,133,.15)" stroke="rgba(251,113,133,.3)" stroke-width="1"/>
+          <circle cx="52" cy="63" r="4" fill="#fbbf24"/><text x="64" y="67" fill="rgba(255,255,255,.6)" font-size="8" font-family="Fira Code">Python · API</text>
+          <rect x="38" y="78" width="104" height="18" rx="4" fill="rgba(251,113,133,.15)" stroke="rgba(251,113,133,.3)" stroke-width="1"/>
+          <circle cx="52" cy="87" r="4" fill="#38bdf8"/><text x="64" y="91" fill="rgba(255,255,255,.6)" font-size="8" font-family="Fira Code">Go · Payments</text>
+          <rect x="38" y="102" width="104" height="18" rx="4" fill="rgba(251,113,133,.12)" stroke="rgba(251,113,133,.2)" stroke-width="1"/>
+          <circle cx="52" cy="111" r="4" fill="rgba(255,255,255,.3)"/><text x="64" y="115" fill="rgba(255,255,255,.4)" font-size="8" font-family="Fira Code">Middleware</text>
+          <!-- blinking lights -->
+          <circle cx="128" cy="39" r="3" fill="#34d399" style="animation:jPulse 1.2s ease-in-out infinite"/>
+          <circle cx="136" cy="39" r="3" fill="#fbbf24" style="animation:jPulse 1.8s ease-in-out infinite"/>
+          <circle cx="128" cy="63" r="3" fill="#34d399" style="animation:jPulse 1s ease-in-out infinite"/>
+          <circle cx="136" cy="63" r="3" fill="#38bdf8" style="animation:jPulse 2s ease-in-out infinite"/>
+          <!-- port connectors bottom -->
+          <rect x="42" y="128" width="12" height="8" rx="2" fill="rgba(255,255,255,.2)"/>
+          <rect x="60" y="128" width="12" height="8" rx="2" fill="rgba(255,255,255,.2)"/>
+          <rect x="78" y="128" width="12" height="8" rx="2" fill="rgba(255,255,255,.2)"/>
+          <rect x="96" y="128" width="12" height="8" rx="2" fill="rgba(255,255,255,.15)"/>
+          <text x="90" y="158" text-anchor="middle" fill="rgba(251,113,133,.6)" font-size="10" font-weight="700" font-family="Plus Jakarta Sans">Server Rack</text>
+          <text x="90" y="170" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="8" font-family="Plus Jakarta Sans">Always on — users never see this</text>
+        </svg>`
+      },
+
+      /* 05 DATABASE */
+      {
+        icon:'🗄️', label:'LAYER 05 · STORAGE', title:'Database',
+        color:'#a78bfa', bc:'rgba(167,139,250,.3)', bg:'rgba(167,139,250,.05)',
+        tags:[{t:'PostgreSQL',c:'#c4b5fd'},{t:'MongoDB',c:'#c4b5fd'},{t:'SELECT',c:'#c4b5fd'},{t:'INSERT',c:'#c4b5fd'},{t:'Redis',c:'#c4b5fd'}],
+        features:[
+          {icon:'👤',label:'User Accounts'},
+          {icon:'📦',label:'Orders'},
+          {icon:'💬',label:'Messages'},
+          {icon:'📸',label:'Media'},
+          {icon:'⭐',label:'Reviews'},
+          {icon:'🔍',label:'Search Index'},
+        ],
+        visual:`<svg viewBox="0 0 180 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- DB cylinder stack -->
+          <!-- cylinder 1 (bottom) -->
+          <ellipse cx="90" cy="148" rx="52" ry="12" fill="rgba(167,139,250,.2)" stroke="rgba(167,139,250,.4)" stroke-width="1.5"/>
+          <rect x="38" y="118" width="104" height="30" fill="rgba(167,139,250,.12)"/>
+          <rect x="38" y="118" width="104" height="2" fill="rgba(167,139,250,.3)"/>
+          <ellipse cx="90" cy="118" rx="52" ry="12" fill="rgba(167,139,250,.22)" stroke="rgba(167,139,250,.5)" stroke-width="1.5"/>
+          <text x="90" y="122" text-anchor="middle" fill="#c4b5fd" font-size="8" font-family="Fira Code">reviews · media</text>
+          <!-- cylinder 2 (middle) -->
+          <ellipse cx="90" cy="102" rx="52" ry="12" fill="rgba(167,139,250,.25)" stroke="rgba(167,139,250,.55)" stroke-width="1.5"/>
+          <rect x="38" y="72" width="104" height="30" fill="rgba(167,139,250,.14)"/>
+          <rect x="38" y="72" width="104" height="2" fill="rgba(167,139,250,.3)"/>
+          <ellipse cx="90" cy="72" rx="52" ry="12" fill="rgba(167,139,250,.3)" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="90" y="76" text-anchor="middle" fill="#c4b5fd" font-size="8" font-family="Fira Code">orders · messages</text>
+          <!-- cylinder 3 (top) -->
+          <ellipse cx="90" cy="56" rx="52" ry="12" fill="rgba(167,139,250,.35)" stroke="#a78bfa" stroke-width="2"/>
+          <rect x="38" y="26" width="104" height="30" fill="rgba(167,139,250,.16)"/>
+          <rect x="38" y="26" width="104" height="2" fill="rgba(167,139,250,.4)"/>
+          <ellipse cx="90" cy="26" rx="52" ry="12" fill="rgba(167,139,250,.4)" stroke="#a78bfa" stroke-width="2"/>
+          <text x="90" y="30" text-anchor="middle" fill="#fff" font-size="9" font-weight="700" font-family="Fira Code">users · profiles</text>
+          <!-- DB label -->
+          <text x="90" y="168" text-anchor="middle" fill="rgba(167,139,250,.6)" font-size="10" font-weight="700" font-family="Plus Jakarta Sans">Persistent Storage</text>
+        </svg>`
+      },
+
+      /* 06 GITHUB */
+      {
+        icon:'🐙', label:'LAYER 06 · VERSION CONTROL', title:'GitHub',
+        color:'rgba(255,255,255,.9)', bc:'rgba(255,255,255,.18)', bg:'rgba(255,255,255,.04)',
+        tags:[{t:'git init',c:'#e2e8f0'},{t:'git commit',c:'#e2e8f0'},{t:'git push',c:'#e2e8f0'},{t:'pull request',c:'#e2e8f0'},{t:'branch',c:'#e2e8f0'}],
+        features:[
+          {icon:'📜',label:'History'},
+          {icon:'🌿',label:'Branches'},
+          {icon:'🔀',label:'Merge'},
+          {icon:'👥',label:'Collaborate'},
+          {icon:'⏪',label:'Rollback'},
+          {icon:'🚀',label:'Deploy'},
+        ],
+        visual:`<svg viewBox="0 0 180 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- Git branch diagram -->
+          <!-- main branch line -->
+          <line x1="24" y1="90" x2="156" y2="90" stroke="rgba(255,255,255,.35)" stroke-width="3" stroke-linecap="round"/>
+          <!-- commits on main -->
+          <circle cx="36" cy="90" r="8" fill="#1a1a2e" stroke="rgba(255,255,255,.6)" stroke-width="2"/>
+          <text x="36" y="94" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="7" font-family="Fira Code">c1</text>
+          <circle cx="72" cy="90" r="8" fill="#1a1a2e" stroke="rgba(255,255,255,.6)" stroke-width="2"/>
+          <text x="72" y="94" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="7" font-family="Fira Code">c2</text>
+          <circle cx="144" cy="90" r="10" fill="#1a1a2e" stroke="#fff" stroke-width="2.5"/>
+          <text x="144" y="94" text-anchor="middle" fill="#fff" font-size="7" font-family="Fira Code" font-weight="700">main</text>
+          <!-- feature branch -->
+          <path d="M72 82 Q72 48 108 48" stroke="#38bdf8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <line x1="108" y1="48" x2="132" y2="48" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M132 48 Q144 48 144 80" stroke="#38bdf8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <circle cx="108" cy="48" r="7" fill="#1a1a2e" stroke="#38bdf8" stroke-width="2"/>
+          <text x="108" y="52" text-anchor="middle" fill="#38bdf8" font-size="7" font-family="Fira Code">f1</text>
+          <circle cx="132" cy="48" r="7" fill="#1a1a2e" stroke="#38bdf8" stroke-width="2"/>
+          <text x="132" y="52" text-anchor="middle" fill="#38bdf8" font-size="7" font-family="Fira Code">f2</text>
+          <text x="90" y="36" text-anchor="middle" fill="#38bdf8" font-size="8" font-family="Plus Jakarta Sans" font-weight="700">feature branch</text>
+          <!-- hotfix branch -->
+          <path d="M72 98 Q72 136 96 136" stroke="#fbbf24" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <line x1="96" y1="136" x2="120" y2="136" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+          <path d="M120 136 Q132 136 132 98 Q132 90 144 90" stroke="#fbbf24" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="96" cy="136" r="6" fill="#1a1a2e" stroke="#fbbf24" stroke-width="2"/>
+          <circle cx="120" cy="136" r="6" fill="#1a1a2e" stroke="#fbbf24" stroke-width="2"/>
+          <text x="90" y="158" text-anchor="middle" fill="rgba(251,191,36,.7)" font-size="8" font-family="Plus Jakarta Sans" font-weight="700">hotfix branch</text>
+          <text x="90" y="170" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="8" font-family="Plus Jakarta Sans">Branching &amp; Merging</text>
+        </svg>`
+      },
+
+      /* 07 CLOUD */
+      {
+        icon:'☁️', label:'LAYER 07 · DEPLOYMENT', title:'Cloud & Servers',
+        color:'#34d399', bc:'rgba(52,211,153,.3)', bg:'rgba(52,211,153,.05)',
+        tags:[{t:'AWS',c:'#6ee7b7'},{t:'Vercel',c:'#6ee7b7'},{t:'Netlify',c:'#6ee7b7'},{t:'Docker',c:'#6ee7b7'},{t:'CDN',c:'#6ee7b7'}],
+        features:[
+          {icon:'🌍',label:'Global CDN'},
+          {icon:'📈',label:'Auto Scale'},
+          {icon:'🔒',label:'HTTPS / SSL'},
+          {icon:'⚡',label:'Fast Load'},
+          {icon:'🔄',label:'CI/CD Pipeline'},
+          {icon:'🕐',label:'99.9% Uptime'},
+        ],
+        visual:`<svg viewBox="0 0 180 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- Globe with network nodes -->
+          <circle cx="90" cy="82" r="58" fill="rgba(52,211,153,.06)" stroke="rgba(52,211,153,.25)" stroke-width="1.5"/>
+          <!-- latitude lines -->
+          <ellipse cx="90" cy="82" rx="58" ry="22" fill="none" stroke="rgba(52,211,153,.12)" stroke-width="1"/>
+          <ellipse cx="90" cy="82" rx="45" ry="42" fill="none" stroke="rgba(52,211,153,.1)" stroke-width="1"/>
+          <!-- longitude lines -->
+          <line x1="90" y1="24" x2="90" y2="140" stroke="rgba(52,211,153,.12)" stroke-width="1"/>
+          <line x1="32" y1="82" x2="148" y2="82" stroke="rgba(52,211,153,.15)" stroke-width="1"/>
+          <!-- data centre nodes -->
+          <circle cx="58" cy="60" r="8" fill="rgba(52,211,153,.2)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="58" y="64" text-anchor="middle" fill="#34d399" font-size="8">🖥️</text>
+          <circle cx="122" cy="60" r="8" fill="rgba(52,211,153,.2)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="122" y="64" text-anchor="middle" fill="#34d399" font-size="8">🖥️</text>
+          <circle cx="58" cy="104" r="8" fill="rgba(52,211,153,.2)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="58" y="108" text-anchor="middle" fill="#34d399" font-size="8">🖥️</text>
+          <circle cx="122" cy="104" r="8" fill="rgba(52,211,153,.2)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="122" y="108" text-anchor="middle" fill="#34d399" font-size="8">🖥️</text>
+          <!-- centre hub -->
+          <circle cx="90" cy="82" r="14" fill="rgba(52,211,153,.25)" stroke="#34d399" stroke-width="2"/>
+          <text x="90" y="86" text-anchor="middle" fill="#34d399" font-size="12">☁️</text>
+          <!-- connection lines -->
+          <line x1="66" y1="60" x2="78" y2="72" stroke="rgba(52,211,153,.4)" stroke-width="1.5"/>
+          <line x1="114" y1="60" x2="102" y2="72" stroke="rgba(52,211,153,.4)" stroke-width="1.5"/>
+          <line x1="66" y1="104" x2="78" y2="92" stroke="rgba(52,211,153,.4)" stroke-width="1.5"/>
+          <line x1="114" y1="104" x2="102" y2="92" stroke="rgba(52,211,153,.4)" stroke-width="1.5"/>
+          <!-- user devices on edges -->
+          <text x="24" y="46" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="12">📱</text>
+          <text x="156" y="46" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="12">💻</text>
+          <text x="24" y="122" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="12">🖥️</text>
+          <text x="156" y="122" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="12">📺</text>
+          <!-- dashed request lines from users to nearest node -->
+          <line x1="32" y1="46" x2="50" y2="56" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="3,2"/>
+          <line x1="148" y1="46" x2="130" y2="56" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="3,2"/>
+          <line x1="32" y1="118" x2="50" y2="108" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="3,2"/>
+          <line x1="148" y1="118" x2="130" y2="108" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="90" y="158" text-anchor="middle" fill="rgba(52,211,153,.6)" font-size="10" font-weight="700" font-family="Plus Jakarta Sans">Global Infrastructure</text>
+          <text x="90" y="170" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="8" font-family="Plus Jakarta Sans">Your site. Every device. Everywhere.</text>
+        </svg>`
+      },
+    ];
+
+    var cur=0;
+    var stagesEl=document.getElementById('jstages');
+    var railFill=document.getElementById('jrail-fill');
+    var prevBtn=document.getElementById('j-prev');
+    var nextBtn=document.getElementById('j-next');
+    var progEl=document.getElementById('j-prog');
+
+    /* build stage dot buttons */
+    S.forEach(function(s,i){
+      var wrap=document.createElement('div');
+      wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;';
+      var b=document.createElement('div');
+      b.style.cssText='width:clamp(38px,5.5vw,54px);height:clamp(38px,5.5vw,54px);border-radius:50%;border:2.5px solid '+s.color+';background:rgba(0,0,0,.3);font-size:clamp(1rem,1.8vw,1.5rem);cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.3);';
+      b.textContent=s.icon;
+      var lbl=document.createElement('div');
+      lbl.style.cssText='font-size:clamp(.52rem,.7vw,.64rem);font-weight:800;color:'+s.color+';opacity:.6;letter-spacing:.04em;text-transform:uppercase;transition:opacity .3s;max-width:clamp(46px,6.5vw,66px);text-align:center;line-height:1.2;';
+      lbl.textContent=s.title;
+      wrap.appendChild(b);wrap.appendChild(lbl);
+      wrap.onclick=function(){goTo(i);};
+      stagesEl.appendChild(wrap);
+    });
+    function render(){
+      var s=S[cur];
+
+      /* panel */
+      var det=document.getElementById('jdetail');
+      det.style.borderColor=s.bc;
+      det.style.background=s.bg;
+
+      /* visual SVG */
+      var vis=document.getElementById('jd-visual');
+      vis.style.opacity='0';vis.style.transform='scale(.88)';
+      vis.style.transition='opacity .35s,transform .35s';
+      setTimeout(function(){
+        vis.innerHTML=s.visual;
+        vis.style.opacity='1';vis.style.transform='scale(1)';
+      },100);
+
+      /* stage label + title */
+      document.getElementById('jd-stage').textContent=s.label;
+      document.getElementById('jd-stage').style.color=s.color;
+      document.getElementById('jd-title').textContent=s.title;
+      document.getElementById('jd-num').textContent=cur+1;
+      document.getElementById('jd-num').style.borderColor=s.color;
+      document.getElementById('jd-num').style.color=s.color;
+      document.getElementById('jd-of').textContent='of '+S.length;
+
+      /* feature pills */
+      var feat=document.getElementById('jd-features');
+      feat.innerHTML='';
+      s.features.forEach(function(f,fi){
+        var d=document.createElement('div');
+        d.className='jfeat';
+        d.style.animationDelay=(fi*.06)+'s';
+        d.style.borderColor=s.bc;
+        d.innerHTML='<div class="jfeat-icon">'+f.icon+'</div><div class="jfeat-label">'+f.label+'</div>';
+        feat.appendChild(d);
+      });
+
+      /* tags */
+      var tg=document.getElementById('jd-tags');
+      tg.innerHTML='';
+      s.tags.forEach(function(t){
+        var sp=document.createElement('span');
+        sp.style.cssText='padding:3px 11px;border-radius:7px;font-size:clamp(.6rem,.82vw,.78rem);font-weight:700;font-family:Fira Code,monospace;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:'+t.c+';';
+        sp.innerHTML=t.t;
+        tg.appendChild(sp);
+      });
+
+      /* rail fill + dot highlights */
+      railFill.style.width=(cur/(S.length-1)*100)+'%';
+      railFill.style.background='linear-gradient(90deg,'+S.slice(0,cur+1).map(function(x){return x.color;}).join(',')+')';
+
+      Array.from(stagesEl.children).forEach(function(w,i){
+        var b=w.querySelector('div:first-child');
+        var l=w.querySelector('div:last-child');
+        b.style.background=i<=cur?S[i].color:'rgba(0,0,0,.3)';
+        b.style.boxShadow=i===cur?('0 0 20px '+s.color+', 0 4px 16px rgba(0,0,0,.4)'):'0 2px 8px rgba(0,0,0,.3)';
+        b.style.transform=i===cur?'scale(1.3)':'scale(1)';
+        b.style.color=i<=cur?'#000':'rgba(255,255,255,.5)';
+        l.style.opacity=i===cur?'1':i<cur?'.7':'.35';
+      });
+
+      /* buttons */
+      prevBtn.disabled=cur===0;
+      nextBtn.disabled=cur===S.length-1;
+      nextBtn.textContent=cur===S.length-1?'🎉 Live!':'Next Stage →';
+      nextBtn.style.background=cur===S.length-1?'linear-gradient(110deg,#059669,#34d399)':'linear-gradient(110deg,#34d399,#0ea5e9)';
+      progEl.textContent='Stage '+(cur+1)+' / '+S.length;
+    }
+
+    function goTo(i){cur=i;render();}
+    prevBtn.onclick=function(){if(cur>0){cur--;render();}};
+    nextBtn.onclick=function(){if(cur<S.length-1){cur++;render();}};
+
+    /* auto-init when slide becomes active — reset to stage 1 on enter */
+    var s13Active=false;
+    new MutationObserver(function(m){
+      m.forEach(function(){
+        var el=document.getElementById('s13');
+        var active=el.classList.contains('active');
+        if(active&&!s13Active){cur=0;render();}
+        s13Active=active;
+      });
+    }).observe(document.getElementById('s13'),{attributes:true,attributeFilter:['class']});
+    render();
+  })();
+  </script>
+</section>
+
+<section class="slide" id="s12">
+  <div class="blob" style="width:40vw;height:40vw;background:#7c3aed;opacity:.18;top:-12%;right:-8%;"></div>
+  <div class="blob" style="width:28vw;height:28vw;background:#4f46e5;opacity:.14;bottom:-12%;left:-6%;animation-delay:-4s;"></div>
+
+  <div style="position:relative;z-index:2;width:100%;max-width:1200px;display:flex;flex-direction:column;gap:clamp(10px,1.5vh,16px);">
+
+    <!-- HEADING -->
+    <div class="ctr stagger" style="gap:3px;">
+      <div style="font-size:clamp(.6rem,.82vw,.74rem);font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);">Every problem has a website waiting to be built</div>
+      <h2 class="h2" style="margin-top:6px;">Now your turn — <span class="gv">which one would YOU build?</span></h2>
+    </div>
+
+    <!-- TOP: real logos showing what already exists -->
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(7px,1.1vw,13px);width:100%;">
+
+      <div class="logo-card">
+        <div style="width:clamp(30px,4.2vw,44px);height:clamp(30px,4.2vw,44px);border-radius:10px;background:#FF0000;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(239,68,68,.4);">
+          <svg viewBox="0 0 24 24" width="60%" fill="white"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1C4.5 20.5 12 20.5 12 20.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.8 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+        </div>
+        <div class="logo-name" style="font-size:clamp(.66rem,.9vw,.84rem);">YouTube</div>
+        <div class="logo-prob" style="font-size:clamp(.55rem,.72vw,.68rem);">😴 Boredom</div>
+      </div>
+
+      <div class="logo-card">
+        <div style="width:clamp(30px,4.2vw,44px);height:clamp(30px,4.2vw,44px);border-radius:10px;background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(225,29,72,.4);">
+          <svg viewBox="0 0 24 24" width="60%" fill="white"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.9s0 3.6-.1 4.9c-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-3.3-.2-4.8-1.7-5-5C2 16.6 2 16.3 2 13s0-3.6.1-4.9c.2-3.3 1.7-4.8 5-5C8.4 2.2 8.7 2.2 12 2.2zm0-2.2C8.7 0 8.3 0 7 .1 2.7.3.3 2.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 5c.2 4.3 2.6 6.7 7 6.9 1.3.1 1.7.1 5 .1s3.7 0 5-.1c4.3-.2 6.7-2.6 6.9-7 .1-1.3.1-1.7.1-5s0-3.7-.1-5C23.7 2.7 21.3.3 17 .1 15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 12 5.8zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/></svg>
+        </div>
+        <div class="logo-name" style="font-size:clamp(.66rem,.9vw,.84rem);">Instagram</div>
+        <div class="logo-prob" style="font-size:clamp(.55rem,.72vw,.68rem);">📸 Sharing</div>
+      </div>
+
+      <div class="logo-card">
+        <div style="width:clamp(30px,4.2vw,44px);height:clamp(30px,4.2vw,44px);border-radius:10px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(251,146,60,.4);padding:4px;">
+          <img src="https://static.vecteezy.com/system/resources/thumbnails/019/766/240/small/amazon-logo-amazon-icon-transparent-free-png.png" alt="Amazon" width="100%" height="100%" style="object-fit:contain;display:block;"/>
+        </div>
+        <div class="logo-name" style="font-size:clamp(.66rem,.9vw,.84rem);">Amazon</div>
+        <div class="logo-prob" style="font-size:clamp(.55rem,.72vw,.68rem);">🛒 Shopping</div>
+      </div>
+
+      <div class="logo-card">
+        <div style="width:clamp(30px,4.2vw,44px);height:clamp(30px,4.2vw,44px);border-radius:10px;background:#FC8019;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(251,146,60,.4);">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Swiggy_logo.png" alt="Swiggy" width="100%" height="100%" style="object-fit:cover;display:block;"/>
+        </div>
+        <div class="logo-name" style="font-size:clamp(.66rem,.9vw,.84rem);">Swiggy</div>
+        <div class="logo-prob" style="font-size:clamp(.55rem,.72vw,.68rem);">🍔 Hunger</div>
+      </div>
+
+      <div class="logo-card">
+        <div style="width:clamp(30px,4.2vw,44px);height:clamp(30px,4.2vw,44px);border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(56,189,248,.3);">
+          <svg viewBox="0 0 24 24" width="68%"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        </div>
+        <div class="logo-name" style="font-size:clamp(.66rem,.9vw,.84rem);">Google</div>
+        <div class="logo-prob" style="font-size:clamp(.55rem,.72vw,.68rem);">🔍 Info</div>
+      </div>
+
+      <div class="logo-card">
+        <div style="width:clamp(30px,4.2vw,44px);height:clamp(30px,4.2vw,44px);border-radius:10px;background:#000;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(239,68,68,.4);">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Netflix_icon.svg/500px-Netflix_icon.svg.png" alt="Netflix" width="100%" height="100%" style="object-fit:cover;display:block;"/>
+        </div>
+        <div class="logo-name" style="font-size:clamp(.66rem,.9vw,.84rem);">Netflix</div>
+        <div class="logo-prob" style="font-size:clamp(.55rem,.72vw,.68rem);">🎬 Entertainment</div>
+      </div>
+
+    </div>
+
+    <!-- DIVIDER -->
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+      <div style="font-size:clamp(.6rem,.82vw,.74rem);font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.28);">👇 Click to pick your idea</div>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
+    </div>
+
+    <!-- BOTTOM: your idea cards -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(7px,1.1vw,13px);">
+      <div class="idea-card" style="--c:rgba(56,189,248,.12);--cb:rgba(56,189,248,.5);" onclick="pickIdea(this,'School Platform','Students attend classes, submit homework, take tests, track progress — all online.')"><div class="idea-emoji" style="font-size:clamp(1.7rem,3.2vw,2.8rem);">🏫</div><div class="idea-title">School Platform</div><div class="idea-desc">Classes · Exams · Progress</div></div>
+      <div class="idea-card" style="--c:rgba(251,113,133,.12);--cb:rgba(251,113,133,.5);" onclick="pickIdea(this,'Healthcare App','Book doctors, view prescriptions, access health records — no more waiting rooms.')"><div class="idea-emoji" style="font-size:clamp(1.7rem,3.2vw,2.8rem);">🏥</div><div class="idea-title">Healthcare App</div><div class="idea-desc">Doctors · Records · Health</div></div>
+      <div class="idea-card" style="--c:rgba(52,211,153,.12);--cb:rgba(52,211,153,.5);" onclick="pickIdea(this,'Sports Hub','Live scores, player stats, fantasy leagues, match schedules — every sport.')"><div class="idea-emoji" style="font-size:clamp(1.7rem,3.2vw,2.8rem);">🏏</div><div class="idea-title">Sports Hub</div><div class="idea-desc">Scores · Stats · Fantasy</div></div>
+      <div class="idea-card" style="--c:rgba(251,191,36,.12);--cb:rgba(251,191,36,.5);" onclick="pickIdea(this,'Pet Care App','Find vets, book grooming, buy food, connect with pet owners nearby.')"><div class="idea-emoji" style="font-size:clamp(1.7rem,3.2vw,2.8rem);">🐾</div><div class="idea-title">Pet Care</div><div class="idea-desc">Vets · Grooming · Food</div></div>
+      <div class="idea-card" style="--c:rgba(251,146,60,.12);--cb:rgba(251,146,60,.5);" onclick="pickIdea(this,'Food Delivery','Browse restaurants, order food, track your delivery live on a map.')"><div class="idea-emoji" style="font-size:clamp(1.7rem,3.2vw,2.8rem);">🍔</div><div class="idea-title">Food Delivery</div><div class="idea-desc">Order · Track · Enjoy</div></div>
+      <div class="idea-card" style="--c:rgba(225,29,72,.12);--cb:rgba(225,29,72,.5);" onclick="pickIdea(this,'Social Network','Share photos, reels, stories. Connect with friends. Grow an audience.')"><div class="idea-emoji" style="font-size:clamp(1.7rem,3.2vw,2.8rem);">📸</div><div class="idea-title">Social Network</div><div class="idea-desc">Photos · Reels · Community</div></div>
+      <div class="idea-card" style="--c:rgba(167,139,250,.12);--cb:rgba(167,139,250,.5);" onclick="pickIdea(this,'Shopping Store','Browse products, add to cart, pay securely, get it delivered.')"><div class="idea-emoji" style="font-size:clamp(1.7rem,3.2vw,2.8rem);">🛍️</div><div class="idea-title">Shopping Store</div><div class="idea-desc">Browse · Buy · Deliver</div></div>
+      <div class="idea-card" style="--c:rgba(99,102,241,.12);--cb:rgba(99,102,241,.5);" onclick="pickIdea(this,'Learning Platform','Video courses, quizzes, certificates, live sessions — learn anything, anywhere.')"><div class="idea-emoji" style="font-size:clamp(1.7rem,3.2vw,2.8rem);">📚</div><div class="idea-title">Learning Platform</div><div class="idea-desc">Courses · Quizzes · Certs</div></div>
+    </div>
+
+    <!-- Pop -->
+    <div id="idea-pop" style="display:none;padding:clamp(9px,1.4vh,15px) clamp(12px,1.8vw,22px);border-radius:14px;background:rgba(99,102,241,.12);border:1.5px solid rgba(99,102,241,.35);text-align:center;animation:fadeUp .3s both;">
+      <div id="idea-pop-text" style="font-size:clamp(.78rem,1.1vw,.96rem);font-weight:700;color:#fff;line-height:1.65;"></div>
+    </div>
+  </div>
+
+  <script>
+  function pickIdea(el,title,desc){
+    document.querySelectorAll('#s12 .idea-card').forEach(function(c){c.style.opacity=c===el?'1':'.4';c.style.transform=c===el?'scale(1.04)':'scale(1)';});
+    document.getElementById('idea-pop-text').innerHTML='🚀 <strong>'+title+'</strong> — '+desc+' <span style="color:rgba(255,255,255,.45);">Every feature needs a developer to build it.</span>';
+    document.getElementById('idea-pop').style.display='block';
+  }
+  var s12=document.getElementById('s12');
+  new MutationObserver(function(m){m.forEach(function(){if(!s12.classList.contains('active')){document.querySelectorAll('#s12 .idea-card').forEach(function(c){c.style.opacity='1';c.style.transform='';});document.getElementById('idea-pop').style.display='none';}});}).observe(s12,{attributes:true,attributeFilter:['class']});
+  </script>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     14 · INSPIRING CLOSE
+══════════════════════════════════════════════ -->
+<section class="slide" id="s14">
+  <div class="blob" style="width:55vw;height:55vw;background:#4338ca;opacity:.22;top:-18%;left:-12%;"></div>
+  <div class="blob" style="width:44vw;height:44vw;background:#0891b2;opacity:.18;bottom:-16%;right:-10%;animation-delay:-6s;"></div>
+  <div class="blob" style="width:30vw;height:30vw;background:#7c3aed;opacity:.14;top:18%;right:4%;animation-delay:-3s;"></div>
+
+  <div class="ctr stagger" style="position:relative;z-index:2;gap:clamp(22px,3.5vh,44px);max-width:860px;">
+
+    <div style="font-size:clamp(3.5rem,7vw,6rem);filter:drop-shadow(0 16px 40px rgba(99,102,241,.5));animation:float 4s ease-in-out infinite;">🌐</div>
+
+    <h1 class="h1" style="text-align:center;line-height:1.06;">
+      Every amazing website<br>started as <span class="gm">someone's idea.</span>
+    </h1>
+
+    <p class="body-lg" style="text-align:center;max-width:560px;">
+      The internet was built by people who started exactly where you are right now — curious, and willing to learn.
+    </p>
+
+    <div class="tl" style="max-width:780px;width:100%;">
+      <div class="tln">
+        <div class="tld" style="background:rgba(167,139,250,.18);border:1.5px solid rgba(167,139,250,.5);font-size:clamp(1.2rem,2.2vw,1.9rem);">💡</div>
+        <div class="tll">Idea</div>
+      </div>
+      <div class="tlc"></div>
+      <div class="tln">
+        <div class="tld" style="background:rgba(56,189,248,.18);border:1.5px solid rgba(56,189,248,.5);font-size:clamp(1.2rem,2.2vw,1.9rem);">📋</div>
+        <div class="tll">Planning</div>
+      </div>
+      <div class="tlc"></div>
+      <div class="tln">
+        <div class="tld" style="background:rgba(251,191,36,.18);border:1.5px solid rgba(251,191,36,.5);font-size:clamp(1.2rem,2.2vw,1.9rem);">🎨</div>
+        <div class="tll">Design</div>
+      </div>
+      <div class="tlc"></div>
+      <div class="tln">
+        <div class="tld" style="background:rgba(52,211,153,.18);border:1.5px solid rgba(52,211,153,.5);font-size:clamp(1.2rem,2.2vw,1.9rem);">🔨</div>
+        <div class="tll">Building</div>
+      </div>
+      <div class="tlc"></div>
+      <div class="tln">
+        <div class="tld" style="background:rgba(99,102,241,.18);border:1.5px solid rgba(99,102,241,.5);font-size:clamp(1.2rem,2.2vw,1.9rem);">🌐</div>
+        <div class="tll">Launch</div>
+      </div>
+      <div class="tlc"></div>
+      <div class="tln">
+        <div class="tld" style="background:rgba(251,113,133,.18);border:1.5px solid rgba(251,113,133,.5);font-size:clamp(1.2rem,2.2vw,1.9rem);">👥</div>
+        <div class="tll">People use it</div>
+      </div>
+    </div>
+
+    <div style="padding:clamp(14px,2.2vh,22px) clamp(20px,3.5vw,40px);border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);text-align:center;">
+      <p style="font-size:clamp(.9rem,1.5vw,1.2rem);font-weight:700;color:#fff;line-height:1.6;">
+        You've just seen the Bird's-Eye View. 🌍<br>
+        <span style="color:rgba(255,255,255,.55);font-weight:500;">Next up — start building.</span>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<!-- NAV -->
+<div id="nav">
+  <button class="nbtn" id="bp">‹</button>
+  <span id="ctr">01 / 13</span>
+  <button class="nbtn" id="bn">›</button>
+</div>
+
+<script>
+var slides=Array.from(document.querySelectorAll('.slide'));
+var total=slides.length,cur=0,locked=false;
+var CIRC=2*Math.PI*20;
+var rfg=document.getElementById('rfg'),ctrEl=document.getElementById('ctr'),bp=document.getElementById('bp'),bn=document.getElementById('bn'),dotsEl=document.getElementById('dots');
+slides.forEach(function(_,i){var b=document.createElement('button');b.className='dot'+(i===0?' on':'');b.title='Slide '+(i+1);b.addEventListener('click',function(){goTo(i);});dotsEl.appendChild(b);});
+var dots=Array.from(dotsEl.querySelectorAll('.dot'));
+slides[0].classList.add('active');
+slides.forEach(function(s,i){s.setAttribute('aria-hidden',i===0?'false':'true');});
+updateUI();
+
+/* helpers — true when an interactive stepper slide is active */
+function onJourney(){return slides[cur]&&slides[cur].id==='s13';}
+function onTreehouse(){return slides[cur]&&slides[cur].id==='s6';}
+function onSwiggyCompare(){return slides[cur]&&slides[cur].id==='s3';}
+function onPizzaJourney(){return slides[cur]&&slides[cur].id==='s8';}
+
+/* hook into stepper controls before changing slides */
+function stepperStep(prevId,nextId,dir){
+  var nextBtn=document.getElementById(nextId);
+  var prevBtn=document.getElementById(prevId);
+  if(dir>0&&nextBtn&&!nextBtn.disabled){nextBtn.click();return true;}
+  if(dir<0&&prevBtn&&!prevBtn.disabled){prevBtn.click();return true;}
+  return false;
+}
+function innerStep(dir){
+  if(onJourney()&&stepperStep('j-prev','j-next',dir))return true;
+  if(onTreehouse()&&stepperStep('th-prev','th-next',dir))return true;
+  if(onPizzaJourney()&&stepperStep('pj-prev','pj-next',dir))return true;
+  if(onSwiggyCompare()&&stepperStep('s3-prev','s3-next',dir))return true;
+  return false;
+}
+
+function goTo(idx,dir){
+  dir=dir===undefined?1:dir;
+  if(locked||idx===cur||idx<0||idx>=total)return;
+  locked=true;
+  var prev=slides[cur],next=slides[idx];
+  prev.classList.add('exit-left');
+  next.style.transition='none';
+  next.style.transform=dir>=0?'translateX(48px) scale(.978)':'translateX(-48px) scale(.978)';
+  next.style.opacity='0';
+  next.classList.add('active');
+  requestAnimationFrame(function(){requestAnimationFrame(function(){next.style.transition='';next.style.transform='';next.style.opacity='';});});
+  setTimeout(function(){
+    prev.classList.remove('active','exit-left');
+    prev.style.cssText='';
+    slides.forEach(function(s,i){s.setAttribute('aria-hidden',i!==idx?'true':'false');});
+    locked=false;
+  },500);
+  cur=idx;updateUI();
+}
+
+function updateUI(){
+  ctrEl.textContent=String(cur+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
+  rfg.style.strokeDashoffset=CIRC*(1-(cur+1)/total);
+  dots.forEach(function(d,i){d.classList.toggle('on',i===cur);});
+  bp.disabled=cur===0;bn.disabled=cur===total-1;
+}
+
+bn.addEventListener('click',function(){
+  if(innerStep(1))return;
+  goTo(cur+1,1);
+});
+bp.addEventListener('click',function(){
+  if(innerStep(-1))return;
+  goTo(cur-1,-1);
+});
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key===' '){
+    e.preventDefault();
+    if(innerStep(1))return;
+    goTo(cur+1,1);
+  }
+  if(e.key==='ArrowLeft'){
+    e.preventDefault();
+    if(innerStep(-1))return;
+    goTo(cur-1,-1);
+  }
+});
+
+var tx=0;
+document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)<48)return;
+  var dir=dx<0?1:-1;
+  if(innerStep(dir))return;
+  goTo(dx<0?cur+1:cur-1,dir);
+},{passive:true});
+</script>
+</body>
+</html>
