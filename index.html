@@ -57,9 +57,27 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 @keyframes drift{from{transform:translate(0,0)}to{transform:translate(30px,20px) scale(1.06)}}
 
 /* ═══ NAV BAR ════════════════════════════════════════ */
-#nav{
+#bottom-bar{
   position:fixed;bottom:20px;left:28px;
   display:flex;align-items:center;gap:10px;z-index:1000;
+}
+#session-picker{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(15,15,30,.85);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.12);border-radius:999px;
+  padding:6px 10px;box-shadow:0 8px 40px rgba(0,0,0,.5);
+}
+.sess-label{font-size:.58rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:0 2px 0 4px;white-space:nowrap;}
+.sess-btn{
+  width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;
+  font-size:.72rem;font-weight:800;font-family:inherit;
+  color:rgba(255,255,255,.5);background:rgba(255,255,255,.08);
+  transition:all .2s;
+}
+.sess-btn:hover{background:rgba(255,255,255,.16);color:#fff;}
+.sess-btn.on{color:#fff;background:linear-gradient(110deg,#6366f1,#4f46e5);box-shadow:0 2px 12px rgba(99,102,241,.4);}
+#nav{
+  display:flex;align-items:center;gap:10px;
   background:rgba(15,15,30,.85);backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,.12);border-radius:999px;
   padding:7px 14px;box-shadow:0 8px 40px rgba(0,0,0,.5);
@@ -81,6 +99,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 .dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.18);border:none;cursor:pointer;transition:all .22s;padding:0;}
 .dot.on{background:#fff;transform:scale(2);}
 .dot:hover{background:rgba(255,255,255,.55);}
+.dot.sess-dim{opacity:.2;transform:scale(1);}
+.dot.sess-dim.on{opacity:1;transform:scale(2);}
 #hint{position:fixed;top:16px;left:24px;font-size:.6rem;color:rgba(255,255,255,.2);letter-spacing:.1em;z-index:999;}
 #upgrad-logo{
   position:fixed;top:clamp(12px,2vh,20px);right:clamp(16px,3vw,28px);
@@ -163,6 +183,622 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 #s13{background:radial-gradient(ellipse at 30% 54%,#1c0c3a 0%,#0c0c16 62%);}
 #s14{background:radial-gradient(ellipse at 42% 48%,#1a1060 0%,#0c0c16 62%);}
 
+/* ═══ AI CHAPTER ══════════════════════════════════════ */
+#ai1{background:radial-gradient(ellipse at 50% 30%,#1a1060 0%,#0c0c16 65%);}
+#ai1 .ai1-body{position:relative;z-index:2;width:100%;max-width:1000px;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,3vh,32px);padding:0 clamp(12px,2vw,24px);}
+#ai1 .ai-evolution-split{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(14px,2.5vw,28px);align-items:start;width:100%;}
+#ai1 .ai-evol-col{display:flex;flex-direction:column;align-items:center;gap:clamp(10px,1.5vh,14px);padding:clamp(14px,2vh,20px) clamp(10px,1.5vw,16px);border-radius:clamp(14px,1.6vw,18px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);}
+#ai1 .ai-evol-col.past{border-color:rgba(255,255,255,.1);}
+#ai1 .ai-evol-col.future{border-color:rgba(129,140,248,.3);box-shadow:0 0 40px rgba(99,102,241,.12);background:linear-gradient(160deg,rgba(99,102,241,.08),rgba(255,255,255,.03));}
+#ai1 .ai-evol-label{font-family:'Fira Code',monospace;font-size:clamp(.72rem,1.05vw,.88rem);font-weight:800;letter-spacing:.14em;color:rgba(255,255,255,.4);}
+#ai1 .ai-evol-col.future .ai-evol-label{color:#818cf8;}
+#ai1 .ai-evol-sub{font-size:clamp(.58rem,.8vw,.72rem);font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.06em;text-transform:uppercase;margin-top:-6px;}
+#ai1 .ai-evol-divider{display:flex;align-items:center;justify-content:center;padding-top:clamp(48px,9vh,72px);font-size:clamp(1.4rem,2.8vw,2rem);color:rgba(129,140,248,.45);opacity:0;transform:scale(.8);transition:opacity .5s .35s,transform .5s .35s;}
+.slide.active #ai1 .ai-evol-divider{opacity:1;transform:scale(1);}
+#ai1 .ai-vtl-col{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;}
+.slide.active #ai1 .ai-evol-col.past .ai-vtl-node:nth-child(1){transition-delay:.06s}
+.slide.active #ai1 .ai-evol-col.past .ai-vtl-node:nth-child(3){transition-delay:.12s}
+.slide.active #ai1 .ai-evol-col.past .ai-vtl-node:nth-child(5){transition-delay:.18s}
+.slide.active #ai1 .ai-evol-col.past .ai-vtl-node:nth-child(7){transition-delay:.24s}
+.slide.active #ai1 .ai-evol-col.past .ai-vtl-node:nth-child(9){transition-delay:.30s}
+.slide.active #ai1 .ai-evol-col.past .ai-vtl-arrow:nth-child(2){transition-delay:.09s}
+.slide.active #ai1 .ai-evol-col.past .ai-vtl-arrow:nth-child(4){transition-delay:.15s}
+.slide.active #ai1 .ai-evol-col.past .ai-vtl-arrow:nth-child(6){transition-delay:.21s}
+.slide.active #ai1 .ai-evol-col.past .ai-vtl-arrow:nth-child(8){transition-delay:.27s}
+.slide.active #ai1 .ai-evol-col.future .ai-vtl-node:nth-child(1){transition-delay:.14s}
+.slide.active #ai1 .ai-evol-col.future .ai-vtl-node:nth-child(3){transition-delay:.22s}
+.slide.active #ai1 .ai-evol-col.future .ai-vtl-node:nth-child(5){transition-delay:.30s}
+.slide.active #ai1 .ai-evol-col.future .ai-vtl-node:nth-child(7){transition-delay:.38s}
+.slide.active #ai1 .ai-evol-col.future .ai-vtl-arrow:nth-child(2){transition-delay:.18s}
+.slide.active #ai1 .ai-evol-col.future .ai-vtl-arrow:nth-child(4){transition-delay:.26s}
+.slide.active #ai1 .ai-evol-col.future .ai-vtl-arrow:nth-child(6){transition-delay:.34s}
+#ai2{background:radial-gradient(ellipse at 30% 50%,#0f172a 0%,#0c0c16 62%);}
+#ai3{background:radial-gradient(ellipse at 70% 40%,#1e1b4b 0%,#0c0c16 62%);}
+#ai4{background:radial-gradient(ellipse at 50% 50%,#0c1a2e 0%,#0c0c16 62%);}
+#ai5{background:radial-gradient(ellipse at 25% 45%,#1c0c3a 0%,#0c0c16 62%);}
+#ai6{background:radial-gradient(ellipse at 60% 35%,#0a1628 0%,#0c0c16 62%);}
+#ai7{background:radial-gradient(ellipse at 40% 55%,#1a1060 0%,#0c0c16 62%);}
+#ai10{background:radial-gradient(ellipse at 55% 38%,#1c0c3a 0%,#0c0c16 62%);}
+#ai9{background:radial-gradient(ellipse at 45% 42%,#0f172a 0%,#0c0c16 62%);}
+#ai14,#ai15{background:radial-gradient(ellipse at 40% 45%,#0f172a 0%,#0c0c16 62%);}
+#ai14 .guide-body,#ai15 .guide-body{position:relative;z-index:2;width:100%;max-width:1100px;display:flex;flex-direction:column;gap:clamp(12px,2vh,18px);align-items:center;padding:clamp(48px,6vh,64px) clamp(12px,2vw,20px) clamp(56px,7vh,72px);max-height:100%;overflow-y:auto;scrollbar-width:thin;}
+#ai14 .guide-split,#ai15 .guide-split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2.5vw,24px);width:100%;align-items:stretch;}
+#ai12{background:radial-gradient(ellipse at 50% 40%,#1a1060 0%,#0c0c16 62%);}
+#ai12 .ai-merge-wrap{position:relative;z-index:2;width:100%;max-width:1040px;display:flex;flex-direction:column;gap:clamp(10px,1.6vh,16px);align-items:center;max-height:100%;overflow-y:auto;padding:clamp(48px,6vh,64px) clamp(16px,3vw,32px) clamp(56px,7vh,72px);scrollbar-width:thin;}
+#ai12 .ai-cta-compact{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.2vh,12px);text-align:center;flex-shrink:0;}
+#ai12 .ai-cta-compact .ai-cta-formula{font-size:clamp(1.4rem,3vw,2.2rem);}
+
+.ai-eyebrow{font-size:clamp(.58rem,.82vw,.74rem);font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:rgba(129,140,248,.7);}
+.ai-chapter-divider{width:clamp(40px,8vw,80px);height:2px;background:linear-gradient(90deg,transparent,#818cf8,#38bdf8,transparent);margin:clamp(6px,1vh,12px) auto;border-radius:2px;}
+
+/* vertical timeline */
+.ai-vtl{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;max-width:420px;}
+.ai-vtl-node{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  opacity:0;transform:translateY(14px);
+  transition:opacity .42s cubic-bezier(.4,0,.2,1),transform .42s cubic-bezier(.4,0,.2,1);
+}
+.slide.active .ai-vtl-node{opacity:1;transform:translateY(0);}
+.slide.active .ai-vtl-node:nth-child(1){transition-delay:.06s}
+.slide.active .ai-vtl-node:nth-child(3){transition-delay:.12s}
+.slide.active .ai-vtl-node:nth-child(5){transition-delay:.18s}
+.slide.active .ai-vtl-node:nth-child(7){transition-delay:.24s}
+.slide.active .ai-vtl-node:nth-child(9){transition-delay:.30s}
+.slide.active .ai-vtl-node:nth-child(11){transition-delay:.36s}
+.slide.active .ai-vtl-node:nth-child(13){transition-delay:.42s}
+.slide.active .ai-vtl-node:nth-child(15){transition-delay:.48s}
+.slide.active .ai-vtl-node:nth-child(17){transition-delay:.54s}
+.slide.active .ai-vtl-node:nth-child(19){transition-delay:.60s}
+.slide.active .ai-vtl-node:nth-child(21){transition-delay:.66s}
+.slide.active .ai-vtl-node:nth-child(23){transition-delay:.72s}
+.ai-vtl-pill{
+  padding:clamp(7px,1.1vh,11px) clamp(14px,2vw,22px);border-radius:999px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  font-size:clamp(.72rem,1.05vw,.88rem);font-weight:700;color:#fff;
+  box-shadow:0 2px 12px rgba(0,0,0,.25);white-space:nowrap;
+}
+.ai-vtl-pill.accent{background:linear-gradient(110deg,rgba(99,102,241,.25),rgba(56,189,248,.18));border-color:rgba(129,140,248,.45);box-shadow:0 4px 20px rgba(99,102,241,.3);}
+.ai-vtl-pill.year{font-family:'Fira Code',monospace;font-size:clamp(.65rem,.9vw,.78rem);color:rgba(255,255,255,.45);letter-spacing:.12em;background:transparent;border-color:rgba(255,255,255,.08);}
+.ai-vtl-arrow{width:2px;height:clamp(14px,2.2vh,22px);background:linear-gradient(180deg,rgba(129,140,248,.6),rgba(56,189,248,.3));position:relative;opacity:0;transform:scaleY(0);transform-origin:top;transition:opacity .3s,transform .35s cubic-bezier(.4,0,.2,1);}
+.slide.active .ai-vtl-arrow{opacity:1;transform:scaleY(1);}
+.slide.active .ai-vtl-arrow:nth-child(2){transition-delay:.09s}
+.slide.active .ai-vtl-arrow:nth-child(4){transition-delay:.15s}
+.slide.active .ai-vtl-arrow:nth-child(6){transition-delay:.21s}
+.slide.active .ai-vtl-arrow:nth-child(8){transition-delay:.27s}
+.slide.active .ai-vtl-arrow:nth-child(10){transition-delay:.33s}
+.slide.active .ai-vtl-arrow:nth-child(12){transition-delay:.39s}
+.slide.active .ai-vtl-arrow:nth-child(14){transition-delay:.45s}
+.slide.active .ai-vtl-arrow:nth-child(16){transition-delay:.51s}
+.slide.active .ai-vtl-arrow:nth-child(18){transition-delay:.57s}
+.slide.active .ai-vtl-arrow:nth-child(20){transition-delay:.63s}
+.slide.active .ai-vtl-arrow:nth-child(22){transition-delay:.69s}
+
+/* compare columns */
+#ai2{justify-content:flex-start!important;align-items:stretch!important;padding:clamp(52px,7vh,68px) clamp(20px,4vw,48px) clamp(64px,8vh,80px)!important;}
+#ai2 .ai-compare-wrap{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;width:100%;max-width:1040px;margin:0 auto;scrollbar-width:thin;scroll-behavior:smooth;}
+#ai2 .ai-compare{align-items:start;}
+#ai2 .ai-stepper-ctrl{display:none;}
+#ai2 .ai-diff-summary.show{margin-top:clamp(10px,1.5vh,16px);}
+#ai2 #wf-before,#ai2 #wf-after{display:flex;flex-direction:column;gap:clamp(6px,1vh,9px);}
+.ai-compare-wrap{flex:1;min-height:0;overflow-y:auto;width:100%;max-width:1040px;margin:0 auto;scrollbar-width:thin;}
+.ai-compare{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2.5vw,32px);width:100%;max-width:1040px;}
+.ai-compare-col{border-radius:clamp(14px,1.6vw,20px);padding:clamp(12px,1.8vh,18px);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:clamp(6px,1vh,9px);}
+.ai-compare-col.before{border-color:rgba(251,113,133,.25);}
+.ai-compare-col.after{border-color:rgba(52,211,153,.3);box-shadow:0 0 40px rgba(52,211,153,.08);}
+.ai-compare-head{font-size:clamp(.68rem,.95vw,.82rem);font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-align:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;}
+.ai-compare-meta{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding-bottom:6px;}
+.ai-compare-meta span{font-size:clamp(.5rem,.68vw,.62rem);font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.06em;}
+.ai-cmp-step{
+  display:flex;flex-direction:column;align-items:stretch;gap:7px;
+  padding:clamp(9px,1.2vh,12px) clamp(11px,1.5vw,14px);
+  border-radius:11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  opacity:0;transform:translateX(-8px);transition:opacity .35s,transform .35s,box-shadow .35s,background .35s,border-color .35s;
+  scroll-margin:clamp(8px,1.2vh,12px) 0;
+}
+.ai-compare-col.after .ai-cmp-step{transform:translateX(8px);}
+.ai-cmp-step.on{opacity:1;transform:translateX(0);background:rgba(255,255,255,.09);box-shadow:0 4px 16px rgba(0,0,0,.2);}
+.ai-cmp-step.current{box-shadow:0 4px 20px rgba(99,102,241,.2);border-color:rgba(129,140,248,.3)!important;}
+.ai-compare-col.before .ai-cmp-step.on{border-color:rgba(251,113,133,.2);}
+.ai-compare-col.after .ai-cmp-step.on{box-shadow:0 4px 20px rgba(52,211,153,.15);border-color:rgba(52,211,153,.25);}
+.ai-cmp-main{display:flex;align-items:flex-start;gap:9px;}
+.ai-cmp-step .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;background:rgba(255,255,255,.25);}
+.ai-cmp-step.on .dot{background:linear-gradient(110deg,#818cf8,#38bdf8);box-shadow:0 0 8px rgba(129,140,248,.6);}
+.ai-cmp-text{flex:1;min-width:0;}
+.ai-cmp-title{font-size:clamp(.7rem,1vw,.84rem);font-weight:800;color:#fff;line-height:1.3;}
+.ai-cmp-desc{font-size:clamp(.56rem,.76vw,.68rem);color:rgba(255,255,255,.4);font-weight:500;line-height:1.45;margin-top:2px;}
+.ai-diff{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:6px;border-top:1px solid rgba(255,255,255,.06);}
+.ai-diff-label{font-size:clamp(.5rem,.68vw,.62rem);font-weight:800;letter-spacing:.06em;text-transform:uppercase;}
+.ai-diff-bars{display:flex;gap:3px;}
+.ai-diff-bars span{width:clamp(12px,1.8vw,18px);height:4px;border-radius:2px;background:rgba(255,255,255,.1);}
+.ai-cmp-step.on .ai-diff-bars span.filled{box-shadow:0 0 6px var(--diff-glow,rgba(52,211,153,.35));}
+.ai-diff[data-level="1"] .ai-diff-label{color:#34d399;}
+.ai-diff[data-level="2"] .ai-diff-label{color:#fbbf24;}
+.ai-diff[data-level="3"] .ai-diff-label{color:#fb923c;}
+.ai-diff[data-level="4"] .ai-diff-label{color:#fb7185;}
+.ai-diff[data-level="1"]{--diff-c:#34d399;--diff-glow:rgba(52,211,153,.4);}
+.ai-diff[data-level="2"]{--diff-c:#fbbf24;--diff-glow:rgba(251,191,36,.4);}
+.ai-diff[data-level="3"]{--diff-c:#fb923c;--diff-glow:rgba(251,146,60,.4);}
+.ai-diff[data-level="4"]{--diff-c:#fb7185;--diff-glow:rgba(251,113,133,.4);}
+.ai-cmp-step.on .ai-diff-bars span.filled{background:var(--diff-c);}
+.ai-diff-summary{
+  display:flex;align-items:center;justify-content:center;gap:clamp(14px,2.5vw,28px);
+  padding:clamp(8px,1.2vh,12px) clamp(14px,2vw,20px);border-radius:12px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  opacity:0;max-height:0;overflow:hidden;padding-top:0;padding-bottom:0;margin:0 auto;
+  transform:translateY(8px);transition:opacity .4s,transform .4s,max-height .4s,padding .4s,margin .4s;
+  flex-shrink:0;width:100%;max-width:1040px;
+}
+.ai-diff-summary.show{opacity:1;max-height:120px;padding:clamp(8px,1.2vh,12px) clamp(14px,2vw,20px);margin:clamp(6px,1vh,10px) auto 0;transform:translateY(0);}
+.ai-diff-sum-col{text-align:center;min-width:clamp(80px,14vw,120px);}
+.ai-diff-sum-label{font-size:clamp(.52rem,.72vw,.66rem);font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);}
+.ai-diff-sum-score{font-size:clamp(.95rem,1.6vw,1.2rem);font-weight:900;margin-top:2px;}
+.ai-diff-sum-meter{display:flex;gap:3px;justify-content:center;margin-top:5px;}
+.ai-diff-sum-meter span{height:5px;width:clamp(16px,2.5vw,26px);border-radius:3px;background:rgba(255,255,255,.08);transition:background .4s;}
+.ai-diff-sum-meter span.filled{background:var(--sum-c,rgba(255,255,255,.3));}
+.ai-diff-vs{font-size:clamp(.7rem,1.1vw,.9rem);font-weight:900;color:rgba(255,255,255,.2);}
+
+/* tool cards */
+.ai-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,1.5vw,16px);width:100%;max-width:960px;}
+.ai-tool{
+  border-radius:clamp(12px,1.4vw,16px);padding:clamp(12px,1.8vh,18px) clamp(10px,1.4vw,14px);
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;
+  transition:transform .25s,box-shadow .25s,border-color .25s,background .25s;
+  cursor:default;position:relative;overflow:hidden;
+}
+.ai-tool::after{content:'';position:absolute;inset:-1px;border-radius:inherit;background:linear-gradient(135deg,rgba(129,140,248,.0),rgba(56,189,248,.0));opacity:0;transition:opacity .25s;pointer-events:none;}
+.ai-tool:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 16px 40px rgba(99,102,241,.25);border-color:rgba(129,140,248,.4);background:rgba(255,255,255,.09);}
+.ai-tool:hover::after{opacity:1;background:linear-gradient(135deg,rgba(129,140,248,.12),rgba(56,189,248,.08));}
+.ai-tool-logo{width:clamp(36px,5vw,48px);height:clamp(36px,5vw,48px);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:clamp(1rem,1.8vw,1.4rem);font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.ai-tool-name{font-size:clamp(.74rem,1.05vw,.9rem);font-weight:800;color:#fff;}
+.ai-tool-use{font-size:clamp(.58rem,.78vw,.7rem);font-weight:700;color:#818cf8;letter-spacing:.04em;}
+.ai-tool-desc{font-size:clamp(.58rem,.76vw,.68rem);color:rgba(255,255,255,.4);line-height:1.5;}
+
+/* hub diagram */
+#ai4 .slide-hub{position:relative;z-index:2;width:100%;display:flex;flex-direction:column;gap:clamp(8px,1.4vh,14px);align-items:center;}
+.ai-hub-wrap{position:relative;width:min(96vw,680px);height:min(62vh,560px);margin:0 auto;}
+.ai-hub-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px dashed rgba(129,140,248,.1);pointer-events:none;z-index:0;transform:translate(-50%,-50%);}
+.ai-hub-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:clamp(76px,13vw,104px);height:clamp(76px,13vw,104px);border-radius:50%;
+  background:linear-gradient(135deg,rgba(99,102,241,.3),rgba(56,189,248,.2));
+  border:2px solid rgba(129,140,248,.5);display:flex;align-items:center;justify-content:center;
+  font-size:clamp(.65rem,1vw,.82rem);font-weight:800;color:#fff;text-align:center;line-height:1.25;
+  box-shadow:0 0 40px rgba(99,102,241,.4);z-index:3;
+}
+.ai-hub-node{
+  position:absolute;padding:clamp(5px,.9vh,8px) clamp(8px,1.2vw,12px);border-radius:10px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  font-size:clamp(.56rem,.78vw,.72rem);font-weight:700;color:#fff;white-space:nowrap;
+  opacity:0;transform:translate(-50%,-50%) scale(.85);
+  transition:opacity .4s,transform .4s,box-shadow .3s,border-color .3s;
+  z-index:2;
+}
+.ai-hub-node.outer{font-size:clamp(.5rem,.7vw,.64rem);padding:clamp(4px,.8vh,7px) clamp(7px,1vw,10px);background:rgba(255,255,255,.05);}
+.slide.active .ai-hub-node{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.ai-hub-node:hover{box-shadow:0 0 20px rgba(129,140,248,.4);border-color:rgba(129,140,248,.4);z-index:4;}
+.ai-hub-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.ai-hub-line{stroke:rgba(129,140,248,.22);stroke-width:1.5;stroke-dasharray:6 4;opacity:0;transition:opacity .5s;}
+.ai-hub-line.outer{stroke:rgba(56,189,248,.18);}
+.slide.active .ai-hub-line{opacity:1;animation:hubPulse 2.5s ease-in-out infinite;}
+.ai-hub-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(6px,1vw,10px);max-width:680px;padding:0 clamp(8px,2vw,16px);}
+.ai-hub-legend span{font-size:clamp(.5rem,.68vw,.62rem);font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.06em;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);}
+.ai-hub-legend-sep{background:transparent!important;border-color:transparent!important;color:rgba(255,255,255,.25)!important;padding:4px 6px!important;}
+@keyframes hubPulse{0%,100%{stroke:rgba(129,140,248,.2)}50%{stroke:rgba(56,189,248,.55)}}
+
+/* prompt blocks */
+#ai5 .ai-prompt-body{position:relative;z-index:2;width:100%;max-width:1140px;display:flex;flex-direction:column;gap:clamp(14px,2.5vh,24px);align-items:center;padding:clamp(0,1vh,8px) clamp(12px,2vw,24px);max-height:100%;overflow-y:auto;scrollbar-width:thin;}
+#ai5 .ai-prompt-split{display:grid;grid-template-columns:minmax(0,.36fr) minmax(0,.64fr);gap:clamp(16px,2.8vw,28px);width:100%;max-width:1140px;align-items:start;}
+#ai5 .ai-prompt-card{border-radius:clamp(14px,1.6vw,20px);padding:clamp(16px,2.4vh,24px) clamp(16px,2.2vw,24px);display:flex;flex-direction:column;gap:clamp(10px,1.5vh,14px);align-items:stretch;justify-content:flex-start;}
+.ai-prompt-card.bad{background:rgba(251,113,133,.06);border:1.5px solid rgba(251,113,133,.25);}
+.ai-prompt-card.good{background:rgba(52,211,153,.06);border:1.5px solid rgba(52,211,153,.28);}
+#ai5 .ai-prompt-card.bad{min-height:auto;}
+#ai5 .ai-prompt-card.good{min-height:0;}
+#ai5 .ai-prompt-label{font-size:clamp(.72rem,1.05vw,.92rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;}
+#ai5 .ai-code{
+  font-family:'Fira Code',monospace;font-size:clamp(.62rem,.88vw,.78rem);line-height:1.7;
+  padding:clamp(14px,2vh,18px) clamp(14px,2vw,18px);border-radius:clamp(10px,1.2vw,12px);
+  background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.78);
+  white-space:pre-wrap;flex:1;overflow-y:auto;scrollbar-width:thin;text-align:left;align-self:stretch;
+}
+#ai5 .ai-prompt-card.bad .ai-code{font-size:clamp(.78rem,1.1vw,.95rem);display:block;flex:0;align-self:stretch;}
+#ai5 .ai-prompt-note{font-size:clamp(.7rem,1vw,.86rem)!important;line-height:1.6;color:rgba(255,255,255,.45)!important;}
+#ai5 .prm-sec{display:block;font-size:clamp(.58rem,.8vw,.72rem);font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c084fc;margin-top:clamp(8px,1.2vh,12px);}
+#ai5 .prm-sec:first-child{margin-top:0;}
+#ai5 .prm-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:clamp(8px,1.2vh,10px);}
+#ai5 .prm-tag{font-size:clamp(.5rem,.68vw,.62rem);font-weight:700;padding:3px 8px;border-radius:999px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:#34d399;}
+#ai5 .prm-checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:5px 10px;margin-top:4px;}
+#ai5 .prm-check{font-size:clamp(.52rem,.72vw,.66rem);font-weight:600;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:5px;}
+#ai5 .prm-check::before{content:'✓';color:#34d399;font-weight:900;font-size:.85em;}
+.ai-code .kw{color:#c084fc}.ai-code .str{color:#34d399}.ai-code .cm{color:rgba(255,255,255,.32);font-style:italic}
+.ai-code .fn{color:#38bdf8}.ai-code .num{color:#fbbf24}.ai-code .var{color:#fb7185}
+#ai5 .ai-meter-wrap{width:100%;max-width:560px;}
+#ai5 .ai-meter{display:flex;align-items:center;gap:clamp(12px,2vw,18px);width:100%;margin:0 auto;}
+#ai5 .ai-meter-seg{flex:1;height:clamp(8px,1.2vh,10px);border-radius:5px;background:rgba(255,255,255,.08);position:relative;overflow:hidden;}
+.ai-meter-seg .fill{position:absolute;inset:0;border-radius:5px;transform:scaleX(0);transform-origin:left;transition:transform .6s cubic-bezier(.4,0,.2,1);}
+.ai-meter-seg.poor .fill{background:linear-gradient(90deg,#fb7185,#f43f5e);}
+.ai-meter-seg.avg .fill{background:linear-gradient(90deg,#fbbf24,#fb923c);}
+.ai-meter-seg.exc .fill{background:linear-gradient(90deg,#34d399,#06b6d4);}
+.slide.active .ai-meter-seg.poor .fill{transform:scaleX(1);transition-delay:.3s}
+.slide.active .ai-meter-seg.avg .fill{transform:scaleX(1);transition-delay:.5s}
+.slide.active .ai-meter-seg.exc .fill{transform:scaleX(1);transition-delay:.7s}
+#ai5 .ai-meter-labels{display:flex;justify-content:space-between;width:100%;margin:clamp(8px,1.2vh,10px) auto 0;font-size:clamp(.72rem,.95vw,.88rem);font-weight:700;color:rgba(255,255,255,.35);}
+#ai5 .ai-meter-title{font-size:clamp(.62rem,.85vw,.76rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);text-align:center;margin-bottom:clamp(6px,1vh,10px);}
+.ai-prompt-split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2.5vw,28px);width:100%;max-width:920px;align-items:stretch;}
+.ai-prompt-card{border-radius:14px;padding:clamp(14px,2vh,20px);display:flex;flex-direction:column;gap:10px;}
+.ai-prompt-label{font-size:clamp(.62rem,.88vw,.76rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;}
+.ai-code{
+  font-family:'Fira Code',monospace;font-size:clamp(.6rem,.82vw,.72rem);line-height:1.7;
+  padding:clamp(10px,1.5vh,14px);border-radius:10px;background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.75);white-space:pre-wrap;
+}
+.ai-meter{display:flex;align-items:center;gap:clamp(8px,1.2vw,14px);width:100%;max-width:420px;margin:0 auto;}
+.ai-meter-seg{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative;overflow:hidden;}
+.ai-meter-labels{display:flex;justify-content:space-between;width:100%;max-width:420px;margin:4px auto 0;font-size:clamp(.55rem,.72vw,.66rem);font-weight:700;color:rgba(255,255,255,.35);}
+
+/* MCP flow */
+.ai-mcp{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;max-width:480px;}
+.ai-mcp-node{
+  padding:clamp(8px,1.2vh,12px) clamp(18px,2.5vw,28px);border-radius:12px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  font-size:clamp(.74rem,1.05vw,.88rem);font-weight:700;color:#fff;
+  opacity:0;transform:scale(.9);transition:opacity .35s,transform .35s,box-shadow .35s;
+  position:relative;z-index:2;
+}
+.ai-mcp-node.hub{background:linear-gradient(135deg,rgba(99,102,241,.35),rgba(56,189,248,.25));border-color:rgba(129,140,248,.5);box-shadow:0 0 30px rgba(99,102,241,.35);}
+.slide.active .ai-mcp-node{opacity:1;transform:scale(1);}
+.slide.active .ai-mcp-wrap .ai-mcp-node:nth-child(1){transition-delay:.04s}
+.slide.active .ai-mcp-wrap .ai-mcp-node:nth-child(3){transition-delay:.10s}
+.slide.active .ai-mcp-wrap .ai-mcp-node:nth-child(5){transition-delay:.16s}
+.slide.active .ai-mcp-wrap .ai-mcp-node:nth-child(7){transition-delay:.22s}
+.slide.active .ai-mcp-wrap .ai-mcp-node:nth-child(9){transition-delay:.28s}
+.slide.active .ai-mcp-wrap .ai-mcp-node:nth-child(11){transition-delay:.34s}
+.slide.active .ai-mcp-wrap .ai-mcp-node:nth-child(13){transition-delay:.40s}
+.slide.active .ai-mcp-wrap .ai-mcp-node:nth-child(15){transition-delay:.46s}
+.slide.active .ai-mcp-wrap .ai-mcp-node:nth-child(17){transition-delay:.52s}
+.ai-mcp-conn{width:2px;height:clamp(12px,1.8vh,18px);background:linear-gradient(180deg,rgba(129,140,248,.5),rgba(56,189,248,.2));opacity:0;transform:scaleY(0);transform-origin:top;transition:opacity .3s,transform .35s;}
+.slide.active .ai-mcp-conn{opacity:1;transform:scaleY(1);}
+.ai-mcp-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.2vw,12px);width:100%;margin-top:4px;}
+.ai-mcp-tool{padding:clamp(7px,1vh,10px);border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);text-align:center;font-size:clamp(.62rem,.85vw,.74rem);font-weight:700;color:rgba(255,255,255,.7);opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s;}
+.slide.active .ai-mcp-tool{opacity:1;transform:translateY(0);}
+.slide.active .ai-mcp-tools .ai-mcp-tool:nth-child(1){transition-delay:.55s}
+.slide.active .ai-mcp-tools .ai-mcp-tool:nth-child(2){transition-delay:.60s}
+.slide.active .ai-mcp-tools .ai-mcp-tool:nth-child(3){transition-delay:.65s}
+.slide.active .ai-mcp-tools .ai-mcp-tool:nth-child(4){transition-delay:.70s}
+.slide.active .ai-mcp-tools .ai-mcp-tool:nth-child(5){transition-delay:.75s}
+.slide.active .ai-mcp-tools .ai-mcp-tool:nth-child(6){transition-delay:.80s}
+.ai-mcp-caption{font-size:clamp(.78rem,1.15vw,.95rem);font-weight:700;color:rgba(255,255,255,.55);font-style:italic;margin-top:clamp(10px,1.5vh,16px);text-align:center;}
+
+/* skill vs agent */
+#ai7{justify-content:flex-start!important;align-items:stretch!important;padding:clamp(52px,7vh,68px) clamp(20px,4vw,48px) clamp(64px,8vh,80px)!important;}
+#ai7 .ai-vs-body{position:relative;z-index:2;width:100%;max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(12px,2vh,18px);flex:1;min-height:0;}
+#ai7 .ai-vs-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;display:flex;flex-direction:column;gap:clamp(12px,2vh,16px);}
+.ai-vs{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(14px,2.5vw,28px);align-items:stretch;width:100%;}
+.ai-vs-card{border-radius:clamp(14px,1.6vw,20px);padding:clamp(16px,2.4vh,24px);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:clamp(10px,1.5vh,14px);}
+#ai7 .ai-vs-card.skill{border-color:rgba(56,189,248,.35);background:linear-gradient(160deg,rgba(56,189,248,.08),rgba(255,255,255,.04));}
+#ai7 .ai-vs-card.agent{border-color:rgba(167,139,250,.4);background:linear-gradient(160deg,rgba(99,102,241,.1),rgba(255,255,255,.04));box-shadow:0 0 48px rgba(99,102,241,.12);}
+#ai7 .ai-vs-head{display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08);}
+#ai7 .ai-vs-icon{width:clamp(40px,6vw,52px);height:clamp(40px,6vw,52px);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:clamp(1.2rem,2.2vw,1.6rem);flex-shrink:0;}
+#ai7 .ai-vs-card.skill .ai-vs-icon{background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.3);}
+#ai7 .ai-vs-card.agent .ai-vs-icon{background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.35);}
+.ai-vs-title{font-size:clamp(1.1rem,2vw,1.6rem);font-weight:900;color:#fff;line-height:1.1;}
+#ai7 .ai-vs-title{font-size:clamp(1rem,1.8vw,1.45rem);}
+.ai-vs-sub{font-size:clamp(.68rem,.95vw,.82rem);color:rgba(255,255,255,.45);line-height:1.6;}
+#ai7 .ai-vs-sub{font-size:clamp(.65rem,.9vw,.8rem);margin-top:3px;}
+#ai7 .ai-vs-traits{display:flex;flex-wrap:wrap;gap:6px;}
+#ai7 .ai-vs-trait{font-size:clamp(.52rem,.72vw,.66rem);font-weight:700;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);letter-spacing:.03em;}
+#ai7 .ai-vs-card.skill .ai-vs-trait{border-color:rgba(56,189,248,.2);color:rgba(56,189,248,.85);}
+#ai7 .ai-vs-card.agent .ai-vs-trait{border-color:rgba(167,139,250,.25);color:rgba(167,139,250,.9);}
+#ai7 .ai-vs-section{font-size:clamp(.55rem,.75vw,.68rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:2px;}
+#ai7 .ai-vs-item{display:flex;align-items:flex-start;gap:10px;padding:clamp(9px,1.2vh,12px) clamp(10px,1.4vw,14px);border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);transition:background .2s,border-color .2s;}
+#ai7 .ai-vs-item:hover{background:rgba(255,255,255,.08);}
+#ai7 .ai-vs-item-icon{font-size:clamp(.95rem,1.5vw,1.15rem);line-height:1;flex-shrink:0;margin-top:1px;}
+#ai7 .ai-vs-item-text{flex:1;min-width:0;}
+#ai7 .ai-vs-item-title{font-size:clamp(.7rem,1vw,.84rem);font-weight:800;color:#fff;line-height:1.3;}
+#ai7 .ai-vs-item-desc{font-size:clamp(.58rem,.78vw,.7rem);color:rgba(255,255,255,.4);line-height:1.5;margin-top:2px;}
+#ai7 .ai-vs-footer{margin-top:auto;padding:clamp(10px,1.4vh,14px);border-radius:10px;font-size:clamp(.62rem,.85vw,.76rem);line-height:1.55;}
+#ai7 .ai-vs-card.skill .ai-vs-footer{background:rgba(251,113,133,.06);border:1px solid rgba(251,113,133,.18);color:rgba(255,255,255,.55);}
+#ai7 .ai-vs-card.agent .ai-vs-footer{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.18);color:rgba(255,255,255,.55);}
+#ai7 .ai-vs-footer strong{color:#fff;font-weight:800;}
+#ai7 .ai-vs-bridge{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.4vh,14px);padding:0 clamp(4px,1vw,8px);}
+#ai7 .ai-vs-bridge-label{font-size:clamp(.52rem,.72vw,.64rem);font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);text-align:center;line-height:1.5;writing-mode:vertical-rl;transform:rotate(180deg);}
+#ai7 .ai-vs-arrows{display:flex;flex-direction:column;gap:8px;align-items:center;}
+#ai7 .ai-vs-arrows svg{opacity:0;transform:translateX(-6px);transition:opacity .4s,transform .4s;}
+.slide.active #ai7 .ai-vs-arrows svg{opacity:1;transform:translateX(0);}
+.slide.active #ai7 .ai-vs-arrows svg:nth-child(1){transition-delay:.15s}
+.slide.active #ai7 .ai-vs-arrows svg:nth-child(2){transition-delay:.3s}
+.slide.active #ai7 .ai-vs-arrows svg:nth-child(3){transition-delay:.45s}
+#ai7 .ai-vs-matrix{border-radius:clamp(12px,1.4vw,16px);padding:clamp(12px,1.8vh,16px) clamp(14px,2vw,20px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);flex-shrink:0;}
+#ai7 .ai-vs-matrix-title{font-size:clamp(.58rem,.8vw,.72rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);text-align:center;margin-bottom:clamp(8px,1.2vh,12px);}
+#ai7 .ai-vs-matrix-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:clamp(6px,1vh,8px) clamp(10px,1.5vw,16px);align-items:center;}
+#ai7 .ai-vs-matrix-h{font-size:clamp(.58rem,.78vw,.7rem);font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.08);}
+#ai7 .ai-vs-matrix-h.skill{color:#38bdf8;}#ai7 .ai-vs-matrix-h.agent{color:#a78bfa;}
+#ai7 .ai-vs-matrix-row{font-size:clamp(.62rem,.85vw,.76rem);font-weight:700;color:rgba(255,255,255,.45);}
+#ai7 .ai-vs-matrix-val{font-size:clamp(.65rem,.88vw,.78rem);font-weight:700;color:rgba(255,255,255,.7);padding:clamp(5px,1vh,7px) clamp(8px,1.2vw,10px);border-radius:8px;background:rgba(255,255,255,.04);text-align:center;}
+#ai7 .ai-vs-matrix-val.skill{color:#38bdf8;background:rgba(56,189,248,.08);}
+#ai7 .ai-vs-matrix-val.agent{color:#a78bfa;background:rgba(167,139,250,.08);}
+.ai-vs-item{display:flex;align-items:center;gap:8px;font-size:clamp(.7rem,1vw,.84rem);font-weight:600;color:rgba(255,255,255,.75);padding:8px 12px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
+.ai-vs-arrows{display:flex;flex-direction:column;gap:6px;align-items:center;}
+.ai-vs-arrows svg{opacity:0;transform:translateX(-6px);transition:opacity .4s,transform .4s;}
+.slide.active .ai-vs-arrows svg{opacity:1;transform:translateX(0);}
+.slide.active .ai-vs-arrows svg:nth-child(1){transition-delay:.2s}
+.slide.active .ai-vs-arrows svg:nth-child(2){transition-delay:.35s}
+.slide.active .ai-vs-arrows svg:nth-child(3){transition-delay:.5s}
+
+/* agent stepper */
+#ai10{justify-content:flex-start !important;align-items:stretch !important;padding:clamp(52px,7vh,68px) clamp(20px,4vw,48px) clamp(64px,8vh,80px) !important;}
+.ai-agent-steps{display:flex;flex-direction:column;gap:clamp(6px,1vh,10px);flex:1;min-height:0;overflow-y:auto;}
+.ai-agent-node{
+  display:flex;align-items:center;gap:12px;padding:clamp(10px,1.4vh,14px) clamp(12px,1.6vw,18px);
+  border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  opacity:.3;transform:translateX(-10px);transition:opacity .35s,transform .35s,box-shadow .35s,border-color .35s;
+}
+.ai-agent-node.on{opacity:1;transform:translateX(0);border-color:rgba(129,140,248,.35);box-shadow:0 4px 20px rgba(99,102,241,.15);background:rgba(255,255,255,.08);}
+.ai-agent-num{
+  width:clamp(28px,4vw,36px);height:clamp(28px,4vw,36px);border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:clamp(.7rem,1vw,.82rem);font-weight:900;color:#fff;
+  background:linear-gradient(135deg,#6366f1,#4f46e5);box-shadow:0 0 16px rgba(99,102,241,.5);
+}
+.ai-agent-node.on .ai-agent-num{animation:agentGlow 2s ease-in-out infinite;}
+@keyframes agentGlow{0%,100%{box-shadow:0 0 16px rgba(99,102,241,.5)}50%{box-shadow:0 0 28px rgba(56,189,248,.7)}}
+.ai-agent-label{font-size:clamp(.76rem,1.05vw,.9rem);font-weight:700;color:#fff;}
+.ai-agent-arrow{width:2px;height:clamp(8px,1.2vh,12px);margin-left:clamp(22px,3.2vw,30px);background:linear-gradient(180deg,rgba(129,140,248,.4),rgba(56,189,248,.15));}
+
+/* architecture */
+.ai-arch{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;max-width:340px;}
+.ai-arch-node{
+  padding:clamp(8px,1.1vh,11px) clamp(16px,2vw,24px);border-radius:11px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  font-size:clamp(.68rem,.95vw,.82rem);font-weight:700;color:#fff;text-align:center;width:100%;
+  opacity:0;transform:scale(.92);transition:opacity .35s,transform .35s;
+}
+.slide.active .ai-arch-node{opacity:1;transform:scale(1);}
+.slide.active .ai-arch .ai-arch-node:nth-child(1){transition-delay:.04s}
+.slide.active .ai-arch .ai-arch-node:nth-child(3){transition-delay:.10s}
+.slide.active .ai-arch .ai-arch-node:nth-child(5){transition-delay:.16s}
+.slide.active .ai-arch .ai-arch-node:nth-child(7){transition-delay:.22s}
+.slide.active .ai-arch .ai-arch-node:nth-child(9){transition-delay:.28s}
+.slide.active .ai-arch .ai-arch-node:nth-child(11){transition-delay:.34s}
+.slide.active .ai-arch .ai-arch-node:nth-child(13){transition-delay:.40s}
+.ai-arch-arrow{color:rgba(129,140,248,.5);font-size:clamp(.7rem,1vw,.85rem);opacity:0;transition:opacity .3s;}
+.slide.active .ai-arch-arrow{opacity:1;}
+.ai-arch-side{display:flex;flex-direction:column;gap:clamp(6px,1vh,9px);}
+.ai-arch-side .ai-arch-node{font-size:clamp(.6rem,.82vw,.74rem);padding:clamp(6px,1vh,9px) clamp(10px,1.4vw,14px);}
+
+/* live build mock UI */
+#ai10 .ai-build-layout{display:grid;grid-template-columns:minmax(0,.38fr) minmax(0,.62fr);gap:clamp(12px,2vw,20px);width:100%;flex:1;min-height:0;}
+#ai10 .ai-build-steps-col{display:flex;flex-direction:column;min-height:0;}
+#ai10 .ai-build-steps-col .ai-agent-steps{flex:1;}
+#ai10 .gm-mock{
+  background:#f6f7fb;border-radius:clamp(10px,1.2vw,14px);overflow:hidden;
+  display:grid;grid-template-columns:clamp(100px,14vw,130px) 1fr;
+  min-height:0;height:100%;font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+  box-shadow:0 16px 48px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08);
+  color:#1e1b4b;position:relative;
+}
+#ai10 .gm-side{background:#fff;border-right:1px solid #e8eaf2;padding:clamp(8px,1.2vh,12px) clamp(6px,.9vw,10px);display:flex;flex-direction:column;gap:8px;}
+#ai10 .gm-logo{font-size:clamp(.52rem,.75vw,.66rem);font-weight:900;color:#5b4ae0;line-height:1.2;}
+#ai10 .gm-logo span{color:#94a3b8;font-weight:600;font-size:.9em;}
+#ai10 .gm-navgrp{font-size:clamp(.42rem,.58vw,.52rem);font-weight:800;letter-spacing:.1em;color:#94a3b8;margin-top:4px;}
+#ai10 .gm-navitem{font-size:clamp(.44rem,.62vw,.54rem);font-weight:600;color:#64748b;padding:4px 6px;border-radius:6px;}
+#ai10 .gm-navitem.on{background:#ede9fe;color:#5b4ae0;font-weight:800;}
+#ai10 .gm-body{display:grid;grid-template-columns:1fr 1.1fr;min-height:0;overflow:hidden;}
+#ai10 .gm-upload{padding:clamp(8px,1.2vh,12px);display:flex;flex-direction:column;gap:clamp(6px,1vh,8px);border-right:1px solid #e8eaf2;background:#fff;}
+#ai10 .gm-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;}
+#ai10 .gm-title{font-size:clamp(.58rem,.82vw,.72rem);font-weight:800;color:#1e1b4b;}
+#ai10 .gm-sub{font-size:clamp(.42rem,.58vw,.5rem);color:#94a3b8;line-height:1.4;margin-top:2px;}
+#ai10 .gm-badge{font-size:clamp(.38rem,.52vw,.46rem);font-weight:800;padding:2px 6px;border-radius:999px;white-space:nowrap;}
+#ai10 .gm-badge.ai{background:#dcfce7;color:#16a34a;}
+#ai10 .gm-badge.ready{background:#ede9fe;color:#5b4ae0;}
+#ai10 .gm-drop{border:1.5px dashed #c7d2fe;border-radius:8px;padding:clamp(8px,1.2vh,12px);text-align:center;background:#fafaff;transition:opacity .3s,border-color .3s;}
+#ai10 .gm-drop .file{font-size:clamp(.44rem,.62vw,.54rem);font-weight:700;color:#5b4ae0;margin-top:4px;}
+#ai10 .gm-drop .hint{font-size:clamp(.38rem,.52vw,.46rem);color:#94a3b8;margin-top:2px;}
+#ai10 .gm-toggle{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:8px;background:#f8fafc;border:1px solid #e8eaf2;font-size:clamp(.42rem,.58vw,.5rem);font-weight:600;color:#64748b;}
+#ai10 .gm-toggle .sw{width:22px;height:12px;border-radius:999px;background:#e2e8f0;position:relative;}
+#ai10 .gm-toggle .sw::after{content:'';position:absolute;top:2px;left:2px;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.15);}
+#ai10 .gm-btn{margin-top:auto;padding:7px;border-radius:8px;border:none;background:linear-gradient(110deg,#6366f1,#5b4ae0);color:#fff;font-weight:800;font-size:clamp(.44rem,.62vw,.54rem);font-family:inherit;text-align:center;}
+#ai10 .gm-analysis{padding:clamp(8px,1.2vh,12px);display:flex;flex-direction:column;gap:clamp(6px,1vh,8px);background:#f6f7fb;min-height:0;overflow:hidden;}
+#ai10 .gm-tabs{display:flex;flex-wrap:wrap;gap:4px;}
+#ai10 .gm-tab{font-size:clamp(.36rem,.5vw,.44rem);font-weight:700;padding:3px 6px;border-radius:6px;background:#fff;border:1px solid #e8eaf2;color:#64748b;}
+#ai10 .gm-tab.on{background:#5b4ae0;color:#fff;border-color:#5b4ae0;}
+#ai10 .gm-agents{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;opacity:.35;transition:opacity .4s;}
+#ai10 .gm-mock[data-phase="agents"] .gm-agents,#ai10 .gm-mock[data-phase="results"] .gm-agents{opacity:1;}
+#ai10 .gm-agent{padding:5px;border-radius:7px;background:#fff;border:1px solid #e8eaf2;font-size:clamp(.38rem,.52vw,.46rem);}
+#ai10 .gm-agent.on{border-color:#5b4ae0;box-shadow:0 0 0 1px #5b4ae0;background:#fafaff;}
+#ai10 .gm-agent b{display:block;font-weight:800;color:#1e1b4b;font-size:clamp(.4rem,.56vw,.48rem);}
+#ai10 .gm-agent span{color:#94a3b8;font-size:clamp(.36rem,.5vw,.44rem);line-height:1.3;}
+#ai10 .gm-result{margin-top:auto;padding:8px;border-radius:8px;background:#fff;border:1px solid #e8eaf2;opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s;}
+#ai10 .gm-mock[data-phase="results"] .gm-result{opacity:1;transform:translateY(0);}
+#ai10 .gm-result-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+#ai10 .gm-result-tag{font-size:clamp(.38rem,.52vw,.46rem);font-weight:800;color:#5b4ae0;letter-spacing:.06em;text-transform:uppercase;}
+#ai10 .gm-match{font-size:clamp(.38rem,.52vw,.46rem);font-weight:700;padding:2px 6px;border-radius:999px;background:#dcfce7;color:#16a34a;}
+#ai10 .gm-score{font-size:clamp(1.1rem,2.2vw,1.5rem);font-weight:900;color:#5b4ae0;line-height:1;}
+#ai10 .gm-score-lbl{font-size:clamp(.38rem,.52vw,.46rem);font-weight:700;color:#94a3b8;margin-top:2px;}
+#ai10 .gm-feedback{font-size:clamp(.4rem,.56vw,.48rem);color:#64748b;line-height:1.45;margin-top:6px;border-top:1px solid #f1f5f9;padding-top:6px;}
+#ai10 .gm-processing{position:absolute;inset:0;background:rgba(246,247,251,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;pointer-events:none;transition:opacity .35s;z-index:5;}
+#ai10 .gm-mock[data-phase="processing"] .gm-processing{opacity:1;}
+#ai10 .gm-spin{width:28px;height:28px;border-radius:50%;border:3px solid #e8eaf2;border-top-color:#5b4ae0;animation:gmSpin .8s linear infinite;}
+@keyframes gmSpin{to{transform:rotate(360deg)}}
+#ai10 .gm-proc-txt{font-size:clamp(.48rem,.68vw,.58rem);font-weight:700;color:#5b4ae0;}
+#ai10 .gm-proc-bar{width:60%;height:4px;border-radius:2px;background:#e8eaf2;overflow:hidden;}
+#ai10 .gm-proc-bar .fill{height:100%;background:linear-gradient(90deg,#6366f1,#5b4ae0);border-radius:2px;transition:width .5s;}
+#ai10 .gm-live-link{
+  display:inline-flex;align-items:center;gap:8px;margin-top:clamp(8px,1.2vh,12px);padding:clamp(9px,1.3vh,12px) clamp(16px,2.2vw,22px);
+  border-radius:999px;background:linear-gradient(110deg,#6366f1,#4f46e5);color:#fff;font-weight:800;
+  font-size:clamp(.68rem,.95vw,.82rem);text-decoration:none;font-family:inherit;
+  box-shadow:0 6px 24px rgba(79,70,229,.4);transition:transform .2s,box-shadow .2s;flex-shrink:0;
+}
+#ai10 .gm-live-link:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(99,102,241,.5);}
+#ai10 .gm-live-wrap{text-align:center;flex-shrink:0;}
+#ai10 .gm-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:clamp(4px,.8vh,8px);}
+#ai10 .gm-pill{font-size:clamp(.52rem,.72vw,.64rem);font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);color:#a5b4fc;}
+#ai10 .gm-auth{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:6px;border-top:1px solid #e8eaf2;}
+#ai10 .gm-auth span{font-size:clamp(.36rem,.5vw,.44rem);font-weight:700;padding:3px 6px;border-radius:6px;background:#f8fafc;border:1px solid #e8eaf2;color:#64748b;}
+#ai10 .gm-mock[data-view="skillprint"] .gm-assess-view{display:none;}
+#ai10 .gm-sp-view{display:none;flex-direction:column;min-height:0;overflow:hidden;background:#fff;}
+#ai10 .gm-mock[data-view="skillprint"] .gm-sp-view{display:flex;}
+#ai10 .gm-sp-view .sp-topbar{display:flex;align-items:center;justify-content:space-between;padding:clamp(8px,1.2vh,12px) clamp(12px,1.6vw,16px);border-bottom:1px solid #e8eaf2;font-size:clamp(.52rem,.74vw,.64rem);font-weight:800;color:#1e1b4b;flex-shrink:0;}
+#ai10 .gm-sp-view .sp-topbar-actions{display:flex;align-items:center;gap:8px;color:#64748b;font-weight:600;font-size:clamp(.44rem,.62vw,.54rem);}
+#ai10 .gm-sp-view .sp-content{flex:1;min-height:0;overflow-y:auto;padding:clamp(8px,1.2vh,12px) clamp(10px,1.4vw,14px);scrollbar-width:thin;}
+#ai10 .gm-sp-view .sp-hero{text-align:center;margin-bottom:clamp(8px,1.2vh,10px);}
+#ai10 .gm-sp-view .sp-hero h3{font-size:clamp(.62rem,.9vw,.78rem);font-weight:900;color:#1e1b4b;margin:0;}
+#ai10 .gm-sp-view .sp-hero p{font-size:clamp(.4rem,.56vw,.48rem);color:#94a3b8;margin-top:3px;}
+#ai10 .gm-sp-view .sp-card{border:1px solid #e8eaf2;border-radius:8px;padding:clamp(8px,1.2vh,10px);background:#fff;margin-bottom:clamp(6px,1vh,8px);}
+#ai10 .gm-sp-view .sp-drop{border:1.5px dashed #c7d2fe;border-radius:8px;padding:clamp(8px,1.2vh,10px);text-align:center;background:#fafaff;}
+#ai10 .gm-sp-view .sp-drop .ok{font-size:clamp(.38rem,.54vw,.46rem);color:#16a34a;font-weight:700;margin-top:4px;}
+#ai10 .gm-sp-view .sp-fields{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
+#ai10 .gm-sp-view .sp-field label{display:block;font-size:clamp(.38rem,.54vw,.46rem);font-weight:700;color:#64748b;margin-bottom:2px;}
+#ai10 .gm-sp-view .sp-field .val{font-size:clamp(.4rem,.56vw,.48rem);font-weight:700;padding:5px 7px;border-radius:6px;background:#f8fafc;border:1px solid #e8eaf2;color:#1e1b4b;}
+#ai10 .gm-sp-view .sp-field.wide{grid-column:1/-1;}
+#ai10 .gm-sp-view .sp-btn{width:100%;margin-top:8px;padding:7px;border-radius:8px;border:none;background:linear-gradient(110deg,#6366f1,#5b4ae0);color:#fff;font-weight:800;font-size:clamp(.44rem,.62vw,.52rem);font-family:inherit;text-align:center;}
+#ai10 .gm-sp-view .sp-btn.gen{opacity:.75;}
+#ai10 .gm-sp-view .sp-results{display:none;flex-direction:column;gap:clamp(6px,1vh,8px);}
+#ai10 .gm-mock[data-sp="results"] .sp-upload-view{display:none;}
+#ai10 .gm-mock[data-sp="results"] .sp-results{display:flex;}
+#ai10 .gm-sp-view .sp-readiness{display:grid;grid-template-columns:auto 1fr;gap:clamp(8px,1.2vw,12px);align-items:center;}
+#ai10 .gm-sp-view .sp-ring-wrap{position:relative;width:clamp(48px,7vw,60px);height:clamp(48px,7vw,60px);}
+#ai10 .gm-sp-view .sp-ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg);}
+#ai10 .gm-sp-view .sp-ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:clamp(.4rem,.56vw,.48rem);font-weight:900;color:#0d9488;line-height:1.1;}
+#ai10 .gm-sp-view .sp-ring-txt small{font-size:.75em;font-weight:700;color:#64748b;}
+#ai10 .gm-sp-view .sp-badge{display:inline-block;font-size:clamp(.36rem,.5vw,.44rem);font-weight:800;padding:2px 7px;border-radius:999px;background:#ccfbf1;color:#0d9488;margin-bottom:4px;}
+#ai10 .gm-sp-view .sp-summary{font-size:clamp(.38rem,.54vw,.46rem);color:#64748b;line-height:1.5;}
+#ai10 .gm-sp-view .sp-section-title{font-size:clamp(.46rem,.66vw,.56rem);font-weight:900;color:#1e1b4b;}
+#ai10 .gm-sp-view .sp-section-sub{font-size:clamp(.36rem,.5vw,.44rem);color:#94a3b8;margin-top:2px;margin-bottom:6px;}
+#ai10 .gm-sp-view .sp-radar{display:flex;justify-content:center;padding:2px 0;}
+#ai10 .gm-sp-view .sp-radar svg{width:min(100%,200px);height:auto;}
+#ai10 .gm-sp-view .sp-legend{display:flex;justify-content:center;gap:10px;margin-top:4px;font-size:clamp(.36rem,.5vw,.44rem);font-weight:700;color:#64748b;}
+#ai10 .gm-sp-view .sp-legend i{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:3px;vertical-align:middle;}
+#ai10 .gm-sp-view .sp-skills{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+#ai10 .gm-sp-view .sp-skill{font-size:clamp(.36rem,.5vw,.44rem);font-weight:700;padding:4px 6px;border-radius:6px;background:#f8fafc;border:1px solid #e8eaf2;color:#475569;}
+.ai-build-split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2.5vw,28px);width:100%;flex:1;min-height:0;}
+.ai-mock{
+  border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  padding:clamp(12px,1.8vh,18px);display:flex;flex-direction:column;gap:clamp(8px,1.2vh,12px);
+  overflow:hidden;
+}
+
+/* build guidelines — shared */
+#ai14 .guide-card,#ai15 .guide-card{border-radius:clamp(14px,1.6vw,18px);padding:clamp(14px,2.2vh,20px);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:clamp(8px,1.2vh,12px);}
+#ai14 .guide-card.gemini,#ai15 .guide-card.gemini{border-color:rgba(66,133,244,.35);background:linear-gradient(160deg,rgba(66,133,244,.08),rgba(255,255,255,.03));}
+#ai14 .guide-card.build,#ai15 .guide-card.build{border-color:rgba(52,211,153,.3);background:linear-gradient(160deg,rgba(52,211,153,.07),rgba(255,255,255,.03));}
+#ai14 .guide-head,#ai15 .guide-head{display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08);}
+#ai14 .guide-icon,#ai15 .guide-icon{width:clamp(32px,5vw,40px);height:clamp(32px,5vw,40px);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:clamp(1rem,1.8vw,1.3rem);flex-shrink:0;}
+#ai14 .guide-card.gemini .guide-icon,#ai15 .guide-card.gemini .guide-icon{background:rgba(66,133,244,.15);border:1px solid rgba(66,133,244,.3);}
+#ai14 .guide-card.build .guide-icon,#ai15 .guide-card.build .guide-icon{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.28);}
+#ai14 .guide-title,#ai15 .guide-title{font-size:clamp(.82rem,1.2vw,.98rem);font-weight:800;color:#fff;line-height:1.25;}
+#ai14 .guide-sub,#ai15 .guide-sub{font-size:clamp(.58rem,.8vw,.72rem);color:rgba(255,255,255,.4);margin-top:2px;}
+#ai14 .guide-step,#ai15 .guide-step{display:flex;align-items:flex-start;gap:9px;padding:clamp(7px,1vh,9px) clamp(8px,1.2vw,10px);border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
+#ai14 .guide-num,#ai15 .guide-num{width:clamp(20px,3vw,24px);height:clamp(20px,3vw,24px);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:clamp(.58rem,.8vw,.7rem);font-weight:900;color:#fff;background:linear-gradient(135deg,#6366f1,#4f46e5);}
+#ai14 .guide-card.gemini .guide-num,#ai15 .guide-card.gemini .guide-num{background:linear-gradient(135deg,#4285f4,#3367d6);}
+#ai14 .guide-card.build .guide-num,#ai15 .guide-card.build .guide-num{background:linear-gradient(135deg,#34d399,#059669);}
+#ai14 .guide-step-text,#ai15 .guide-step-text{font-size:clamp(.62rem,.88vw,.76rem);color:rgba(255,255,255,.72);line-height:1.5;}
+#ai14 .guide-step-text strong,#ai15 .guide-step-text strong{color:#fff;font-weight:700;}
+#ai14 .guide-code,#ai15 .guide-code{font-family:'Fira Code',monospace;font-size:clamp(.52rem,.72vw,.66rem);line-height:1.6;padding:clamp(8px,1.2vh,10px) clamp(10px,1.4vw,12px);border-radius:8px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.7);white-space:pre-wrap;margin-top:4px;}
+#ai14 .guide-code .kw,#ai15 .guide-code .kw{color:#c084fc}#ai14 .guide-code .str,#ai15 .guide-code .str{color:#34d399}#ai14 .guide-code .cm,#ai15 .guide-code .cm{color:rgba(255,255,255,.3)}
+#ai14 .guide-warn,#ai15 .guide-warn{font-size:clamp(.56rem,.76vw,.68rem);font-weight:700;color:#fb7185;padding:6px 10px;border-radius:8px;background:rgba(251,113,133,.08);border:1px solid rgba(251,113,133,.2);margin-top:2px;}
+#ai14 .guide-link,#ai15 .guide-link{font-size:clamp(.58rem,.8vw,.72rem);font-weight:700;color:#818cf8;text-decoration:none;}
+#ai14 .guide-link:hover,#ai15 .guide-link:hover{text-decoration:underline;}
+#ai15 .pf-mock{border-radius:clamp(12px,1.4vw,16px);background:#fff;padding:clamp(10px,1.4vh,14px);display:flex;flex-direction:column;gap:6px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1e1b4b;box-shadow:0 12px 40px rgba(0,0,0,.4);}
+#ai15 .pf-nav{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:1px solid #e8eaf2;font-size:clamp(.44rem,.62vw,.54rem);font-weight:800;}
+#ai15 .pf-hero{text-align:center;padding:clamp(10px,1.4vh,14px) 0;background:linear-gradient(135deg,#ede9fe,#fafaff);border-radius:8px;}
+#ai15 .pf-hero h4{font-size:clamp(.62rem,.88vw,.76rem);font-weight:900;margin:0;color:#5b4ae0;}
+#ai15 .pf-hero p{font-size:clamp(.4rem,.56vw,.48rem);color:#64748b;margin-top:3px;}
+#ai15 .pf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;}
+#ai15 .pf-block{padding:6px;border-radius:6px;background:#f8fafc;border:1px solid #e8eaf2;font-size:clamp(.36rem,.5vw,.44rem);font-weight:700;text-align:center;color:#64748b;}
+#ai15 .pf-proj{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+#ai15 .pf-card{padding:6px;border-radius:6px;background:#fff;border:1px solid #e8eaf2;font-size:clamp(.36rem,.5vw,.44rem);}
+#ai15 .pf-card b{display:block;font-weight:800;color:#1e1b4b;}
+#ai15 .pf-card span{color:#94a3b8;font-size:.9em;}
+#ai15 .guide-card.portfolio{border-color:rgba(167,139,250,.35);background:linear-gradient(160deg,rgba(167,139,250,.08),rgba(255,255,255,.03));}
+#ai15 .guide-card.portfolio .guide-icon{background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);}
+#ai15 .guide-card.portfolio .guide-num{background:linear-gradient(135deg,#a78bfa,#7c3aed);}
+#ai14 .guide-card.lovable,#ai15 .guide-card.lovable{border-color:rgba(236,72,153,.35);background:linear-gradient(160deg,rgba(236,72,153,.08),rgba(255,255,255,.03));}
+#ai14 .guide-card.lovable .guide-icon,#ai15 .guide-card.lovable .guide-icon{background:rgba(236,72,153,.15);border:1px solid rgba(236,72,153,.3);}
+#ai14 .guide-card.lovable .guide-num,#ai15 .guide-card.lovable .guide-num{background:linear-gradient(135deg,#ec4899,#be185d);}
+.lovable-flow{display:flex;flex-direction:column;gap:6px;}
+.lovable-flow-step{display:flex;align-items:flex-start;gap:8px;font-size:clamp(.58rem,.82vw,.72rem);color:rgba(255,255,255,.65);line-height:1.45;}
+.lovable-flow-step b{color:#f9a8d4;font-weight:800;flex-shrink:0;min-width:1.4em;}
+.tool-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:clamp(.56rem,.78vw,.68rem);font-weight:800;background:rgba(236,72,153,.15);border:1px solid rgba(236,72,153,.35);color:#f9a8d4;}
+#ai15 .guide-prompt{font-family:'Fira Code',monospace;font-size:clamp(.48rem,.68vw,.62rem);line-height:1.55;padding:clamp(8px,1.2vh,10px);border-radius:8px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.65);white-space:pre-wrap;margin:0;}
+#ai12 .ai-mission{font-size:clamp(.62rem,.88vw,.76rem);color:rgba(255,255,255,.55);text-align:center;line-height:1.55;max-width:640px;margin:0 auto;}
+#ai12 .ai-suggest .highlight{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.4);color:#34d399;}
+#ai12 .pf-roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.2vw,12px);width:100%;margin-top:clamp(8px,1.2vh,12px);}
+#ai12 .pf-phase{border-radius:10px;padding:clamp(10px,1.4vh,12px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);}
+#ai12 .pf-phase h5{font-size:clamp(.58rem,.82vw,.72rem);font-weight:800;color:#a5b4fc;margin:0 0 6px;letter-spacing:.08em;text-transform:uppercase;}
+#ai12 .pf-phase ol{margin:0;padding-left:1.1em;font-size:clamp(.56rem,.78vw,.68rem);color:rgba(255,255,255,.6);line-height:1.55;}
+#ai14 .guide-stack,#ai15 .guide-stack{display:flex;flex-direction:column;gap:clamp(12px,1.8vh,16px);width:100%;}
+.copy-block{border-radius:10px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1);overflow:hidden;}
+.copy-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:clamp(6px,1vh,8px) clamp(10px,1.4vw,12px);background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.06);}
+.copy-label{font-size:clamp(.58rem,.82vw,.72rem);font-weight:800;color:#c4b5fd;}
+.copy-btn{padding:4px 10px;border-radius:6px;border:1px solid rgba(129,140,248,.4);background:rgba(99,102,241,.2);color:#a5b4fc;font-size:clamp(.52rem,.74vw,.66rem);font-weight:800;cursor:pointer;font-family:inherit;flex-shrink:0;transition:background .2s,color .2s;}
+.copy-btn:hover{background:rgba(99,102,241,.35);color:#fff;}
+.copy-btn.copied{background:rgba(52,211,153,.2);border-color:rgba(52,211,153,.4);color:#34d399;}
+.copy-target{display:block;padding:clamp(8px,1.2vh,10px) clamp(10px,1.4vw,12px);font-family:'Fira Code',monospace;font-size:clamp(.48rem,.68vw,.6rem);line-height:1.55;color:rgba(255,255,255,.68);white-space:pre-wrap;max-height:clamp(120px,22vh,200px);overflow-y:auto;scrollbar-width:thin;margin:0;}
+.copy-target.tall{max-height:clamp(160px,28vh,280px);}
+.guide-phase{font-size:clamp(.62rem,.88vw,.76rem);font-weight:800;color:#34d399;letter-spacing:.1em;text-transform:uppercase;margin:clamp(4px,.8vh,8px) 0 clamp(6px,1vh,8px);}
+
+/* CTA slide */
+.ai-cta-formula{display:flex;align-items:center;gap:clamp(14px,3vw,32px);font-size:clamp(2rem,5vw,4rem);font-weight:900;}
+.ai-cta-btn{
+  padding:clamp(12px,1.8vh,16px) clamp(28px,4vw,44px);border-radius:999px;border:none;
+  background:linear-gradient(110deg,#6366f1,#4f46e5);color:#fff;font-weight:800;
+  font-size:clamp(.85rem,1.3vw,1.05rem);cursor:pointer;font-family:inherit;
+  box-shadow:0 8px 32px rgba(79,70,229,.45);transition:transform .2s,box-shadow .2s;
+}
+.ai-cta-btn:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 16px 48px rgba(99,102,241,.5);}
+.ai-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.ai-particle{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(129,140,248,.5);animation:aiFloat 6s ease-in-out infinite;}
+@keyframes aiFloat{0%,100%{transform:translateY(0) scale(1);opacity:.3}50%{transform:translateY(-20px) scale(1.5);opacity:.8}}
+
+/* challenge */
+.ai-challenge-hero{
+  border-radius:clamp(16px,2vw,24px);padding:clamp(18px,2.8vh,32px) clamp(20px,3vw,40px);
+  background:linear-gradient(145deg,rgba(99,102,241,.12),rgba(56,189,248,.06));
+  border:1.5px solid rgba(129,140,248,.35);box-shadow:0 12px 48px rgba(99,102,241,.2);
+  width:100%;max-width:1000px;
+}
+.ai-challenge-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,24px);margin-top:clamp(12px,2vh,18px);}
+.ai-challenge-section h4{font-size:clamp(.65rem,.9vw,.78rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(129,140,248,.8);margin-bottom:8px;}
+.ai-suggest{display:flex;flex-wrap:wrap;gap:6px;}
+.ai-suggest span{padding:5px 10px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:clamp(.58rem,.78vw,.7rem);font-weight:600;color:rgba(255,255,255,.65);}
+.ai-req{display:flex;align-items:center;gap:8px;font-size:clamp(.68rem,.92vw,.8rem);color:rgba(255,255,255,.6);padding:4px 0;}
+.ai-req::before{content:'✔';color:#34d399;font-weight:900;}
+.ai-submit-step{display:flex;align-items:center;gap:10px;font-size:clamp(.68rem,.92vw,.8rem);color:rgba(255,255,255,.65);}
+.ai-submit-num{width:22px;height:22px;border-radius:50%;background:rgba(99,102,241,.25);border:1px solid rgba(129,140,248,.4);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#818cf8;flex-shrink:0;}
+.ai-leaderboard{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,1.2vw,12px);margin-top:clamp(12px,2vh,16px);}
+.ai-lb-card{padding:clamp(10px,1.5vh,14px);border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);text-align:center;transition:transform .2s,box-shadow .2s;}
+.ai-lb-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.ai-lb-medal{font-size:clamp(1.2rem,2.2vw,1.6rem);}
+.ai-lb-title{font-size:clamp(.62rem,.85vw,.74rem);font-weight:800;color:#fff;margin-top:4px;}
+
+.ai-stepper-ctrl{display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;padding-top:clamp(8px,1.2vh,14px);border-top:1px solid rgba(255,255,255,.06);}
+.ai-sbtn{padding:8px 20px;border-radius:999px;border:1.5px solid rgba(255,255,255,.14);background:rgba(15,15,30,.85);backdrop-filter:blur(20px);color:rgba(255,255,255,.6);font-weight:700;font-size:clamp(.68rem,.95vw,.86rem);cursor:pointer;font-family:inherit;transition:all .18s;}
+.ai-sbtn.primary{border:none;background:linear-gradient(110deg,#6366f1,#4f46e5);color:#fff;box-shadow:0 4px 16px rgba(79,70,229,.4);}
+.ai-sbtn:disabled{opacity:.35;cursor:default;}
+.ai-sprog{padding:8px 16px;border-radius:999px;background:rgba(15,15,30,.85);backdrop-filter:blur(20px);border:1px solid rgba(99,102,241,.22);font-size:clamp(.68rem,.95vw,.86rem);font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.1em;white-space:nowrap;}
+
+@media(max-width:780px){
+  #ai10 .gm-sp-view .sp-fields{grid-template-columns:1fr;}
+  .ai-tools{grid-template-columns:repeat(2,1fr);}
+  .ai-compare,.ai-prompt-split,.ai-vs,.ai-build-split,.ai-challenge-grid{grid-template-columns:1fr;}
+  #ai10 .ai-build-layout{grid-template-columns:1fr;}
+  .ai-vs-arrows{flex-direction:row;justify-content:center;}
+  .ai-leaderboard{grid-template-columns:repeat(2,1fr);}
+  #ai10{padding:clamp(44px,6vh,56px) clamp(14px,3vw,24px) clamp(58px,7vh,72px) !important;}
+  #ai2{padding:clamp(44px,6vh,56px) clamp(14px,3vw,24px) clamp(58px,7vh,72px) !important;}
+  #ai7{padding:clamp(44px,6vh,56px) clamp(14px,3vw,24px) clamp(58px,7vh,72px) !important;}
+  #ai7 .ai-vs{grid-template-columns:1fr;}
+  #ai7 .ai-vs-bridge{flex-direction:row;padding:8px 0;}
+  #ai7 .ai-vs-bridge-label{writing-mode:horizontal-tb;transform:none;}
+  #ai7 .ai-vs-arrows{flex-direction:row;}
+  #ai1 .ai-evolution-split{grid-template-columns:1fr;gap:clamp(12px,2vh,16px);}
+  #ai5 .ai-prompt-split{grid-template-columns:1fr;}
+  #ai5 .prm-checklist{grid-template-columns:1fr;}
+  #ai14 .guide-split,#ai15 .guide-split{grid-template-columns:1fr;}
+  #ai12 .pf-roadmap{grid-template-columns:1fr;}
+  #ai1 .ai-evol-divider{padding-top:0;transform:rotate(90deg);}
+}
+
 /* ═══ GAMIFY ══════════════════════════════════════════ */
 .logo-card{
   border-radius:clamp(12px,1.4vw,18px);
@@ -205,6 +841,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
   .tl{flex-wrap:wrap;gap:10px;}
   .tlc{display:none;}
   #dots{display:none;}
+  #bottom-bar{left:14px;bottom:14px;flex-wrap:wrap;max-width:calc(100vw - 70px);}
+  .sess-label{display:none;}
   #s6,#s8,#s3,#s13{padding:clamp(44px,6vh,56px) clamp(14px,3vw,24px) clamp(58px,7vh,72px) !important;}
   #s3 #s3-steps>.s3-row,#s6 #th-steps>.th-row,#s8 #pj-steps>.pj-row{grid-template-columns:1fr;}
   #s13 #jdetail{grid-template-columns:1fr !important;gap:12px;}
@@ -1817,566 +2455,1268 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 
   </div>
 </section>
+
+
 <!-- ══════════════════════════════════════════════
-     15 · MODERN WEB DEVELOPMENT TECH STACK
+     AI CHAPTER · 01 — THE FUTURE
 ══════════════════════════════════════════════ -->
-<section class="slide" id="s15">
+<section class="slide" id="ai1">
+  <div class="blob" style="width:50vw;height:50vw;background:#6366f1;opacity:.2;top:-15%;left:-10%;"></div>
+  <div class="blob" style="width:36vw;height:36vw;background:#0ea5e9;opacity:.16;bottom:-12%;right:-8%;animation-delay:-5s;"></div>
 
-    <!-- Background Blobs -->
-    <div class="blob"
-        style="width:42vw;height:42vw;background:#6366f1;opacity:.18;top:-12%;right:-10%;">
+  <div class="ai1-body stagger">
+    <div class="ctr" style="gap:clamp(8px,1.4vh,14px);">
+      <div class="ai-eyebrow">AI in Modern Web Development</div>
+      <div class="ai-chapter-divider"></div>
+      <h2 class="h2" style="font-size:clamp(1.5rem,3.2vw,2.8rem);">The Future of<br><span class="gm">Web Development</span></h2>
+      <p class="body-lg">AI is changing how developers build products.</p>
     </div>
 
-    <div class="blob"
-        style="width:34vw;height:34vw;background:#06b6d4;opacity:.15;bottom:-15%;left:-10%;animation-delay:-5s;">
-    </div>
-
-    <div class="ctr stagger"
-        style="position:relative;z-index:2;width:100%;max-width:1300px;gap:30px;">
-
-        <div>
-            <h2 class="h2">
-                🛠️ <span class="gm">Modern Web Development Tech Stack</span>
-            </h2>
-
-            <p class="body-lg" style="margin-top:10px;">
-                These are the technologies you'll learn to become a Full Stack Web Developer.
-            </p>
+    <div class="ai-evolution-split">
+      <!-- 2010 -->
+      <div class="ai-evol-col past">
+        <div class="ai-evol-label">2010</div>
+        <div class="ai-evol-sub">Then</div>
+        <div class="ai-vtl-col">
+          <div class="ai-vtl-node"><div class="ai-vtl-pill">🔍 Google</div></div>
+          <div class="ai-vtl-arrow"></div>
+          <div class="ai-vtl-node"><div class="ai-vtl-pill">💬 StackOverflow</div></div>
+          <div class="ai-vtl-arrow"></div>
+          <div class="ai-vtl-node"><div class="ai-vtl-pill">📖 Documentation</div></div>
+          <div class="ai-vtl-arrow"></div>
+          <div class="ai-vtl-node"><div class="ai-vtl-pill">⌨️ Coding</div></div>
+          <div class="ai-vtl-arrow"></div>
+          <div class="ai-vtl-node"><div class="ai-vtl-pill">🚀 Deployment</div></div>
         </div>
-
-        <div class="g3">
-
-            <!-- ================= FRONTEND ================= -->
-
-            <div class="card">
-
-                <div class="ct" style="margin-bottom:18px;">🎨 Frontend</div>
-
-                <div class="tech-grid">
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg">
-                        <div class="cb">HTML</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg">
-                        <div class="cb">CSS</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg">
-                        <div class="cb">JavaScript</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg">
-                        <div class="cb">React</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg"
-                            style="background:#fff;border-radius:50%;padding:4px;">
-                        <div class="cb">Next.js</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg">
-                        <div class="cb">Tailwind</div>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- ================= BACKEND ================= -->
-
-            <div class="card">
-
-                <div class="ct" style="margin-bottom:18px;">⚙️ Backend</div>
-
-                <div class="tech-grid">
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg">
-                        <div class="cb">Node.js</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg"
-                            style="background:#fff;border-radius:50%;padding:4px;">
-                        <div class="cb">Express</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg">
-                        <div class="cb">Java</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg">
-                        <div class="cb">Python</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg">
-                        <div class="cb">PHP</div>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- ================= DATABASE ================= -->
-
-            <div class="card">
-
-                <div class="ct" style="margin-bottom:18px;">🗄️ Database</div>
-
-                <div class="tech-grid">
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg">
-                        <div class="cb">MySQL</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg">
-                        <div class="cb">PostgreSQL</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg">
-                        <div class="cb">MongoDB</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://www.vectorlogo.zone/logos/firebase/firebase-icon.svg">
-                        <div class="cb">Firebase</div>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- ================= CLOUD ================= -->
-
-            <div class="card">
-
-                <div class="ct" style="margin-bottom:18px;">☁️ Cloud</div>
-
-                <div class="tech-grid">
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg">
-                        <div class="cb">AWS</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg">
-                        <div class="cb">Azure</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg">
-                        <div class="cb">Google Cloud</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png">
-                        <div class="cb">Vercel</div>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- ================= TOOLS ================= -->
-
-            <div class="card">
-
-                <div class="ct" style="margin-bottom:18px;">🧰 Developer Tools</div>
-
-                <div class="tech-grid">
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg">
-                        <div class="cb">VS Code</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg">
-                        <div class="cb">Git</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
-                            style="background:#fff;border-radius:50%;padding:4px;">
-                        <div class="cb">GitHub</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg">
-                        <div class="cb">Postman</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/chrome/chrome-original.svg">
-                        <div class="cb">Chrome</div>
-                    </div>
-
-                    <div class="tech-item">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/npm/npm-original-wordmark.svg">
-                        <div class="cb">NPM</div>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- ================= FULL STACK ================= -->
-
-            <!-- ================= FULL STACK ================= -->
-
-<div class="card"
-style="
-background:linear-gradient(135deg,#4f46e5,#06b6d4);
-border:none;
-justify-content:center;
-align-items:center;
-text-align:center;
-">
-
-    <div style="
-        font-size:1.6rem;
-        font-weight:900;
-        color:white;
-        margin-bottom:18px;
-        letter-spacing:.5px;">
-        🚀 Full Stack Developer
-    </div>
-
-    <div style="
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        gap:20px;
-        margin-bottom:20px;">
-
-        <img
-        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
-        width="70">
-
-        <span style="
-        color:white;
-        font-size:42px;
-        font-weight:900;">+</span>
-
-        <img
-        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
-        width="70">
-
-        <span style="
-        color:white;
-        font-size:42px;
-        font-weight:900;">+</span>
-
-        <img
-        src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
-        width="70">
-
-    </div>
-
-    <div style="
-        font-size:1.4rem;
-        font-weight:800;
-        color:white;
-        margin-bottom:15px;">
-        Frontend + Backend + Database
-    </div>
-
-    <div style="
-        font-size:1rem;
-        line-height:2;
-        color:rgba(255,255,255,.95);
-        font-weight:400;">
-
-        ✔ Build Complete Websites<br>
-
-        ✔ Create REST APIs<br>
-
-        ✔ Connect Databases<br>
-
-        ✔ Deploy to the Cloud
-
-    </div>
-
-</div>
-
+      </div>
+
+      <div class="ai-evol-divider">→</div>
+
+      <!-- 2026 -->
+      <div class="ai-evol-col future">
+        <div class="ai-evol-label">2026</div>
+        <div class="ai-evol-sub">Now</div>
+        <div class="ai-vtl-col">
+          <div class="ai-vtl-node"><div class="ai-vtl-pill accent">🤖 AI</div></div>
+          <div class="ai-vtl-arrow"></div>
+          <div class="ai-vtl-node"><div class="ai-vtl-pill accent">⚡ Prototype</div></div>
+          <div class="ai-vtl-arrow"></div>
+          <div class="ai-vtl-node"><div class="ai-vtl-pill accent">👁️ Developer Review</div></div>
+          <div class="ai-vtl-arrow"></div>
+          <div class="ai-vtl-node"><div class="ai-vtl-pill accent">🌐 Deploy</div></div>
         </div>
-
-        <div class="body-lg" style="max-width:900px;text-align:center;">
-            💡 <span class="white">Don't worry!</span>
-            We'll learn each of these technologies step-by-step throughout this Full Stack Development journey.
-        </div>
-
+      </div>
     </div>
-
+  </div>
 </section>
 
-<!-- ================= CSS ================= -->
 
-<style>
-
-#s15{
-    background:radial-gradient(
-        ellipse at 35% 35%,
-        #102040 0%,
-        #0c0c16 70%);
-}
-
-.tech-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-    margin-top:10px;
-}
-
-.tech-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:8px;
-    transition:.25s;
-}
-
-.tech-item img{
-    width:52px;
-    height:52px;
-    object-fit:contain;
-    transition:.25s;
-}
-
-.tech-item:hover{
-    transform:translateY(-5px);
-}
-
-.tech-item:hover img{
-    transform:scale(1.15);
-}
-
-</style>
 <!-- ══════════════════════════════════════════════
-     16 · WHAT'S NEXT?
+     AI CHAPTER · 02 — BEFORE VS AFTER
 ══════════════════════════════════════════════ -->
+<section class="slide" id="ai2">
+  <div class="blob" style="width:42vw;height:42vw;background:#be185d;opacity:.14;top:-12%;right:-8%;"></div>
+  <div class="blob" style="width:32vw;height:32vw;background:#059669;opacity:.14;bottom:-10%;left:-6%;animation-delay:-4s;"></div>
 
-<section class="slide" id="s16">
-
-    <!-- Background -->
-    <div class="blob"
-        style="width:42vw;height:42vw;background:#6366f1;opacity:.18;top:-12%;right:-10%;">
+  <div class="slide-panel">
+    <div style="padding:0 0 clamp(6px,1vh,10px);text-align:center;flex-shrink:0;">
+      <h2 class="h2" style="font-size:clamp(1.3rem,2.6vw,2.4rem);">Developer Workflow<br><span class="gb">Before vs After AI</span></h2>
+      <p class="body" style="margin-top:4px;">Use <strong style="color:#818cf8;">→ arrow key</strong> to reveal each stage and its difficulty.</p>
     </div>
 
-    <div class="blob"
-        style="width:34vw;height:34vw;background:#06b6d4;opacity:.16;bottom:-15%;left:-10%;animation-delay:-6s;">
+    <div class="ai-compare-wrap" id="wf-scroll">
+      <div class="ai-compare">
+        <div class="ai-compare-col before">
+          <div class="ai-compare-head" style="color:#fb7185;">Without AI</div>
+          <div class="ai-compare-meta"><span>8 steps</span><span>·</span><span>higher difficulty</span></div>
+          <div id="wf-before"></div>
+        </div>
+        <div class="ai-compare-col after">
+          <div class="ai-compare-head" style="color:#34d399;">With AI</div>
+          <div class="ai-compare-meta"><span>8 steps</span><span>·</span><span>lower difficulty</span></div>
+          <div id="wf-after"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="ctr stagger"
-        style="position:relative;z-index:2;width:100%;max-width:1200px;gap:35px;">
-
-        <!-- Heading -->
-
-        <div style="text-align:center;">
-
-            <h2 class="h2">
-                🚀 <span class="gm">What's Next?</span>
-            </h2>
-
-            <p class="body-lg" style="margin-top:10px;">
-                Today you understood <b>how websites work.</b><br>
-                In our next session, we'll start <b>building one from scratch!</b>
-            </p>
-
-        </div>
-
-        <!-- Roadmap -->
-
-        <div style="
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            flex-wrap:wrap;
-            gap:22px;
-        ">
-
-            <div class="card" style="width:150px;text-align:center;">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" width="65">
-                <div class="ct" style="margin-top:12px;">HTML</div>
-            </div>
-
-            <div style="font-size:40px;color:#60a5fa;">➜</div>
-
-            <div class="card" style="width:150px;text-align:center;">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="65">
-                <div class="ct" style="margin-top:12px;">CSS</div>
-            </div>
-
-            <div style="font-size:40px;color:#60a5fa;">➜</div>
-
-            <div class="card" style="width:150px;text-align:center;">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="65">
-                <div class="ct" style="margin-top:12px;">JavaScript</div>
-            </div>
-
-            <div style="font-size:40px;color:#60a5fa;">➜</div>
-
-            <div class="card"
-                style="
-                width:180px;
-                text-align:center;
-                background:linear-gradient(135deg,#4f46e5,#06b6d4);
-                ">
-
-                <div style="font-size:70px;">🌐</div>
-
-                <div style="
-                    font-size:1.2rem;
-                    font-weight:800;
-                    color:white;
-                    margin-top:10px;">
-
-                    Build Your First Website
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Bottom Message -->
-
-        <div class="card"
-            style="
-            text-align:center;
-            max-width:950px;
-            margin:auto;
-            background:linear-gradient(135deg,
-            rgba(79,70,229,.18),
-            rgba(6,182,212,.18));
-        ">
-
-            <div style="font-size:2rem;margin-bottom:15px;">
-                💡
-            </div>
-
-            <div style="
-                font-size:1.35rem;
-                line-height:1.8;
-                font-weight:600;">
-
-                <span class="white">
-                    Today's Goal:
-                </span>
-
-                Understand the complete journey of a website.
-
-                <br><br>
-
-                <span class="white">
-                    Next Session:
-                </span>
-
-                Build your very first website using
-                <span class="gm"><b>HTML & CSS</b></span>.
-
-            </div>
-
-        </div>
-
+    <div class="ai-diff-summary" id="wf-summary">
+      <div class="ai-diff-sum-col">
+        <div class="ai-diff-sum-label" style="color:#fb7185;">Without AI</div>
+        <div class="ai-diff-sum-score" id="wf-sum-before" style="color:#fb7185;">—</div>
+        <div class="ai-diff-sum-meter" id="wf-meter-before"></div>
+      </div>
+      <div class="ai-diff-vs">vs</div>
+      <div class="ai-diff-sum-col">
+        <div class="ai-diff-sum-label" style="color:#34d399;">With AI</div>
+        <div class="ai-diff-sum-score" id="wf-sum-after" style="color:#34d399;">—</div>
+        <div class="ai-diff-sum-meter" id="wf-meter-after"></div>
+      </div>
     </div>
 
+    <div class="ai-stepper-ctrl">
+      <button class="ai-sbtn" id="wf-prev" disabled>← Prev</button>
+      <div class="ai-sprog" id="wf-prog">Step 1 / 8</div>
+      <button class="ai-sbtn primary" id="wf-next">Next Step →</button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var DIFF=['','Easy','Medium','Hard','Very Hard'];
+    var BEFORE=[
+      {t:'📋 Requirement',d:'Define features, scope, and user stories manually.',l:1},
+      {t:'🔍 Research',d:'Google, Stack Overflow, forums — hours of searching.',l:3},
+      {t:'📖 Documentation',d:'Read APIs, tutorials, and guides line by line.',l:3},
+      {t:'⌨️ Write Code',d:'Build every component from scratch, file by file.',l:4},
+      {t:'🐛 Debug',d:'Hunt syntax errors, logic bugs, and edge cases alone.',l:4},
+      {t:'🧪 Testing',d:'Write unit tests, run manually, fix failures.',l:3},
+      {t:'⚙️ Configure Deploy',d:'Set up server, env vars, DNS, build pipeline.',l:3},
+      {t:'🚀 Deploy & Monitor',d:'Push live, pray nothing breaks, watch logs.',l:2}
+    ];
+    var AFTER=[
+      {t:'📋 Requirement',d:'Same clarity needed — AI cannot read your mind.',l:1},
+      {t:'✍️ Prompt Engineering',d:'Describe features, stack, and constraints clearly.',l:2},
+      {t:'⚡ AI Prototype',d:'Generate working UI + logic in minutes.',l:1},
+      {t:'👁️ Review Code',d:'Verify logic, security, and code quality.',l:2},
+      {t:'🔧 AI-Assisted Debug',d:'Paste error → get fix instantly.',l:1},
+      {t:'🧪 AI Testing',d:'Auto-generate test cases and edge scenarios.',l:1},
+      {t:'☁️ Setup & Deploy',d:'Vercel / Netlify — connect repo, one click.',l:1},
+      {t:'🚀 Deploy & Ship',d:'Faster iterations, less fear of breaking things.',l:1}
+    ];
+    var max=BEFORE.length,cur=0;
+    var beforeEl=document.getElementById('wf-before'),afterEl=document.getElementById('wf-after');
+    var scrollEl=document.getElementById('wf-scroll'),summaryEl=document.getElementById('wf-summary');
+    var prevBtn=document.getElementById('wf-prev'),nextBtn=document.getElementById('wf-next'),prog=document.getElementById('wf-prog');
+
+    function diffBars(level){
+      var h='<div class="ai-diff" data-level="'+level+'"><span class="ai-diff-label">'+DIFF[level]+'</span><div class="ai-diff-bars">';
+      for(var i=1;i<=4;i++)h+='<span'+(i<=level?' class="filled"':'')+'></span>';
+      return h+'</div></div>';
+    }
+    function stepCard(item){
+      return '<div class="ai-cmp-step"><div class="ai-cmp-main"><span class="dot"></span><div class="ai-cmp-text"><div class="ai-cmp-title">'+item.t+'</div><div class="ai-cmp-desc">'+item.d+'</div></div></div>'+diffBars(item.l)+'</div>';
+    }
+    function buildCols(){
+      beforeEl.innerHTML=BEFORE.map(stepCard).join('');
+      afterEl.innerHTML=AFTER.map(stepCard).join('');
+    }
+    function sumDiff(arr){return arr.reduce(function(a,s){return a+s.l;},0);}
+    function fillMeter(el,score,maxScore,color){
+      el.innerHTML='';
+      var filled=Math.round((score/maxScore)*10);
+      for(var i=0;i<10;i++){
+        var s=document.createElement('span');
+        if(i<filled){s.className='filled';s.style.setProperty('--sum-c',color);}
+        el.appendChild(s);
+      }
+    }
+    function render(){
+      var bSteps=beforeEl.querySelectorAll('.ai-cmp-step'),aSteps=afterEl.querySelectorAll('.ai-cmp-step');
+      bSteps.forEach(function(s,i){
+        var show=i<cur;
+        s.style.display=show?'flex':'none';
+        s.classList.toggle('on',show);
+        s.classList.toggle('current',i===cur-1);
+      });
+      aSteps.forEach(function(s,i){
+        var show=i<cur;
+        s.style.display=show?'flex':'none';
+        s.classList.toggle('on',show);
+        s.classList.toggle('current',i===cur-1);
+      });
+      prevBtn.disabled=cur<=1;
+      nextBtn.disabled=cur>=max;
+      nextBtn.textContent=cur>=max?'✅ Complete':'Next Step →';
+      prog.textContent='Step '+cur+' / '+max;
+      summaryEl.classList.toggle('show',cur>=max);
+      if(cur>=max){
+        var bScore=sumDiff(BEFORE),aScore=sumDiff(AFTER),top=max*4;
+        document.getElementById('wf-sum-before').textContent=bScore+' / '+top;
+        document.getElementById('wf-sum-after').textContent=aScore+' / '+top;
+        fillMeter(document.getElementById('wf-meter-before'),bScore,top,'#fb7185');
+        fillMeter(document.getElementById('wf-meter-after'),aScore,top,'#34d399');
+        scrollEl.scrollTop=0;
+      }else if(cur>0){
+        var active=bSteps[cur-1];
+        if(active){
+          requestAnimationFrame(function(){
+            active.scrollIntoView({block:'nearest',behavior:'smooth'});
+          });
+        }
+      }
+    }
+    function reset(){cur=1;render();scrollEl.scrollTop=0;}
+    buildCols();
+    prevBtn.onclick=function(){if(cur>1){cur--;render();}};
+    nextBtn.onclick=function(){if(cur<max){cur++;render();}};
+    var active=false;
+    new MutationObserver(function(){var on=document.getElementById('ai2').classList.contains('active');if(on&&!active)reset();active=on;}).observe(document.getElementById('ai2'),{attributes:true,attributeFilter:['class']});
+    reset();
+  })();
+  </script>
 </section>
 
-<style>
-/* ===============================
-   Slide 16 - What's Next
-================================ */
 
-#s16{
-    background:
-        radial-gradient(circle at top left, rgba(99,102,241,.20), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(6,182,212,.20), transparent 35%),
-        linear-gradient(135deg,#0f172a 0%,#172554 50%,#1e1b4b 100%);
-}
+<!-- ══════════════════════════════════════════════
+     AI CHAPTER · 03 — AI TOOLS
+══════════════════════════════════════════════ -->
+<section class="slide" id="ai3">
+  <div class="blob" style="width:44vw;height:44vw;background:#7c3aed;opacity:.18;top:-14%;left:-8%;"></div>
+  <div class="blob" style="width:30vw;height:30vw;background:#0891b2;opacity:.14;bottom:-10%;right:-6%;animation-delay:-3s;"></div>
 
-/* Force all text to be white */
+  <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;gap:clamp(12px,2vh,18px);align-items:center;">
+    <div class="ctr stagger" style="gap:4px;">
+      <h2 class="h2" style="font-size:clamp(1.4rem,2.8vw,2.5rem);">AI Tools Every Developer<br><span class="gv">Should Know</span></h2>
+    </div>
+    <div class="ai-tools stagger">
+      <div class="ai-tool"><div class="ai-tool-logo" style="background:linear-gradient(135deg,#10a37f,#0d8c6d);color:#fff;">G</div><div class="ai-tool-name">ChatGPT</div><div class="ai-tool-use">Brainstorming</div><div class="ai-tool-desc">Explain concepts, debug ideas, draft copy</div></div>
+      <div class="ai-tool"><div class="ai-tool-logo" style="background:linear-gradient(135deg,#d97706,#b45309);color:#fff;">C</div><div class="ai-tool-name">Claude</div><div class="ai-tool-use">Long Context</div><div class="ai-tool-desc">Analyze codebases, write docs, reason deeply</div></div>
+      <div class="ai-tool"><div class="ai-tool-logo" style="background:linear-gradient(135deg,#4285f4,#34a853);color:#fff;">✦</div><div class="ai-tool-name">Gemini</div><div class="ai-tool-use">Multimodal</div><div class="ai-tool-desc">Images, APIs, Google ecosystem integration</div></div>
+      <div class="ai-tool"><div class="ai-tool-logo" style="background:linear-gradient(135deg,#1e1e1e,#2d2d2d);color:#fff;border:1px solid rgba(255,255,255,.15);">⌘</div><div class="ai-tool-name">Cursor</div><div class="ai-tool-use">AI IDE</div><div class="ai-tool-desc">Code, refactor, and ship inside your editor</div></div>
+      <div class="ai-tool"><div class="ai-tool-logo" style="background:#24292e;color:#fff;">⎇</div><div class="ai-tool-name">GitHub Copilot</div><div class="ai-tool-use">Autocomplete</div><div class="ai-tool-desc">Inline suggestions as you type code</div></div>
+      <div class="ai-tool"><div class="ai-tool-logo" style="background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff;">W</div><div class="ai-tool-name">Windsurf</div><div class="ai-tool-use">Agentic IDE</div><div class="ai-tool-desc">Cascade flows across your entire project</div></div>
+      <div class="ai-tool"><div class="ai-tool-logo" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;">⚡</div><div class="ai-tool-name">Bolt</div><div class="ai-tool-use">Rapid Prototype</div><div class="ai-tool-desc">Full-stack apps from a single prompt</div></div>
+      <div class="ai-tool"><div class="ai-tool-logo" style="background:linear-gradient(135deg,#ec4899,#be185d);color:#fff;">♥</div><div class="ai-tool-name">Lovable</div><div class="ai-tool-use">UI Builder</div><div class="ai-tool-desc">Beautiful React apps with live preview</div></div>
+      <div class="ai-tool"><div class="ai-tool-logo" style="background:linear-gradient(135deg,#000,#333);color:#fff;border:1px solid rgba(255,255,255,.2);">v0</div><div class="ai-tool-name">v0</div><div class="ai-tool-use">UI Components</div><div class="ai-tool-desc">Shadcn-quality components from prompts</div></div>
+    </div>
+  </div>
+</section>
 
-#s16,
-#s16 p,
-#s16 h1,
-#s16 h2,
-#s16 h3,
-#s16 h4,
-#s16 .body,
-#s16 .body-lg,
-#s16 .cb,
-#s16 .ct{
-    color:#ffffff !important;
-}
 
-/* Gradient heading */
+<!-- ══════════════════════════════════════════════
+     AI CHAPTER · 04 — WHERE AI HELPS
+══════════════════════════════════════════════ -->
+<section class="slide" id="ai4">
+  <div class="blob" style="width:46vw;height:46vw;background:#4f46e5;opacity:.16;top:-12%;right:-10%;"></div>
+  <div class="blob" style="width:34vw;height:34vw;background:#0ea5e9;opacity:.12;bottom:-8%;left:-6%;animation-delay:-5s;"></div>
 
-#s16 .gm{
-    background:linear-gradient(90deg,#60a5fa,#22d3ee,#a78bfa);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-clip:text;
-}
+  <div class="slide-hub">
+    <div class="ctr stagger" style="gap:4px;flex-shrink:0;">
+      <h2 class="h2" style="font-size:clamp(1.3rem,2.6vw,2.4rem);">Where <span class="gb">AI Helps</span></h2>
+      <p class="body" style="font-size:clamp(.65rem,.9vw,.78rem);">Across every layer of the development lifecycle.</p>
+    </div>
+    <div class="ai-hub-wrap" id="ai-hub-wrap">
+      <div class="ai-hub-ring" id="ai-hub-ring-outer"></div>
+      <div class="ai-hub-ring" id="ai-hub-ring-inner"></div>
+      <svg class="ai-hub-svg" id="ai-hub-svg" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="ai-hub-center">👨‍💻<br>Developer</div>
+      <div id="ai-hub-nodes"></div>
+    </div>
+    <div class="ai-hub-legend stagger">
+      <span>24 verticals</span><span class="ai-hub-legend-sep">inner ring · build cycle</span><span class="ai-hub-legend-sep">outer ring · support &amp; growth</span>
+    </div>
+  </div>
 
-/* White cards */
+  <script>
+  (function(){
+    var CX=300,CY=300,R_IN=130,R_OUT=228;
+    var INNER=[
+      ['🎨','UI Design'],['⚛️','Frontend'],['⚙️','Backend'],['🗄️','Database'],
+      ['🔗','API Design'],['🧪','Testing'],['🔄','DevOps'],['🚀','Deployment']
+    ];
+    var OUTER=[
+      ['📖','Documentation'],['🔍','Code Review'],['🏗️','Architecture'],['🔐','Security'],
+      ['🐛','Debugging'],['♻️','Refactoring'],['⚡','Performance'],['🎓','Learning'],
+      ['📱','Mobile'],['📊','Analytics'],['♿','Accessibility'],['🔎','SEO'],
+      ['☁️','Cloud'],['📡','Monitoring'],['📋','Planning'],['🔀','Git']
+    ];
+    var svg=document.getElementById('ai-hub-svg'),nodesEl=document.getElementById('ai-hub-nodes'),wrap=document.getElementById('ai-hub-wrap');
+    var ringIn=document.getElementById('ai-hub-ring-inner'),ringOut=document.getElementById('ai-hub-ring-outer');
+    ringIn.style.width=ringIn.style.height=(R_IN*2/600*100)+'%';
+    ringOut.style.width=ringOut.style.height=(R_OUT*2/600*100)+'%';
 
-#s16 .card{
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
-    box-shadow:0 12px 30px rgba(0,0,0,.25);
-}
+    function placeRing(items,radius,outer){
+      items.forEach(function(item,i){
+        var angle=-Math.PI/2+(2*Math.PI*i/items.length);
+        var x=CX+radius*Math.cos(angle),y=CY+radius*Math.sin(angle);
+        var line=document.createElementNS('http://www.w3.org/2000/svg','line');
+        line.setAttribute('class','ai-hub-line'+(outer?' outer':''));
+        line.setAttribute('x1',CX);line.setAttribute('y1',CY);
+        line.setAttribute('x2',x);line.setAttribute('y2',y);
+        line.style.transitionDelay=(.04+i*.03)+'s';
+        svg.appendChild(line);
+        var node=document.createElement('div');
+        node.className='ai-hub-node'+(outer?' outer':'');
+        node.textContent=item[0]+' '+item[1];
+        node.style.left=(x/600*100)+'%';
+        node.style.top=(y/600*100)+'%';
+        node.style.transitionDelay=(.06+i*.03)+'s';
+        nodesEl.appendChild(node);
+      });
+    }
+    placeRing(INNER,R_IN,false);
+    placeRing(OUTER,R_OUT,true);
+  })();
+  </script>
+</section>
 
-/* Highlight card */
 
-#s16 .card:last-child{
-    background:linear-gradient(135deg,#4f46e5,#06b6d4);
-}
+<!-- ══════════════════════════════════════════════
+     AI CHAPTER · 05 — PROMPT ENGINEERING
+══════════════════════════════════════════════ -->
+<section class="slide" id="ai5">
+  <div class="blob" style="width:40vw;height:40vw;background:#7c3aed;opacity:.16;top:-10%;left:-8%;"></div>
+  <div class="blob" style="width:32vw;height:32vw;background:#059669;opacity:.12;bottom:-8%;right:-6%;animation-delay:-4s;"></div>
 
-/* Arrow */
+  <div class="ai-prompt-body">
+    <div class="ctr stagger" style="gap:6px;">
+      <h2 class="h2" style="font-size:clamp(1.6rem,3.2vw,2.8rem);"><span class="gv">Prompt</span> Engineering</h2>
+      <p class="body-lg" style="font-size:clamp(.82rem,1.2vw,1rem);">Specific prompts produce dramatically better results.</p>
+    </div>
+    <div class="ai-prompt-split stagger">
+      <div class="ai-prompt-card bad">
+        <div class="ai-prompt-label" style="color:#fb7185;">❌ Bad Prompt</div>
+        <div class="ai-code"><span class="str">"Build website"</span></div>
+        <p class="body ai-prompt-note">2 words · zero context · AI guesses everything · generic output</p>
+      </div>
+      <div class="ai-prompt-card good">
+        <div class="ai-prompt-label" style="color:#34d399;">✅ Good Prompt — In Depth</div>
+        <div class="ai-code"><span class="cm">// 1. ROLE — tell AI who to be</span>
+<span class="kw">You are</span> a <span class="str">senior full-stack developer</span> specializing in React and AI integrations.
 
-#s16 .arrow{
-    font-size:42px;
-    color:#60a5fa;
-    font-weight:bold;
-}
+<span class="cm">// 2. GOAL — what to build &amp; why</span>
+<span class="kw">Build</span> an <span class="str">AI Resume Analyzer</span> web app that helps job seekers improve their resume and pass ATS filters.
 
-</style>
+<span class="prm-sec">Tech Stack</span>
+<span class="kw">•</span> <span class="fn">React 18</span> + <span class="fn">Vite</span>
+<span class="kw">•</span> <span class="fn">Tailwind CSS</span> for styling
+<span class="kw">•</span> <span class="fn">Gemini API</span> for resume analysis
+<span class="kw">•</span> <span class="fn">pdf.js</span> for client-side PDF text extraction
+<span class="kw">•</span> Deploy on <span class="fn">Vercel</span>
+
+<span class="prm-sec">Core Features</span>
+<span class="num">1.</span> Upload resume — PDF only, max <span class="num">5MB</span>, drag-and-drop zone
+<span class="num">2.</span> Extract text from PDF using pdf.js (no server upload)
+<span class="num">3.</span> Send extracted text to Gemini API with this analysis:
+   <span class="kw">→</span> ATS compatibility score (<span class="num">0–100</span>)
+   <span class="kw">→</span> Missing keywords for target job role
+   <span class="kw">→</span> Weak bullet points + rewritten versions
+   <span class="kw">→</span> Section-by-section feedback
+<span class="num">4.</span> Results dashboard with:
+   <span class="kw">→</span> Large score ring + color-coded rating
+   <span class="kw">→</span> Keyword gap chart
+   <span class="kw">→</span> Suggestions rendered as markdown cards
+<span class="num">5.</span> Optional: match against a pasted job description
+<span class="num">6.</span> Download improvement report as PDF
+
+<span class="prm-sec">UI / UX Requirements</span>
+<span class="kw">•</span> Clean dashboard layout — sidebar nav + main content
+<span class="kw">•</span> Dark theme with purple accent (like CareerOS)
+<span class="kw">•</span> Fully responsive — mobile, tablet, desktop
+<span class="kw">•</span> Loading skeletons while AI processes
+<span class="kw">•</span> Error states for failed uploads / API errors
+<span class="kw">•</span> Agent picker — HR, Technical, ATS perspectives
+
+<span class="prm-sec">Constraints</span>
+<span class="kw">•</span> No backend for MVP — Gemini API called from frontend
+<span class="kw">•</span> Do not store resumes in a database
+<span class="kw">•</span> Handle API rate limits gracefully
+<span class="kw">•</span> Keep API key in <span class="var">.env</span> — never hardcode
+
+<span class="prm-sec">Output Format</span>
+<span class="kw">Generate</span> complete, working code — component by component.
+Start with project structure, then build page by page.
+Add brief comments explaining key decisions.</div>
+        <div class="prm-tags">
+          <span class="prm-tag">Role</span>
+          <span class="prm-tag">Goal</span>
+          <span class="prm-tag">Stack</span>
+          <span class="prm-tag">Features</span>
+          <span class="prm-tag">UI/UX</span>
+          <span class="prm-tag">Constraints</span>
+          <span class="prm-tag">Output</span>
+        </div>
+        <div class="prm-checklist">
+          <span class="prm-check">Specific product</span>
+          <span class="prm-check">Named technologies</span>
+          <span class="prm-check">Numbered features</span>
+          <span class="prm-check">UI direction</span>
+          <span class="prm-check">Clear constraints</span>
+          <span class="prm-check">Expected output</span>
+        </div>
+      </div>
+    </div>
+    <div class="ai-meter-wrap stagger">
+      <div class="ai-meter-title">Output Quality</div>
+      <div class="ai-meter">
+        <div class="ai-meter-seg poor"><div class="fill"></div></div>
+        <div class="ai-meter-seg avg"><div class="fill"></div></div>
+        <div class="ai-meter-seg exc"><div class="fill"></div></div>
+      </div>
+      <div class="ai-meter-labels"><span style="color:#fb7185;">Poor</span><span style="color:#fbbf24;">Average</span><span style="color:#34d399;">Excellent</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     AI CHAPTER · 06 — MCP
+══════════════════════════════════════════════ -->
+<section class="slide" id="ai6">
+  <div class="blob" style="width:44vw;height:44vw;background:#4338ca;opacity:.18;top:-12%;right:-8%;"></div>
+  <div class="blob" style="width:30vw;height:30vw;background:#0ea5e9;opacity:.14;bottom:-10%;left:-6%;animation-delay:-3s;"></div>
+
+  <div class="split stagger" style="position:relative;z-index:2;align-items:center;">
+    <div class="col" style="gap:clamp(8px,1.4vh,14px);">
+      <h2 class="h2" style="font-size:clamp(1.4rem,2.8vw,2.5rem);">What is <span class="gb">MCP?</span></h2>
+      <p class="ai-mcp-caption" style="margin-top:0;text-align:left;">"MCP is like USB-C for AI."</p>
+      <p class="body">One standard protocol — connect any tool to any AI model.</p>
+    </div>
+    <div class="ai-mcp-wrap" style="display:flex;flex-direction:column;align-items:center;">
+      <div class="ai-mcp">
+        <div class="ai-mcp-node">🤖 AI</div>
+        <div class="ai-mcp-conn"></div>
+        <div class="ai-mcp-node hub">🔌 MCP</div>
+        <div class="ai-mcp-conn"></div>
+      </div>
+      <div class="ai-mcp-tools">
+        <div class="ai-mcp-tool">⎇ GitHub</div>
+        <div class="ai-mcp-tool">💬 Slack</div>
+        <div class="ai-mcp-tool">📧 Gmail</div>
+        <div class="ai-mcp-tool">🗄️ Database</div>
+        <div class="ai-mcp-tool">🌐 Browser</div>
+        <div class="ai-mcp-tool">⌨️ Terminal</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     AI CHAPTER · 07 — SKILLS VS AGENTS
+══════════════════════════════════════════════ -->
+<section class="slide" id="ai7">
+  <div class="blob" style="width:42vw;height:42vw;background:#6366f1;opacity:.16;top:-10%;left:-8%;"></div>
+  <div class="blob" style="width:32vw;height:32vw;background:#a78bfa;opacity:.12;bottom:-8%;right:-6%;animation-delay:-5s;"></div>
+
+  <div class="ai-vs-body slide-panel" style="padding:0;">
+    <div style="text-align:center;flex-shrink:0;" class="stagger">
+      <h2 class="h2" style="font-size:clamp(1.3rem,2.6vw,2.4rem);"><span class="gv">Skills</span> vs <span class="gb">Agents</span></h2>
+      <p class="body" style="margin-top:4px;font-size:clamp(.72rem,1vw,.86rem);">Skills do one thing well. Agents combine many skills to finish a goal.</p>
+    </div>
+
+    <div class="ai-vs-scroll">
+      <div class="ai-vs stagger">
+        <!-- SKILL -->
+        <div class="ai-vs-card skill">
+          <div class="ai-vs-head">
+            <div class="ai-vs-icon">🔧</div>
+            <div>
+              <div class="ai-vs-title" style="color:#38bdf8;">Skill</div>
+              <div class="ai-vs-sub">A single, focused capability — like a tool in a toolbox.</div>
+            </div>
+          </div>
+          <div class="ai-vs-traits">
+            <span class="ai-vs-trait">One-shot</span>
+            <span class="ai-vs-trait">No memory</span>
+            <span class="ai-vs-trait">Human-triggered</span>
+            <span class="ai-vs-trait">Fixed scope</span>
+          </div>
+          <div class="ai-vs-section">Examples</div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">🌐</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Translate</div><div class="ai-vs-item-desc">Convert text from one language to another.</div></div></div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">📝</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Summarize</div><div class="ai-vs-item-desc">Condense a long article into key bullet points.</div></div></div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">🖼️</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Generate Image</div><div class="ai-vs-item-desc">Create one image from a text description.</div></div></div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">✉️</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Write Email</div><div class="ai-vs-item-desc">Draft a single email with a given tone.</div></div></div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">🔤</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Fix Grammar</div><div class="ai-vs-item-desc">Correct spelling and grammar in a paragraph.</div></div></div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">📄</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Extract Data</div><div class="ai-vs-item-desc">Pull structured info from a PDF or webpage.</div></div></div>
+          <div class="ai-vs-footer"><strong>Best for:</strong> Quick, single-step tasks.<br><strong>Limitation:</strong> Cannot plan, chain steps, or act on its own.</div>
+        </div>
+
+        <!-- BRIDGE -->
+        <div class="ai-vs-bridge">
+          <div class="ai-vs-arrows">
+            <svg width="32" height="16" viewBox="0 0 32 16"><path d="M0 8h24M20 3l8 5-8 5" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="32" height="16" viewBox="0 0 32 16"><path d="M0 8h24M20 3l8 5-8 5" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="32" height="16" viewBox="0 0 32 16"><path d="M0 8h24M20 3l8 5-8 5" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="ai-vs-bridge-label">skills combine</div>
+        </div>
+
+        <!-- AGENT -->
+        <div class="ai-vs-card agent">
+          <div class="ai-vs-head">
+            <div class="ai-vs-icon">🤖</div>
+            <div>
+              <div class="ai-vs-title" style="color:#a78bfa;">Agent</div>
+              <div class="ai-vs-sub">Orchestrates many skills autonomously — like a junior developer.</div>
+            </div>
+          </div>
+          <div class="ai-vs-traits">
+            <span class="ai-vs-trait">Multi-step</span>
+            <span class="ai-vs-trait">Has memory</span>
+            <span class="ai-vs-trait">Self-directed</span>
+            <span class="ai-vs-trait">Tool access</span>
+          </div>
+          <div class="ai-vs-section">How it works</div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">🎯</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Receives a Goal</div><div class="ai-vs-item-desc">"Build and deploy a resume analyzer app."</div></div></div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">🧠</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Plans Steps</div><div class="ai-vs-item-desc">Breaks the goal into a sequence of sub-tasks.</div></div></div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">🔧</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Picks Skills &amp; Tools</div><div class="ai-vs-item-desc">Chooses code gen, search, terminal, browser, etc.</div></div></div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">⚡</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Executes &amp; Observes</div><div class="ai-vs-item-desc">Runs each step, reads output, adjusts if needed.</div></div></div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">🔄</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Loops Until Done</div><div class="ai-vs-item-desc">Retries failures, refines approach, keeps going.</div></div></div>
+          <div class="ai-vs-item"><span class="ai-vs-item-icon">✅</span><div class="ai-vs-item-text"><div class="ai-vs-item-title">Delivers Outcome</div><div class="ai-vs-item-desc">Returns working app, report, or completed task.</div></div></div>
+          <div class="ai-vs-footer"><strong>Best for:</strong> Complex, multi-step workflows end-to-end.<br><strong>Example:</strong> Cursor agent building a full feature from a prompt.</div>
+        </div>
+      </div>
+
+      <div class="ai-vs-matrix stagger">
+        <div class="ai-vs-matrix-title">At a glance</div>
+        <div class="ai-vs-matrix-grid">
+          <div class="ai-vs-matrix-h"></div>
+          <div class="ai-vs-matrix-h skill">Skill</div>
+          <div class="ai-vs-matrix-h agent">Agent</div>
+
+          <div class="ai-vs-matrix-row">Scope</div>
+          <div class="ai-vs-matrix-val skill">1 task</div>
+          <div class="ai-vs-matrix-val agent">Full goal</div>
+
+          <div class="ai-vs-matrix-row">Steps</div>
+          <div class="ai-vs-matrix-val skill">Single</div>
+          <div class="ai-vs-matrix-val agent">Many</div>
+
+          <div class="ai-vs-matrix-row">Memory</div>
+          <div class="ai-vs-matrix-val skill">None</div>
+          <div class="ai-vs-matrix-val agent">Yes</div>
+
+          <div class="ai-vs-matrix-row">Autonomy</div>
+          <div class="ai-vs-matrix-val skill">Waits for you</div>
+          <div class="ai-vs-matrix-val agent">Self-directed</div>
+
+          <div class="ai-vs-matrix-row">Tools</div>
+          <div class="ai-vs-matrix-val skill">0–1</div>
+          <div class="ai-vs-matrix-val agent">Many</div>
+
+          <div class="ai-vs-matrix-row">Analogy</div>
+          <div class="ai-vs-matrix-val skill">🔧 Tool</div>
+          <div class="ai-vs-matrix-val agent">👨‍💻 Builder</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     AI CHAPTER · 09 — ARCHITECTURE
+══════════════════════════════════════════════ -->
+<section class="slide" id="ai9">
+  <div class="blob" style="width:46vw;height:46vw;background:#0ea5e9;opacity:.14;top:-12%;left:-10%;"></div>
+  <div class="blob" style="width:34vw;height:34vw;background:#6366f1;opacity:.12;bottom:-8%;right:-6%;animation-delay:-5s;"></div>
+
+  <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;gap:clamp(10px,1.8vh,16px);align-items:center;">
+    <div class="ctr stagger" style="gap:4px;">
+      <h2 class="h2" style="font-size:clamp(1.3rem,2.6vw,2.4rem);">Architecture of an <span class="gb">AI Application</span></h2>
+    </div>
+    <div class="split" style="align-items:start;max-width:900px;">
+      <div class="ai-arch">
+        <div class="ai-arch-node">🌐 Browser</div>
+        <div class="ai-arch-arrow">↓</div>
+        <div class="ai-arch-node">⚛️ React App</div>
+        <div class="ai-arch-arrow">↓</div>
+        <div class="ai-arch-node">🔗 API Layer</div>
+        <div class="ai-arch-arrow">↓</div>
+        <div class="ai-arch-node" style="border-color:rgba(167,139,250,.4);box-shadow:0 0 20px rgba(99,102,241,.2);">🤖 LLM</div>
+        <div class="ai-arch-arrow">↓</div>
+        <div class="ai-arch-node">📄 Response</div>
+        <div class="ai-arch-arrow">↓</div>
+        <div class="ai-arch-node">📝 Markdown Renderer</div>
+        <div class="ai-arch-arrow">↓</div>
+        <div class="ai-arch-node">👤 User</div>
+      </div>
+      <div class="ai-arch-side">
+        <div style="font-size:clamp(.6rem,.85vw,.74rem);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;">Side Services</div>
+        <div class="ai-arch-node">🔐 Authentication</div>
+        <div class="ai-arch-node">🗄️ Database</div>
+        <div class="ai-arch-node">📎 File Upload</div>
+        <div class="ai-arch-node">🧬 Vector DB</div>
+        <div class="ai-arch-node">☁️ Cloud Storage</div>
+        <svg width="100%" height="120" viewBox="0 0 200 120" style="margin-top:8px;opacity:.6;">
+          <line x1="20" y1="30" x2="100" y2="60" stroke="rgba(129,140,248,.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <line x1="20" y1="60" x2="100" y2="80" stroke="rgba(129,140,248,.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <line x1="20" y1="90" x2="100" y2="100" stroke="rgba(129,140,248,.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <line x1="180" y1="40" x2="100" y2="70" stroke="rgba(56,189,248,.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <line x1="180" y1="80" x2="100" y2="90" stroke="rgba(56,189,248,.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     AI CHAPTER · 10 — LIVE BUILD
+══════════════════════════════════════════════ -->
+<section class="slide" id="ai10">
+  <div class="blob" style="width:44vw;height:44vw;background:#059669;opacity:.14;top:-12%;left:-8%;"></div>
+  <div class="blob" style="width:32vw;height:32vw;background:#6366f1;opacity:.12;bottom:-10%;right:-6%;animation-delay:-4s;"></div>
+
+  <div class="slide-panel">
+    <div style="padding:0 0 clamp(6px,1vh,10px);text-align:center;flex-shrink:0;">
+      <h2 class="h2" style="font-size:clamp(1.2rem,2.4vw,2.2rem);">Live Build — <span class="gg">GetMyResu.me</span></h2>
+      <p class="body" style="margin-top:3px;font-size:clamp(.65rem,.9vw,.78rem);">Next.js + Gemini · <strong style="color:#818cf8;">100% built with AI</strong></p>
+      <div class="gm-pills">
+        <span class="gm-pill">🔍 Analyze</span>
+        <span class="gm-pill">📊 Score</span>
+        <span class="gm-pill">🧬 SkillPrint</span>
+        <span class="gm-pill">🔐 Google &amp; Facebook Auth</span>
+      </div>
+    </div>
+
+    <div class="ai-build-layout">
+      <div class="ai-build-steps-col">
+        <div class="ai-agent-steps" id="build-steps"></div>
+      </div>
+
+      <div class="gm-mock" id="gm-mock" data-phase="upload" data-view="assess" data-sp="">
+        <div class="gm-processing">
+          <div class="gm-spin"></div>
+          <div class="gm-proc-txt" id="gm-proc-txt">Analyzing…</div>
+          <div class="gm-proc-bar"><div class="fill" id="gm-proc-fill" style="width:0%"></div></div>
+        </div>
+
+        <div class="gm-side">
+          <div class="gm-logo">GetMyResu.me<br><span>CareerOS</span></div>
+          <div class="gm-navgrp">CAREER HUB</div>
+          <div class="gm-navitem">Dashboard</div>
+          <div class="gm-navitem on" id="gm-nav-assess">Deep assess</div>
+          <div class="gm-navitem">My resumes</div>
+          <div class="gm-navgrp">AI TOOLS</div>
+          <div class="gm-navitem" id="gm-nav-analyze">Analyze</div>
+          <div class="gm-navitem" id="gm-nav-roast">Roast 🔥</div>
+          <div class="gm-navitem" id="gm-nav-matcher">Matcher</div>
+          <div class="gm-navitem" id="gm-nav-skillprint">Skillprint</div>
+          <div class="gm-auth">
+            <span>G Google</span>
+            <span>f Facebook</span>
+          </div>
+        </div>
+
+        <div class="gm-assess-view">
+        <div class="gm-body">
+          <div class="gm-upload">
+            <div class="gm-hdr">
+              <div>
+                <div class="gm-title">Deep assess</div>
+                <div class="gm-sub">Upload, analyze, and improve your resume.</div>
+              </div>
+              <span class="gm-badge ai">AI ENABLED</span>
+            </div>
+            <div class="gm-drop" id="gm-drop">
+              <div style="font-size:clamp(.9rem,1.4vw,1.1rem);">📄</div>
+              <div class="file" id="gm-filename">Upload your resume</div>
+              <div class="hint">PDF, DOCX, TXT</div>
+            </div>
+            <div class="gm-toggle"><span>Match to job description</span><div class="sw"></div></div>
+            <button class="gm-btn" type="button">Deep assess →</button>
+          </div>
+
+          <div class="gm-analysis">
+            <div class="gm-hdr">
+              <div class="gm-tabs">
+                <span class="gm-tab on" id="gm-tab-analyze">Analyze</span>
+                <span class="gm-tab" id="gm-tab-roast">Roast 🔥</span>
+                <span class="gm-tab" id="gm-tab-matcher">Matcher</span>
+                <span class="gm-tab" id="gm-tab-skillprint">Skillprint</span>
+              </div>
+              <span class="gm-badge ai">AI ON</span>
+            </div>
+            <div class="gm-agents">
+              <div class="gm-agent on" id="gm-feat-analyze"><b>Analyze</b><span>Deep resume assessment</span></div>
+              <div class="gm-agent" id="gm-feat-roast"><b>Roast 🔥</b><span>Brutally honest feedback</span></div>
+              <div class="gm-agent" id="gm-feat-matcher"><b>Matcher</b><span>JD &amp; role matching</span></div>
+              <div class="gm-agent" id="gm-feat-skillprint"><b>Skillprint</b><span>AI skills profile</span></div>
+            </div>
+            <div class="gm-result" id="gm-result">
+              <div class="gm-result-hdr">
+                <span class="gm-result-tag" id="gm-agent-label">Analyze</span>
+                <span class="gm-match" id="gm-match-tag">—</span>
+              </div>
+              <div class="gm-score" id="gm-score">—</div>
+              <div class="gm-score-lbl" id="gm-score-lbl">RESUME SCORE</div>
+              <div class="gm-feedback" id="gm-feedback">Sign in with Google or Facebook to get started…</div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <div class="gm-sp-view">
+          <div class="sp-topbar">
+            <span>SkillPrint</span>
+            <div class="sp-topbar-actions"><span>🌙</span><span>Sign out</span></div>
+          </div>
+          <div class="sp-content">
+            <div class="sp-upload-view">
+              <div class="sp-hero">
+                <h3>🎯 Your SkillPrint</h3>
+                <p>Map your skills. Find your gaps. Plan your growth.</p>
+              </div>
+              <div class="sp-card">
+                <div class="sp-drop">
+                  <div style="font-size:clamp(.8rem,1.2vw,1rem);">📄</div>
+                  <div style="font-size:clamp(.4rem,.56vw,.48rem);font-weight:700;color:#5b4ae0;">Drop your resume here</div>
+                  <div style="font-size:clamp(.36rem,.5vw,.44rem);color:#94a3b8;margin-top:2px;">PDF or DOCX, max 10MB</div>
+                  <div class="ok" id="gm-sp-resume" style="display:none;">✓ Resume loaded: resume.pdf</div>
+                </div>
+                <div class="sp-fields">
+                  <div class="sp-field"><label>Target role</label><div class="val">Full Stack Developer</div></div>
+                  <div class="sp-field"><label>Country</label><div class="val">India</div></div>
+                  <div class="sp-field wide"><label>City (optional)</label><div class="val">e.g. Bengaluru</div></div>
+                </div>
+                <button class="sp-btn" type="button" id="gm-sp-btn">Generate SkillPrint →</button>
+              </div>
+            </div>
+            <div class="sp-results">
+              <div class="sp-hero" style="text-align:left;">
+                <h3>🎯 Your SkillPrint</h3>
+                <p>Software Developer · 14 skills detected</p>
+              </div>
+              <div class="sp-card">
+                <div class="sp-readiness">
+                  <div class="sp-ring-wrap">
+                    <svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" stroke="#e8eaf2" stroke-width="6"/><circle cx="36" cy="36" r="30" fill="none" stroke="#14b8a6" stroke-width="6" stroke-dasharray="75.4 188.5" stroke-linecap="round"/></svg>
+                    <div class="sp-ring-txt"><span>40%</span><small>Readiness</small></div>
+                  </div>
+                  <div>
+                    <span class="sp-badge">Building</span>
+                    <p class="sp-summary">Solid foundation in software development. Strong in React.js and Node.js — well positioned for a Software Developer role in the Indian market.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="sp-card">
+                <div class="sp-section-title">Category overview</div>
+                <div class="sp-section-sub">Your stack vs market demand</div>
+                <div class="sp-radar">
+                  <svg viewBox="0 0 240 200" aria-hidden="true">
+                    <g transform="translate(120,100)">
+                      <polygon points="0,-70 66,-22 41,57 -41,57 -66,-22" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                      <polygon points="0,-35 33,-11 20,28 -20,28 -33,-11" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                      <line x1="0" y1="0" x2="0" y2="-70" stroke="#e2e8f0"/><line x1="0" y1="0" x2="66" y2="-22" stroke="#e2e8f0"/>
+                      <line x1="0" y1="0" x2="41" y2="57" stroke="#e2e8f0"/><line x1="0" y1="0" x2="-41" y2="57" stroke="#e2e8f0"/>
+                      <line x1="0" y1="0" x2="-66" y2="-22" stroke="#e2e8f0"/>
+                      <polygon points="0,-58 55,-18 32,48 -28,42 -52,-16" fill="rgba(251,146,60,.15)" stroke="#fb923c" stroke-width="1.5"/>
+                      <polygon points="0,-42 38,-14 22,35 -18,30 -40,-12" fill="rgba(20,184,166,.2)" stroke="#14b8a6" stroke-width="1.5"/>
+                      <text y="-78" text-anchor="middle" font-size="7" fill="#64748b">Frontend</text>
+                      <text x="72" y="-18" text-anchor="start" font-size="7" fill="#64748b">Backend</text>
+                      <text x="46" y="68" text-anchor="middle" font-size="7" fill="#64748b">Databases</text>
+                      <text x="-46" y="68" text-anchor="middle" font-size="7" fill="#64748b">Cloud</text>
+                      <text x="-72" y="-18" text-anchor="end" font-size="7" fill="#64748b">DevOps</text>
+                    </g>
+                  </svg>
+                </div>
+                <div class="sp-legend">
+                  <span><i style="background:#fb923c;"></i>Market demand</span>
+                  <span><i style="background:#14b8a6;"></i>Your skills</span>
+                </div>
+              </div>
+              <div class="sp-card">
+                <div class="sp-section-title">Skills radar</div>
+                <div class="sp-section-sub">14 skills detected on your resume</div>
+                <div class="sp-skills">
+                  <span class="sp-skill">JavaScript</span><span class="sp-skill">React.js</span>
+                  <span class="sp-skill">Node.js</span><span class="sp-skill">TypeScript</span>
+                  <span class="sp-skill">Next.js</span><span class="sp-skill">Tailwind</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-stepper-ctrl">
+      <button class="ai-sbtn" id="lb-prev" disabled>← Prev</button>
+      <div class="ai-sprog" id="lb-prog">Step 1 / 7</div>
+      <button class="ai-sbtn primary" id="lb-next">Next →</button>
+    </div>
+
+    <div class="gm-live-wrap">
+      <a class="gm-live-link" href="https://getmyresu.me/" target="_blank" rel="noopener noreferrer">🌐 Try the real app — getmyresu.me →</a>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var STEPS=[
+      {l:'🔐 Sign In',view:'assess',phase:'upload',feat:'',sp:'',file:'Upload your resume',proc:'',p:0,score:'—',lbl:'RESUME SCORE',match:'—',fb:'Sign in with Google or Facebook to get started…'},
+      {l:'📎 Upload Resume',view:'assess',phase:'upload',feat:'',sp:'',file:'resume.pdf',proc:'',p:0,score:'—',lbl:'RESUME SCORE',match:'—',fb:'Upload PDF, DOCX, or TXT — drag & drop supported.'},
+      {l:'🔍 Analyze',view:'assess',phase:'processing',feat:'analyze',sp:'',file:'resume.pdf',proc:'Gemini analyzing resume…',p:40,score:'—',lbl:'ANALYSIS',match:'—',fb:'Running deep assessment across structure, keywords, and impact…'},
+      {l:'📊 Score',view:'assess',phase:'results',feat:'analyze',sp:'',file:'resume.pdf',proc:'',p:100,score:'81',lbl:'RESUME SCORE',match:'Good match',fb:'ATS score 81/100 · strong structure and keywords · add more quantified impact to bullets.'},
+      {l:'🧬 SkillPrint Setup',view:'skillprint',phase:'upload',feat:'skillprint',sp:'upload',file:'resume.pdf',proc:'',p:0,score:'—',lbl:'SKILLPRINT',match:'—',fb:'Select target role and location — then generate your SkillPrint.'},
+      {l:'⚡ Generating SkillPrint',view:'skillprint',phase:'processing',feat:'skillprint',sp:'generating',file:'resume.pdf',proc:'Gemini mapping skills vs market demand…',p:60,score:'—',lbl:'SKILLPRINT',match:'—',fb:'Analyzing 14 skills across Frontend, Backend, Cloud & DevOps…'},
+      {l:'📈 SkillPrint Results',view:'skillprint',phase:'results',feat:'skillprint',sp:'results',file:'resume.pdf',proc:'',p:100,score:'40',lbl:'READINESS',match:'Building',fb:'40% readiness · radar chart vs market demand · gaps in Cloud & DevOps'}
+    ];
+    var cur=0,stepsEl=document.getElementById('build-steps');
+    var mockEl=document.getElementById('gm-mock'),fileEl=document.getElementById('gm-filename');
+    var procTxt=document.getElementById('gm-proc-txt'),procFill=document.getElementById('gm-proc-fill');
+    var scoreEl=document.getElementById('gm-score'),fbEl=document.getElementById('gm-feedback');
+    var lblEl=document.getElementById('gm-score-lbl'),matchEl=document.getElementById('gm-match-tag');
+    var prevBtn=document.getElementById('lb-prev'),nextBtn=document.getElementById('lb-next'),prog=document.getElementById('lb-prog');
+    var spBtn=document.getElementById('gm-sp-btn'),spResume=document.getElementById('gm-sp-resume');
+    var assessNav=document.getElementById('gm-nav-assess');
+    var FEATS=['analyze','roast','matcher','skillprint'];
+    var FEAT_LABELS={analyze:'Analyze',roast:'Roast 🔥',matcher:'Matcher',skillprint:'Skillprint'};
+    function setSp(d){
+      mockEl.setAttribute('data-sp',d.sp||'');
+      if(!spBtn||!spResume)return;
+      if(d.sp==='upload'){spBtn.textContent='Generate SkillPrint →';spBtn.classList.remove('gen');spResume.style.display='none';}
+      else if(d.sp==='generating'){spBtn.textContent='Generating…';spBtn.classList.add('gen');spResume.style.display='block';}
+      else if(d.sp==='results'){spResume.style.display='block';}
+    }
+    function setView(d){
+      var sp=d.view==='skillprint';
+      mockEl.setAttribute('data-view',d.view||'assess');
+      if(assessNav)assessNav.classList.toggle('on',!sp);
+      setSp(d);
+    }
+    function setFeat(f){
+      FEATS.forEach(function(id){
+        var tab=document.getElementById('gm-tab-'+id),nav=document.getElementById('gm-nav-'+id),card=document.getElementById('gm-feat-'+id);
+        var on=f===id;
+        if(tab)tab.classList.toggle('on',on);
+        if(nav)nav.classList.toggle('on',on);
+        if(card)card.classList.toggle('on',on);
+      });
+      var label=document.getElementById('gm-agent-label');
+      if(label)label.textContent=f?FEAT_LABELS[f]||f:'GetMyResu.me';
+    }
+    function build(){
+      stepsEl.innerHTML='';
+      for(var i=0;i<=cur;i++){
+        var node=document.createElement('div');
+        node.className='ai-agent-node'+(i===cur?' on':'');
+        node.innerHTML='<div class="ai-agent-num">'+(i+1)+'</div><div class="ai-agent-label">'+STEPS[i].l+'</div>';
+        stepsEl.appendChild(node);
+        if(i<cur){var arr=document.createElement('div');arr.className='ai-agent-arrow';stepsEl.appendChild(arr);}
+      }
+      stepsEl.scrollTop=stepsEl.scrollHeight;
+      var d=STEPS[cur];
+      mockEl.setAttribute('data-phase',d.phase);
+      setView(d);
+      fileEl.textContent=cur>=1?d.file:'Upload your resume';
+      procTxt.textContent=d.proc||'Analyzing…';
+      procFill.style.width=d.p+'%';
+      if(d.view!=='skillprint'){
+        scoreEl.textContent=d.score;
+        lblEl.textContent=d.lbl;
+        matchEl.textContent=d.match;
+        fbEl.textContent=d.fb;
+      }
+      setFeat(d.feat);
+      prevBtn.disabled=cur===0;
+      nextBtn.disabled=cur===STEPS.length-1;
+      nextBtn.textContent=cur===STEPS.length-1?'✅ Complete':'Next →';
+      prog.textContent='Step '+(cur+1)+' / '+STEPS.length;
+    }
+    function reset(){cur=0;build();}
+    prevBtn.onclick=function(){if(cur>0){cur--;build();}};
+    nextBtn.onclick=function(){if(cur<STEPS.length-1){cur++;build();}};
+    var active=false;
+    new MutationObserver(function(){var on=document.getElementById('ai10').classList.contains('active');if(on&&!active)reset();active=on;}).observe(document.getElementById('ai10'),{attributes:true,attributeFilter:['class']});
+    build();
+  })();
+  </script>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     AI CHAPTER · 11 — YOUR FIRST BUILD: PORTFOLIO
+══════════════════════════════════════════════ -->
+<section class="slide" id="ai12">
+  <div class="blob" style="width:55vw;height:55vw;background:#4338ca;opacity:.22;top:-18%;left:-12%;"></div>
+  <div class="blob" style="width:40vw;height:40vw;background:#0891b2;opacity:.16;bottom:-14%;right:-10%;animation-delay:-6s;"></div>
+  <div class="blob" style="width:36vw;height:36vw;background:#f59e0b;opacity:.08;bottom:-12%;left:-8%;animation-delay:-4s;"></div>
+  <div class="ai-particles" aria-hidden="true">
+    <div class="ai-particle" style="top:20%;left:15%;animation-delay:0s;"></div>
+    <div class="ai-particle" style="top:60%;left:80%;animation-delay:1s;"></div>
+    <div class="ai-particle" style="top:40%;left:50%;animation-delay:2s;"></div>
+    <div class="ai-particle" style="top:75%;left:25%;animation-delay:.5s;"></div>
+    <div class="ai-particle" style="top:30%;left:70%;animation-delay:1.5s;"></div>
+    <div class="ai-particle" style="top:85%;left:60%;animation-delay:2.5s;"></div>
+  </div>
+
+  <div class="ai-merge-wrap">
+    <div class="ai-cta-compact stagger">
+      <h2 class="h2" style="font-size:clamp(1.3rem,2.6vw,2.4rem);">Your First Build — <span class="gg">Portfolio 1-Pager</span></h2>
+      <p class="ai-mission">Build a single-page portfolio with <span class="tool-pill">♥ Lovable</span> + Gemini API — ship a live site recruiters can visit.</p>
+      <div class="ai-cta-formula fi">
+        <span>👨‍💻</span><span class="muted" style="font-size:clamp(1.2rem,2.4vw,2rem);">+</span><span>🤖</span><span class="muted" style="font-size:clamp(1.2rem,2.4vw,2rem);">=</span><span class="gv">Builder</span>
+      </div>
+    </div>
+
+    <div class="ai-challenge-hero stagger" style="width:100%;">
+      <div style="font-size:clamp(.82rem,1.2vw,.95rem);font-weight:800;color:#fff;line-height:1.5;text-align:center;">🎯 <span class="ga">Recommended Project</span> — 1-page portfolio with an optional AI feature</div>
+
+      <div class="ai-challenge-grid">
+        <div class="ai-challenge-section">
+          <h4>Portfolio Sections</h4>
+          <div class="ai-suggest">
+            <span class="highlight">Portfolio 1-Pager</span><span>Hero + About</span><span>Skills Grid</span>
+            <span>Projects</span><span>Contact</span><span>AI Tagline ✦</span>
+          </div>
+        </div>
+        <div class="ai-challenge-section">
+          <h4>What You'll Learn</h4>
+          <div class="ai-req">Get a free Gemini API key</div>
+          <div class="ai-req">Store keys safely in .env</div>
+          <div class="ai-req">Build UI in Lovable (live preview)</div>
+          <div class="ai-req">Connect Gemini API key as secret</div>
+          <div class="ai-req">Publish from Lovable in 1 click</div>
+          <div class="ai-req">Share on GitHub + LinkedIn</div>
+        </div>
+      </div>
+
+      <div class="ai-challenge-grid" style="margin-top:clamp(10px,1.5vh,14px);">
+        <div class="ai-challenge-section">
+          <h4>12-Step Roadmap</h4>
+          <div class="pf-roadmap">
+            <div class="pf-phase">
+              <h5>Phase 1 — Setup</h5>
+              <ol>
+                <li>Get Gemini API key</li>
+                <li>Sign up on Lovable</li>
+                <li>Add API key to Secrets</li>
+              </ol>
+            </div>
+            <div class="pf-phase">
+              <h5>Phase 2 — Lovable</h5>
+              <ol>
+                <li>Prompt 1: Full layout</li>
+                <li>Prompts 2–3: Polish + content</li>
+                <li>Prompt 4: AI tagline</li>
+              </ol>
+            </div>
+            <div class="pf-phase">
+              <h5>Phase 3 — Ship</h5>
+              <ol>
+                <li>Prompt 5: GitHub sync</li>
+                <li>Prompt 6: Publish live</li>
+                <li>Share on LinkedIn</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <div class="ai-challenge-section">
+          <h4>Next Slides → Lovable Flow</h4>
+          <div class="ai-submit-step"><span class="ai-submit-num">1</span>API key + Lovable project setup</div>
+          <div class="ai-submit-step"><span class="ai-submit-num">2</span>6 copyable Lovable prompts</div>
+          <div class="ai-submit-step"><span class="ai-submit-num">3</span>Paste in Lovable chat → see live preview</div>
+          <div class="ai-submit-step"><span class="ai-submit-num">4</span>Publish → add URL to resume</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     AI CHAPTER · 12 — STEP 1: GEMINI API KEY
+══════════════════════════════════════════════ -->
+<section class="slide" id="ai14">
+  <div class="blob" style="width:44vw;height:44vw;background:#4285f4;opacity:.12;top:-12%;left:-8%;"></div>
+  <div class="blob" style="width:32vw;height:32vw;background:#059669;opacity:.12;bottom:-10%;right:-6%;animation-delay:-4s;"></div>
+
+  <div class="guide-body">
+    <div class="ctr stagger" style="gap:4px;flex-shrink:0;">
+      <h2 class="h2" style="font-size:clamp(1.3rem,2.6vw,2.4rem);">Step 1 — API Key <span class="gg">Setup</span></h2>
+      <p class="body" style="font-size:clamp(.68rem,.95vw,.82rem);">Get API key first · then set up your Lovable project · copy each block</p>
+    </div>
+
+    <div class="guide-stack stagger">
+      <div class="guide-card gemini">
+        <div class="guide-head">
+          <div class="guide-icon">✦</div>
+          <div>
+            <div class="guide-title">Get Your Free Gemini API Key</div>
+            <div class="guide-sub">Steps 1–5 · do this first</div>
+          </div>
+        </div>
+        <div class="guide-step"><div class="guide-num">1</div><div class="guide-step-text">Go to <a class="guide-link" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">aistudio.google.com/apikey</a></div></div>
+        <div class="guide-step"><div class="guide-num">2</div><div class="guide-step-text">Sign in with <strong>Google</strong> (student email is fine)</div></div>
+        <div class="guide-step"><div class="guide-num">3</div><div class="guide-step-text">Click <strong>Create API key</strong> → pick a project name like <code style="color:#c084fc;">my-portfolio</code></div></div>
+        <div class="guide-step"><div class="guide-num">4</div><div class="guide-step-text"><strong>Copy the key</strong> → save in Notes app (you won't see it again)</div></div>
+        <div class="guide-step"><div class="guide-num">5</div><div class="guide-step-text">Open <a class="guide-link" href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer">AI Studio</a> → paste the test prompt below → confirm you get a response</div></div>
+
+        <div class="copy-block">
+          <div class="copy-head"><span class="copy-label">📋 Test Prompt — paste in AI Studio</span><button class="copy-btn" type="button">Copy</button></div>
+          <pre class="copy-target">Write a professional one-line tagline for a student full-stack developer who knows React, Next.js, and Tailwind CSS. Keep it under 15 words. Make it confident but not arrogant.</pre>
+        </div>
+        <div class="guide-warn">⚠️ Never post your API key on Discord, WhatsApp, or GitHub</div>
+      </div>
+
+      <div class="guide-card lovable">
+        <div class="guide-head">
+          <div class="guide-icon">♥</div>
+          <div>
+            <div class="guide-title">Set Up Lovable Project</div>
+            <div class="guide-sub">Steps 6–10 · UI builder with live preview</div>
+          </div>
+        </div>
+
+        <div class="lovable-flow">
+          <div class="lovable-flow-step"><b>6.</b> Go to <a class="guide-link" href="https://lovable.dev" target="_blank" rel="noopener noreferrer">lovable.dev</a> → Sign up free (Google or email)</div>
+          <div class="lovable-flow-step"><b>7.</b> Click <strong style="color:#fff;">Create Project</strong> → name it <code style="color:#f9a8d4;">my-portfolio</code></div>
+          <div class="lovable-flow-step"><b>8.</b> Open <strong style="color:#fff;">Project Settings</strong> (gear icon) → <strong style="color:#fff;">Secrets</strong> → Add secret:</div>
+        </div>
+
+        <div class="copy-block">
+          <div class="copy-head"><span class="copy-label">📋 Lovable Secret</span><button class="copy-btn" type="button">Copy</button></div>
+          <pre class="copy-target">Name:  GEMINI_API_KEY
+Value: paste_your_actual_key_here</pre>
+        </div>
+
+        <div class="lovable-flow">
+          <div class="lovable-flow-step"><b>9.</b> In Lovable chat, paste <strong style="color:#fff;">Prompt 1</strong> from the next slide → wait for live preview</div>
+          <div class="lovable-flow-step"><b>10.</b> Run prompts <strong style="color:#fff;">2 → 6</strong> one at a time — review each change before sending the next</div>
+        </div>
+
+        <div class="guide-warn">💡 Tip: If something breaks, type "undo last change" or describe what's wrong — Lovable will fix it</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     AI CHAPTER · 13 — STEP 2: LOVABLE PROMPTS
+══════════════════════════════════════════════ -->
+<section class="slide" id="ai15">
+  <div class="blob" style="width:42vw;height:42vw;background:#7c3aed;opacity:.14;top:-10%;right:-8%;"></div>
+  <div class="blob" style="width:30vw;height:30vw;background:#14b8a6;opacity:.12;bottom:-8%;left:-6%;animation-delay:-3s;"></div>
+
+  <div class="guide-body">
+    <div class="ctr stagger" style="gap:4px;flex-shrink:0;">
+      <h2 class="h2" style="font-size:clamp(1.3rem,2.6vw,2.4rem);">Step 2 — <span class="tool-pill">♥ Lovable</span> Prompts</h2>
+      <p class="body" style="font-size:clamp(.68rem,.95vw,.82rem);">Open <a class="guide-link" href="https://lovable.dev" target="_blank" rel="noopener noreferrer">lovable.dev</a> · paste one prompt at a time · watch the live preview update</p>
+    </div>
+
+    <div class="guide-stack stagger">
+      <div class="guide-card lovable">
+        <div class="guide-head">
+          <div class="guide-icon">♥</div>
+          <div>
+            <div class="guide-title">Lovable Workflow — How It Works</div>
+            <div class="guide-sub">Chat on the left · live preview on the right</div>
+          </div>
+        </div>
+        <div class="lovable-flow">
+          <div class="lovable-flow-step"><b>①</b> Type or paste a prompt in the <strong style="color:#fff;">chat box</strong> at the bottom</div>
+          <div class="lovable-flow-step"><b>②</b> Lovable generates React + Tailwind code and updates the <strong style="color:#fff;">live preview</strong> instantly</div>
+          <div class="lovable-flow-step"><b>③</b> Don't like something? Reply: <em>"make the hero bigger"</em> or <em>"change colors to blue"</em></div>
+          <div class="lovable-flow-step"><b>④</b> Happy with a step? Move to the <strong style="color:#fff;">next prompt</strong> — don't skip ahead</div>
+          <div class="lovable-flow-step"><b>⑤</b> Click <strong style="color:#fff;">Publish</strong> when done → get a live URL to share</div>
+        </div>
+        <div class="guide-step"><div class="guide-num">!</div><div class="guide-step-text"><strong>Golden rule:</strong> One prompt at a time. Wait for each build to finish before pasting the next.</div></div>
+      </div>
+
+      <div class="guide-card build">
+        <div class="guide-head">
+          <div class="guide-icon">📋</div>
+          <div>
+            <div class="guide-title">Lovable Prompts — Copy &amp; Paste in Order</div>
+            <div class="guide-sub">6 prompts · from blank project to live portfolio</div>
+          </div>
+        </div>
+
+        <div class="guide-phase">Prompt 1 of 6 — Build the full page layout</div>
+        <div class="copy-block">
+          <div class="copy-head"><span class="copy-label">♥ Lovable — Initial portfolio scaffold</span><button class="copy-btn" type="button">Copy</button></div>
+          <pre class="copy-target tall">Build a modern single-page developer portfolio website.
+
+This is a scrollable one-page site with these sections:
+
+1. NAVBAR (sticky top)
+   - My name "Alex Developer" on the left
+   - Nav links on the right: About, Skills, Projects, Contact
+   - Smooth scroll to each section on click
+
+2. HERO
+   - Large heading: "Hi, I'm Alex 👋"
+   - Subtitle: "Full Stack Developer"
+   - Short tagline: "I build web apps with React, Next.js & AI"
+   - Purple gradient CTA button: "View My Work"
+   - Subtle gradient background glow
+
+3. ABOUT
+   - Section heading "About Me"
+   - 3-sentence bio placeholder about a student developer learning web dev and AI
+   - Circular profile photo placeholder on the left, text on the right
+
+4. SKILLS
+   - Section heading "Skills"
+   - Responsive grid of pill badges: React, Next.js, TypeScript, Tailwind CSS, Node.js, Git, Gemini API, Lovable
+
+5. PROJECTS
+   - Section heading "Projects"
+   - 2 project cards side by side
+   - Each card: project title, 1-line description, tech tags, "Live Demo" and "GitHub" links
+
+6. CONTACT
+   - Section heading "Get In Touch"
+   - Email, LinkedIn, GitHub as icon buttons
+   - Footer: "Built with Lovable + Gemini AI"
+
+Design: Dark theme, purple/violet accents (#8b5cf6), glassmorphism cards, modern typography, fully mobile responsive. Professional like a senior developer portfolio.</pre>
+        </div>
+
+        <div class="guide-phase">Prompt 2 of 6 — Polish the design</div>
+        <div class="copy-block">
+          <div class="copy-head"><span class="copy-label">♥ Lovable — Visual polish</span><button class="copy-btn" type="button">Copy</button></div>
+          <pre class="copy-target tall">Make this portfolio look more polished and professional:
+
+- Hero: bigger heading font, animated gradient text on my name, floating subtle particles or grid background
+- Navbar: blur glass effect when scrolling, active link highlight
+- Skills pills: hover scale effect, subtle border glow on hover
+- Project cards: lift on hover with shadow, rounded corners, tech stack as small colored badges
+- Add smooth fade-in animations when sections scroll into view
+- Improve spacing — more breathing room between sections (py-24)
+- Add a subtle divider or gradient line between sections
+- Make sure everything looks great on mobile (test 375px width)
+- Use a clean modern font (Inter or similar)</pre>
+        </div>
+
+        <div class="guide-phase">Prompt 3 of 6 — Add your real info</div>
+        <div class="copy-block">
+          <div class="copy-head"><span class="copy-label">♥ Lovable — Personalize content</span><button class="copy-btn" type="button">Copy</button></div>
+          <pre class="copy-target tall">Replace ALL placeholder content with my real information:
+
+Name: [YOUR FULL NAME]
+Role: [e.g. Full Stack Developer / Frontend Developer]
+Tagline: [e.g. "Turning ideas into web apps with code & AI"]
+
+About Me (write 3-4 sentences):
+[Your background — student/working professional, what you're learning, what kind of role you want]
+
+Skills (update the pills):
+[List your actual skills — e.g. React, JavaScript, Python, HTML, CSS, Git, etc.]
+
+Projects:
+1. [Project Name] — [1 sentence what it does] — Tech: [React, Node, etc.]
+   GitHub: [your github repo url or #]
+   Live: [deployed url or "Coming Soon"]
+
+2. [Project Name] — [1 sentence what it does] — Tech: [list]
+   GitHub: [url]
+   Live: [url or "Coming Soon"]
+
+Contact:
+Email: [your.email@gmail.com]
+LinkedIn: [your linkedin profile url]
+GitHub: [your github profile url]</pre>
+        </div>
+
+        <div class="guide-phase">Prompt 4 of 6 — Add Gemini AI tagline generator</div>
+        <div class="copy-block">
+          <div class="copy-head"><span class="copy-label">♥ Lovable — AI feature with Gemini</span><button class="copy-btn" type="button">Copy</button></div>
+          <pre class="copy-target tall">Add an AI-powered "Generate Tagline" feature to the Hero section.
+
+Requirements:
+1. Add a button below the tagline: "✦ Generate Tagline with AI"
+2. On click, show a loading spinner
+3. Call the Google Gemini API using the GEMINI_API_KEY secret I added in project settings
+4. Use model: gemini-2.0-flash
+5. Send this prompt to Gemini: "Write a professional one-line portfolio tagline for [MY NAME], a [MY ROLE] skilled in [MY TOP 3 SKILLS]. Maximum 15 words. Confident tone."
+6. Display the AI-generated tagline below the button, replacing the static tagline
+7. Add a "Regenerate" option to try again
+8. Handle errors: show "Could not generate — try again" if API fails
+9. NEVER expose the API key in frontend code — use a secure backend/edge function
+
+The API key is stored as GEMINI_API_KEY in project secrets.</pre>
+        </div>
+
+        <div class="guide-phase">Prompt 5 of 6 — Connect to GitHub</div>
+        <div class="copy-block">
+          <div class="copy-head"><span class="copy-label">♥ Lovable — GitHub sync</span><button class="copy-btn" type="button">Copy</button></div>
+          <pre class="copy-target tall">Connect this project to GitHub:
+
+1. Create a new GitHub repository called "my-portfolio"
+2. Push all the current code to the main branch
+3. Add a README.md with:
+   - Project title: "[My Name]'s Portfolio"
+   - Description: "Personal portfolio built with Lovable, React, Tailwind CSS, and Gemini AI"
+   - Tech stack list
+   - Section: "Features" — list portfolio sections + AI tagline generator
+   - Section: "How to run locally" — clone, npm install, add .env, npm run dev
+   - Placeholder for live demo URL
+
+Make sure .env files and API keys are NOT committed to the repo.</pre>
+        </div>
+
+        <div class="guide-phase">Prompt 6 of 6 — Publish live</div>
+        <div class="copy-block">
+          <div class="copy-head"><span class="copy-label">♥ Lovable — Publish &amp; go live</span><button class="copy-btn" type="button">Copy</button></div>
+          <pre class="copy-target tall">Publish this portfolio website and make it live:
+
+1. Click Publish / Deploy
+2. Set the site title to "[My Name] — Portfolio"
+3. Add meta description: "Portfolio of [My Name], [Role]. Built with React, Tailwind & Gemini AI."
+4. Add a favicon (use initials or a simple icon)
+5. Verify all links work (GitHub, LinkedIn, email, project links)
+6. Test on mobile — everything should be responsive
+7. Test the "Generate Tagline" AI button works
+8. Give me the live URL when done
+
+After publishing, I'll share this URL on LinkedIn and add it to my resume.</pre>
+        </div>
+      </div>
+
+      <div class="guide-card gemini">
+        <div class="guide-head">
+          <div class="guide-icon">✅</div>
+          <div>
+            <div class="guide-title">Final Checklist — You're Done When…</div>
+            <div class="guide-sub">Steps 11–12</div>
+          </div>
+        </div>
+        <div class="guide-step"><div class="guide-num">11</div><div class="guide-step-text"><strong>Test on mobile</strong> — open live URL on your phone, check all links + AI button</div></div>
+        <div class="guide-step"><div class="guide-num">12</div><div class="guide-step-text"><strong>Share on LinkedIn:</strong> <em>"Built my portfolio with Lovable + Gemini AI ♥ [your-url]"</em></div></div>
+        <div class="guide-step"><div class="guide-num">★</div><div class="guide-step-text"><strong>Add live URL to your resume</strong> — this is your proof of work!</div></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 </div><!-- /deck -->
 
 <!-- NAV -->
-<div id="nav">
-  <button class="nbtn" id="bp">‹</button>
-  <span id="ctr">01 / 13</span>
-  <button class="nbtn" id="bn">›</button>
+<div id="bottom-bar">
+  <div id="session-picker">
+    <span class="sess-label">Session</span>
+    <button class="sess-btn on" data-session="1" title="Session 1 — Web Development">1</button>
+    <button class="sess-btn" data-session="2" title="Session 2 — AI in Web Development">2</button>
+  </div>
+  <div id="nav">
+    <button class="nbtn" id="bp">‹</button>
+    <span id="ctr">01 / 11</span>
+    <button class="nbtn" id="bn">›</button>
+  </div>
 </div>
 
 <script>
 var slides=Array.from(document.querySelectorAll('.slide'));
 var total=slides.length,cur=0,locked=false;
+var aiStart=slides.findIndex(function(s){return s.id==='ai1';});
+var SESSIONS=[
+  {id:1,start:0,end:aiStart-1},
+  {id:2,start:aiStart,end:total-1}
+];
 var CIRC=2*Math.PI*20;
 var rfg=document.getElementById('rfg'),ctrEl=document.getElementById('ctr'),bp=document.getElementById('bp'),bn=document.getElementById('bn'),dotsEl=document.getElementById('dots');
 slides.forEach(function(_,i){var b=document.createElement('button');b.className='dot'+(i===0?' on':'');b.title='Slide '+(i+1);b.addEventListener('click',function(){goTo(i);});dotsEl.appendChild(b);});
 var dots=Array.from(dotsEl.querySelectorAll('.dot'));
+var sessBtns=Array.from(document.querySelectorAll('.sess-btn'));
 slides[0].classList.add('active');
 slides.forEach(function(s,i){s.setAttribute('aria-hidden',i===0?'false':'true');});
+
+function getSession(){
+  return cur>=SESSIONS[1].start?SESSIONS[1]:SESSIONS[0];
+}
+function switchSession(id){
+  var sess=SESSIONS[id-1];
+  if(!sess||cur===sess.start)return;
+  goTo(sess.start,sess.start>cur?1:-1);
+}
+sessBtns.forEach(function(btn){
+  btn.addEventListener('click',function(){switchSession(parseInt(btn.dataset.session,10));});
+});
 updateUI();
 
 /* helpers — true when an interactive stepper slide is active */
@@ -2384,6 +3724,8 @@ function onJourney(){return slides[cur]&&slides[cur].id==='s13';}
 function onTreehouse(){return slides[cur]&&slides[cur].id==='s6';}
 function onSwiggyCompare(){return slides[cur]&&slides[cur].id==='s3';}
 function onPizzaJourney(){return slides[cur]&&slides[cur].id==='s8';}
+function onWorkflow(){return slides[cur]&&slides[cur].id==='ai2';}
+function onLiveBuild(){return slides[cur]&&slides[cur].id==='ai10';}
 
 /* hook into stepper controls before changing slides */
 function stepperStep(prevId,nextId,dir){
@@ -2398,6 +3740,8 @@ function innerStep(dir){
   if(onTreehouse()&&stepperStep('th-prev','th-next',dir))return true;
   if(onPizzaJourney()&&stepperStep('pj-prev','pj-next',dir))return true;
   if(onSwiggyCompare()&&stepperStep('s3-prev','s3-next',dir))return true;
+  if(onWorkflow()&&stepperStep('wf-prev','wf-next',dir))return true;
+  if(onLiveBuild()&&stepperStep('lb-prev','lb-next',dir))return true;
   return false;
 }
 
@@ -2422,10 +3766,18 @@ function goTo(idx,dir){
 }
 
 function updateUI(){
-  ctrEl.textContent=String(cur+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
-  rfg.style.strokeDashoffset=CIRC*(1-(cur+1)/total);
-  dots.forEach(function(d,i){d.classList.toggle('on',i===cur);});
-  bp.disabled=cur===0;bn.disabled=cur===total-1;
+  var sess=getSession();
+  var sessTotal=sess.end-sess.start+1;
+  var sessCur=cur-sess.start+1;
+  ctrEl.textContent=String(sessCur).padStart(2,'0')+' / '+String(sessTotal).padStart(2,'0');
+  rfg.style.strokeDashoffset=CIRC*(1-sessCur/sessTotal);
+  dots.forEach(function(d,i){
+    d.classList.toggle('on',i===cur);
+    d.classList.toggle('sess-dim',i<sess.start||i>sess.end);
+  });
+  sessBtns.forEach(function(b){b.classList.toggle('on',parseInt(b.dataset.session,10)===sess.id);});
+  bp.disabled=cur===sess.start;
+  bn.disabled=cur===sess.end;
 }
 
 bn.addEventListener('click',function(){
@@ -2459,6 +3811,20 @@ document.addEventListener('touchend',function(e){
   if(innerStep(dir))return;
   goTo(dx<0?cur+1:cur-1,dir);
 },{passive:true});
+
+/* copy-to-clipboard for workshop prompts */
+document.addEventListener('click',function(e){
+  var btn=e.target.closest('.copy-btn');
+  if(!btn)return;
+  e.stopPropagation();
+  var block=btn.closest('.copy-block');
+  var target=block&&block.querySelector('.copy-target');
+  if(!target)return;
+  var text=target.textContent;
+  function ok(){btn.textContent='Copied!';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},2000);}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(ok);}
+  else{var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok();}catch(err){}document.body.removeChild(ta);}
+});
 </script>
 </body>
 </html>
